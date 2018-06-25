@@ -176,7 +176,6 @@ export class CurrencyCommonService {
 
 
   patchCurrencyNbpResult(_nbpRes: ICurrencyNbpResult, rForm: FormGroup): void {
-    console.log('patchCurrencyNbpResult', rForm.value);
     let isNbpResRates = _nbpRes.rates.length > 0;
     let _rate = isNbpResRates ? _nbpRes.rates[0].mid : 0;
 

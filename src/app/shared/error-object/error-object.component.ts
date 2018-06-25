@@ -12,9 +12,7 @@ export class ErrorObjectComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-
     this.errorObj=this.errorObj? this.errorObj: [];
-    console.log(this.errorObj);
   }
 
 }
