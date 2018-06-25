@@ -1,5 +1,5 @@
 import { TokenService } from '../../../../services/token.service';
-import { IInvoiceSell } from '../../../../shared/interfaces/iinvoice-sell';
+import { IInvoiceSell } from '../../interfaces/iinvoice-sell';
 import { DataFactoryService } from '../../../../services/data-factory.service';
 import { environment } from '../../../../../environments/environment';
 import { Observable } from 'rxjs/Rx';

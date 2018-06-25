@@ -1,27 +1,25 @@
-import { ICurrency } from '../../../../shared/interfaces/i-currency';
 import { InvoiceSellService } from '../services/invoice-sell.service';
 import { CommonFunctionsService } from '../../../../services/common-functions.service';
-import { selector } from 'rxjs/operator/publish';
 import { IDetailObj } from '../../../../shared/idetail-obj';
 import { INavDetailInfo } from '../../../../shared/interfaces/inav-detail-info';
-import { ICurrencyNbp } from '../../../../shared/interfaces/i-currency-nbp';
 import { DialogTakNieComponent } from '../../../../shared/dialog-tak-nie/dialog-tak-nie.component';
 import { IDialogTakNieInfo } from '../../../../shared/interfaces/idialog-tak-nie-info';
-import { type } from 'os';
+
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
-import { ITitle } from 'app/shared/ititle';
 import { IBasicActions } from 'app/shared/ibasic-actions';
 import { Observable } from 'rxjs/Observable';
 import { FormControl } from '@angular/forms/src/model';
-import { IInvoiceSell, IInvoiceLineGroup, IInvoiceRateGroup } from 'app/shared/interfaces/iinvoice-sell';
 import { saveAs } from "file-saver"
-import { emit } from 'cluster';
-import { IInvoiceLine } from '../../../../shared/interfaces/iinvoice-pos';
-import { InvoiceCommonFunctionsService } from '../../common/invoice-common-functions.service';
 import { Subject } from 'rxjs';
+import {InvoiceCommonFunctionsService} from '../../common/invoice-common-functions.service'
+import { CurrencyCommonService } from '@bpShared/currency/currency-common.service';
+import { ICurrencyNbp } from '@bpShared/currency/interfaces/i-currency-nbp';
+import { MomentCommonService } from '@bpShared/moment-common/moment-common.service';
+import { ICurrency } from '@bpShared/currency/interfaces/i-currency';
+import {IInvoiceSell} from '../../interfaces/iinvoice-sell';
 
 
 @Component({
@@ -37,18 +35,21 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
 
   constructor(
     private df: InvoiceSellService,
+    private currService: CurrencyCommonService,
+    private momentService: MomentCommonService,
     private dialogTakNie: MatDialog,
     private cf: CommonFunctionsService,
     private icf: InvoiceCommonFunctionsService,
     public fb: FormBuilder,
     private actRoute: ActivatedRoute,
     private router: Router,
+
   ) { }
 
   ngOnInit() {
     this.isDestroyed$ = new Subject<boolean>();
     this.isPending = true;
-    this.extraInfoNbp = this.cf.formCurrencyNbp(this.fb);
+    this.extraInfoNbp = this.currService.getCurrencyNbpGroup(this.fb, this.isDestroyed$, 'pln')
     this.initForm();
     this.initRouteId();
     //this.initData();
@@ -244,7 +245,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   //#region  init, start
 
   public initForm(): void {
-    this.rForm = this.cf.formInvoiceSellGroup(this.fb, this.isDestroyed$);
+    this.rForm = this.icf.formInvoiceSellGroup(this.fb, this.isDestroyed$);
 
     this.currency
       .valueChanges
@@ -272,8 +273,8 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
 
         } else {
           let data = <IInvoiceSell>s;
-          this.cf.patchInvoiceRates(data.rates, this.rates, this.fb);
-          this.cf.patchInvoiceTotal(data.invoiceTotal, this.invoiceTotal, this.fb);
+          this.icf.patchInvoiceRates(data.rates, this.rates, this.fb);
+          this.icf.patchInvoiceTotal(data.invoiceTotal, this.invoiceTotal, this.fb);
           //this.cf.patchInvoiceLines(data.invoiceLines, this.invoiceLines, this.fb);
           this.getCorrectionPaymenntInfo.setValue(data.getCorrectionPaymenntInfo, { emitEvent: false });
           this.getInvoiceValue.setValue(data.getInvoiceValue, { emitEvent: false });
@@ -309,7 +310,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
       .subscribe(s => {
         if (s) {
           let currencyNbp: ICurrencyNbp = <ICurrencyNbp>{
-            rate_date: this.sellingDate.value,
+            rateDate: this.sellingDate.value,
             currency: this.currency.value,
             price: this.totalTax.value,
           };
@@ -327,7 +328,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
       .takeUntil(this.isDestroyed$)
       .subscribe((s: ICurrencyNbp) => {
         if (this.extraInfoNbp.valid && s.rate != null) {
-          let info = `Średni kurs z dnia ${this.cf.setFormatedDate(s.rate_date)} (${s.rate}), Podatek VAT (${this.cf.roundToCurrency(s.price)}) wartość: ${this.cf.roundToCurrency(s.pln_value)} PLN`;
+          let info = `Średni kurs z dnia ${this.momentService.getFormatedDate(s.rateDate)} (${s.rate}), Podatek VAT (${this.cf.roundToCurrency(s.price)}) wartość: ${this.cf.roundToCurrency(s.plnValue)} PLN`;
           this.extraInfoTaxExchangedInfo.setValue(info)
         } else {
           this.extraInfoTaxExchangedInfo.setValue("...przeliczam wartość...");
@@ -372,7 +373,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
         .takeUntil(this.isDestroyed$)
         .subscribe((s: IInvoiceSell) => {
           this.navDetailInfo.basicActions.canDelete = true;
-          this.cf.patchInvoiceSell(s, this.rForm, this.fb);
+          this.icf.patchInvoiceSell(s, this.rForm, this.fb);
           this.isPending = false;
           this.cf.toastMake(`Pobrano dane : ${s.invoiceNo}`, "init", this.actRoute);
         })
@@ -415,7 +416,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
       .take(1)
       .subscribe(s => {
         this.cf.toastMake("Zaktualizowano dane", "navSave", this.actRoute);
-        this.cf.patchInvoiceSell(s, this.rForm, this.fb);
+        this.icf.patchInvoiceSell(s, this.rForm, this.fb);
         this.isPending = false;
         this.rForm.markAsPristine();
       });
@@ -469,7 +470,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   getCurrencyNbpExchange(): ICurrencyNbp {
     return <ICurrencyNbp>{
       currency: this.currency.value,
-      rate_date: this.sellingDate.value,
+      rateDate: this.sellingDate.value,
       price: this.cf.roundToCurrency(this.invoiceTotalCurrent.get('total_tax').value)
     }
   }

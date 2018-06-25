@@ -1,4 +1,4 @@
-export interface IInvoiceLine {
+export interface IInvoicePos {
     invoice_pos_id: number,
     brutto_value: number,
     correctionInfo: string,

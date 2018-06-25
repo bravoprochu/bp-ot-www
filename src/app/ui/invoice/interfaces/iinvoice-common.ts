@@ -1,8 +1,10 @@
-import { ICompany } from "../../../shared/interfaces/icompany";
-import { ICurrency } from "../../../shared/interfaces/i-currency";
-import { IInvoiceLineGroup, IInvoiceTotalGroup, IInvoiceRateGroup } from "../../../shared/interfaces/iinvoice-sell";
+
+import { IInvoiceLineGroup, IInvoiceTotalGroup, IInvoiceRateGroup } from "../interfaces/iinvoice-sell";
 import { ICreationInfo } from "../../../shared/interfaces/i-creation-info";
-import { IPaymentTerms } from "../../../shared/interfaces/iinvoice-payment-terms";
+import { Moment } from "moment";
+import { ICompany } from "@bpCommonInterfaces/icompany";
+import { ICurrency } from "@bpShared/currency/interfaces/i-currency";
+import { IPaymentTerms } from "@bpShared/payment-terms/i-payment-terms";
 
 
 export interface IInvoiceCommon extends ICreationInfo  {
@@ -10,8 +12,8 @@ export interface IInvoiceCommon extends ICreationInfo  {
     companySeller: ICompany,
     currency: ICurrency
 
-    dateOfIssue: string,
-    dateOfSell: string
+    dateOfIssue: Moment,
+    dateOfSell: Moment
     
     info:string,
     isCorrection: boolean,

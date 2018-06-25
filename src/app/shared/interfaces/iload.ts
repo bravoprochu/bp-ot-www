@@ -1,5 +1,4 @@
 import { ICreationInfo } from './i-creation-info';
-import { IInvoiceExtraInfo } from './iinvoice-sell';
 import { IEmployee } from './iemployee';
 import { IGeo } from './igeo';
 import { ICompany } from './icompany';
@@ -10,6 +9,7 @@ import { ILoadingPlace } from "app/shared/interfaces/iloading-place";
 import { Moment } from 'moment';
 import { ICurrencyNbp } from '@bpShared/currency/interfaces/i-currency-nbp';
 import { IPaymentTerms } from '@bpShared/payment-terms/i-payment-terms';
+import { IInvoiceExtraInfo } from '@bpUI/invoice/interfaces/iinvoice-sell';
 
 export interface ILoad{
     loadId:number,

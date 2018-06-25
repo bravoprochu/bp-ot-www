@@ -4,9 +4,9 @@ import 'rxjs/add/operator/last';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/distinctUntilKeyChanged';
-import { CommonFunctionsService } from '../../../../services/common-functions.service';
-import { IInvoiceLine } from '../../../../shared/interfaces/iinvoice-pos';
 import { InvoiceBuyService } from '../../invoice-buy/services/invoice-buy.service';
+import { CommonFunctionsService } from 'app/services/common-functions.service';
+import { IInvoicePos } from '@bpUI/invoice/interfaces/iinvoice-pos';
 
 
 @Component({
@@ -157,7 +157,7 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
       .takeWhile(() => this.isAlive)
       .subscribe((s: any) => {
         if(this.currentGroup.valid){
-        this.nettoValueUpdate(<IInvoiceLine>this.currentGroup.value, this.currentGroup);
+        this.nettoValueUpdate(<IInvoicePos>this.currentGroup.value, this.currentGroup);
         if (this.isCorrection.value) {
           //if original has netto value - its a correction.. 
           console.log('merge - changeg', this.rForm.value);
@@ -172,7 +172,7 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
   fontSize: number = 20;
 
 
-  nettoValueUpdate(s: IInvoiceLine, form: FormGroup) {
+  nettoValueUpdate(s: IInvoicePos, form: FormGroup) {
     if (s.vat_rate != null && s.unit_price != null && s.quantity != null) {
       let resBrutto: number = 0;
       let resNetto: number = 0;
@@ -205,8 +205,8 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
   }
 
   positionListCheckChanges(): void {
-    let pOrg = <IInvoiceLine>this.originalGroup.value;
-    let currentPos = <IInvoiceLine>this.currentGroup.value;
+    let pOrg = <IInvoicePos>this.originalGroup.value;
+    let currentPos = <IInvoicePos>this.currentGroup.value;
     let changes: string[] = [];
 
     if (currentPos.name != pOrg.name) { changes.push('nazwa pozycji'); }

@@ -9,19 +9,9 @@ import { ICompany } from 'app/shared/interfaces/icompany';
 import { IStatusCode } from 'app/shared/interfaces/istatus-code';
 import * as moment from 'moment';
 import { IErrorObj } from '../shared/interfaces/ierror-object';
-import {
-  IInvoiceExtraInfo,
-  IInvoiceExtraInfoChecked,
-  IInvoiceLineGroup,
-  IInvoiceRateGroup,
-  IInvoiceSell,
-  IInvoiceTotalGroup,
-} from '../shared/interfaces/iinvoice-sell';
 import { ILoad, ILoadInfo, ILoadInfoExtra, ILoadTradeInfo } from '../shared/interfaces/iload';
 import { IValueViewValue, IViewValueGroupName } from '../shared/interfaces/ivalue-view-value';
 import { ITransportOffer } from '../ui/transport/interfaces/itransport-offer';
-import { IInvoiceRate } from '../shared/interfaces/iinvoice-rate-value';
-import { IInvoiceBuy } from '../ui/invoice/interfaces/iinvoice-buy';
 import { Subject } from 'rxjs';
 import { PaymentTermsService } from '@bpShared/payment-terms/payment-terms.service';
 import { CurrencyCommonService } from '@bpShared/currency/currency-common.service';
@@ -30,6 +20,8 @@ import { Moment } from 'moment';
 import { IPaymentTerm } from '@bpShared/payment-terms/i-payment-term';
 import { IPaymentTerms } from '@bpShared/payment-terms/i-payment-terms';
 import { MomentCommonService } from '@bpShared/moment-common/moment-common.service';
+import { InvoiceCommonFunctionsService } from '@bpUI/invoice/common/invoice-common-functions.service';
+import { IInvoiceExtraInfoChecked, IInvoiceExtraInfo } from '@bpUI/invoice/interfaces/iinvoice-sell';
 
 
 @Injectable()
@@ -147,17 +139,7 @@ export class CommonFunctionsService {
     // console.log('res', res);
 
 
-  isRateInInvoicePos(rate: any, posArr: IInvoiceRate[]): number {
-    let res: number = -1;
-    let idx: number = 0;
-    posArr.forEach(pos => {
-      if (rate == pos.vat_rate) {
-        res = idx;
-      }
-      idx++
-    });
-    return res;
-  }
+
 
 
   dateRangeActiveMonth():IDateRange
@@ -302,171 +284,19 @@ export class CommonFunctionsService {
 
 
 
-  formInvoiceBuyGroup(fb: FormBuilder, isDestroyed$: Subject<boolean>) {
-    let res = fb.group({
-      "invoiceBuyId": [0],
-      "companySeller": this.formCompanyGroup(fb),
-      "creationInfo": this.formCreationInfo(fb),
-      "currency": this.currService.getCurrencyListGroup(fb,isDestroyed$),
-      "dateOfIssue": [this.momentService.getTodayConstTimeMoment(), Validators.required],
-      "dateOfSell": [this.momentService.getTodayConstTimeMoment(), Validators.required],
-      "info": [null],
-      "invoiceNo": [null, Validators.required],
-      "invoiceLines": fb.array([]),
-      "invoiceTotal": fb.group({
-        "original": this.formInvoiceTotal(fb),
-        "current": this.formInvoiceTotal(fb),
-        "corrections": this.formInvoiceTotal(fb),
-      }),
-      "isInvoiceReceived": [true],
-      "isCorrection": [false],
-      "invoiceReceivedDate": [moment().format(this.dateLocaleFormat())],
-      "loadId":[null],
-      "loadNo": [null],
-      "paymentIsDone": [false],
-      "paymentDate": [moment().format(this.dateLocaleFormat())],
-      "paymentTerms": this.pTermsService.getPaymentTermsGroup(fb,isDestroyed$),
-      "rates": fb.array([]),
-    });
 
-    return res;
-  }
-
-  formInvoiceLineNoValidationGroup(fb: FormBuilder) {
-    return fb.group({
-      "invoice_pos_id": [0],
-      "baseInvoiceLineId": [null],
-      "brutto_value": [null],
-      "isCorrected": [false],
-      "correctionInfo": [null],
-      "name": [null],
-      "measurement_unit": ["szt."],
-      "netto_value": [null],
-      "pkwiu": [null],
-      "quantity": [1],
-      "unit_price": [0],
-      "vat_unit_value": [null],
-      "vat_value": [null],
-      "vat_rate": [null],
-      });
-  }
-
-  formInvoiceLineGroup(fb: FormBuilder) {
-    return fb.group({
-      "invoice_pos_id": [0],
-      "baseInvoiceLineId": [0],
-      "brutto_value": [null],
-      "isCorrected": [false],
-      "correctionInfo": [null],
-      "name": [null, Validators.required],
-      "measurement_unit": ["szt.", Validators.required],
-      "netto_value": [null],
-      "pkwiu": [null],
-      "quantity": [1],
-      "unit_price": [null, Validators.required],
-      "vat_unit_value": [null],
-      "vat_value": [null],
-      "vat_rate": [null, Validators.required],
-      });
-  }
-
-  formInvoiceLineGroupGroup(fb:FormBuilder)
-  {
-    return fb.group({
-      "corrections": this.formInvoiceLineNoValidationGroup(fb),
-      "current":  this.formInvoiceLineGroup(fb),
-      "original": this.formInvoiceLineNoValidationGroup(fb)
-    })
-  }
+  // formInvoiceSellCorrectionGroup(fb:FormBuilder, isDestroyed$: Subject<boolean>)
+  // {
+  //   return fb.group({
+  //     "invoiceSellCorrectionId": [null],
+  //     "baseInvoicesList": fb.array([]),
+  //     "invoiceCorrection": this.formInvoiceSellGroup(fb, isDestroyed$),
+  //     "invoiceSellCorrectionNo": [null],
+  //     "correctionsList": fb.array([])
+  //   });
+  // }
 
 
-  formInvoiceSellGroup(fb: FormBuilder, isDestroyed$: Subject<boolean>) {
-    let res = fb.group({
-      "invoiceSellId": [0],
-      "baseInvoiceId": [0],
-      "companyBuyer": this.formCompanyGroup(fb),
-      "companySeller": this.formCompanyGroup(fb),
-      "correctionId": [null],
-      "currency": this.currService.getCurrencyListGroup(fb,isDestroyed$),
-      "dateOfIssue": [this.momentService.getTodayConstTimeMoment(), Validators.required],
-      "dateOfSell": [this.momentService.getTodayConstTimeMoment(), Validators.required],
-      "extraInfo": this.formInvoiceSellExtraInfoGroup(fb),
-      "creationInfo": this.formCreationInfo(fb),
-      "getCorrectionPaymenntInfo": [null],
-      "getInvoiceValue": [null],
-      "correctionTotalInfo": [null],
-      "info": [null],
-      "isCorrection": [false],
-      "invoiceNo": [null],
-      "invoiceOriginalNo":[],
-      "invoiceOriginalPaid": [false],
-      "invoiceLines": fb.array([]),
-      "invoiceTotal": fb.group({
-        "original": this.formInvoiceTotal(fb),
-        "current": this.formInvoiceTotal(fb),
-        "corrections": this.formInvoiceTotal(fb),
-      }),
-      "paymentIsDone": [false],
-      "paymentDate": [null],
-      "paymentTerms": this.pTermsService.getPaymentTermsGroup(fb,isDestroyed$),
-      // "rates": fb.array([]),
-      rates: fb.array([])
-      
-
-    });
-    
-
-    res.get('dateOfSell').valueChanges
-      .takeUntil(isDestroyed$)
-      .subscribe(s => {
-        res.get('paymentTerms.day0').patchValue(s, {emitEvent: false});
-      })
-    return res;
-  }
-
-
-  formInvoiceRateGroupGroup(fb: FormBuilder)
-  {
-    return fb.group({
-      "vatRate":[null],
-      "original": this.formInvoiceRatesValuesGroup(fb),
-      "current": this.formInvoiceRatesValuesGroup(fb),
-      "corrections": this.formInvoiceRatesValuesGroup(fb)
-    });
-  }
-
-  formInvoiceSellCorrectionGroup(fb:FormBuilder, isDestroyed$: Subject<boolean>)
-  {
-    return fb.group({
-      "invoiceSellCorrectionId": [null],
-      "baseInvoicesList": fb.array([]),
-      "invoiceCorrection": this.formInvoiceSellGroup(fb, isDestroyed$),
-      "invoiceSellCorrectionNo": [null],
-      "correctionsList": fb.array([])
-    });
-  }
-
-  formInvoiceSellExtraInfoGroup(fb: FormBuilder) {
-    return fb.group({
-      'cmr': this.formExtraInfoCheckedGroup(fb),
-      'recived': this.formExtraInfoCheckedGroup(fb),
-      'sent': this.formExtraInfoCheckedGroup(fb),
-      'invoiceBuyId': [],
-      'invoiceBuyNo': [],
-      'invoiceSellId': [],
-      'invoiceSellNo': [],
-      "is_load_no": [false],
-      "is_in_words": [false],
-      "is_tax_nbp_exchanged": [false],
-      "isSigningPlace": [false],
-      "loadId": [null],
-      "loadNo": [null],
-      "tax_exchanged_info": [null],
-      "total_brutto_in_words": [null],
-      "transportOfferId": [null],
-      "transportOfferNo": [null]
-    })
-  }
 
   formExtraInfoCheckedGroup(fb:FormBuilder)
   {
@@ -479,29 +309,16 @@ export class CommonFunctionsService {
   }
 
 
- formInvoiceTotal(fb: FormBuilder) {
-    return fb.group({
-      "total_brutto": [0, Validators.required],
-      "total_netto": [0, Validators.required],
-      "total_tax": [0, Validators.required],
-    });
-  }
 
-  formInvoiceRatesValuesGroup(fb: FormBuilder) {
-    return fb.group({
-      "rate_value_id": [0],
-      "brutto_value": [null],
-      "netto_value": [null],
-      "vat_rate": [null],
-      "vat_value": [null]
-    });
-  }
+
+
 
   formLoadGroup(fb: FormBuilder, isDestroyed$: Subject<boolean>) {
     return fb.group({
       "buy": this.formLoadBuyGroup(fb, isDestroyed$),
       "creationInfo": this.formCreationInfo(fb),
-      "loadExtraInfo": this.formInvoiceSellExtraInfoGroup(fb),
+      //"loadExtraInfo": this.formInvoiceSellExtraInfoGroup(fb),
+      "loadExtraInfo": [],
       "invoiceSellNo": [],
       "info": [null],
       "loadNo": [null, Validators.required],
@@ -804,106 +621,12 @@ formTransportAddressShortGroup(fb:FormBuilder)
     rForm.patchValue(info, {emitEvent: false});
   }
 
-  patchInvoiceBuy(inv: IInvoiceBuy, rForm: FormGroup, fb: FormBuilder) {
-    //rForm.reset();
-    this.patchCompanyData(inv.companySeller, <FormGroup>rForm.get('companySeller'), fb);
-    let invoicePosList = (<FormArray>rForm.get('invoiceLines'));
-    let ratesValueList = (<FormArray>rForm.get('rates'));
-    let creationInfo=<FormGroup>rForm.get('creationInfo');
-    let paymentTerms=<FormGroup>rForm.get('paymentTerms');
 
-    this.patchCreationInfo(<ICreationInfo>inv, creationInfo);
-
-    inv.invoiceReceivedDate=this.momentService.convertToConstTime(inv.invoiceReceivedDate);
-    this.patchInvoiceLine(inv.invoiceLines, invoicePosList, fb);
-    this.patchInvoiceRates(inv.rates, ratesValueList, fb);
-    this.pTermsService.patchPaymentTerms(inv.paymentTerms, paymentTerms);
-    
-    inv.dateOfIssue = this.momentService.convertToConstTime(inv.dateOfIssue);
-    inv.paymentDate=this.momentService.convertToConstTime(inv.paymentDate);
-    // inv.paymentTerms.day0 = this.setFormatedDate(inv.paymentTerms.day0);
-    // inv.paymentTerms.paymentDate = this.setFormatedDate(inv.paymentTerms.paymentDate)
-    inv.dateOfSell = this.momentService.convertToConstTime(inv.dateOfSell);
-    rForm.patchValue(inv, {emitEvent:false});
+  patchInvoiceExtraInfoChecked(info: IInvoiceExtraInfoChecked, rForm: FormGroup) {
+    if(info==null) {return;}
+    info.date=this.momentService.convertToConstTime(info.date);
+    rForm.patchValue(info, { emitEvent: false });
   }
-
-
-  patchInvoiceSell(inv: IInvoiceSell, rForm: FormGroup, fb: FormBuilder): void {
-    
-    this.patchCompanyData(inv.companyBuyer, <FormGroup>rForm.get('companyBuyer'), fb);
-    this.patchCompanyData(inv.companySeller, <FormGroup>rForm.get('companySeller'), fb);
-    
-    let creationInfo=<FormGroup>rForm.get('creationInfo');
-    let currency= <FormGroup>rForm.get('currency');
-
-    let invLines=<FormArray>rForm.get('invoiceLines');
-
-    let invTotal=<FormGroup>rForm.get('invoiceTotal');
-
-    let rates=<FormArray>rForm.get('rates');
-
-
-    this.patchCreationInfo(<ICreationInfo>inv, creationInfo);
-
-    
-    //invoiceLines
-
-    this.patchInvoiceLine(inv.invoiceLines, <FormArray>invLines, fb);
- 
-    //rates
-    this.patchInvoiceRates(inv.rates, rates, fb);
-
-    this.patchInvoiceTotal(inv.invoiceTotal, invTotal, fb);
-    inv.dateOfSell = this.momentService.convertToConstTime(inv.dateOfSell);
-    inv.dateOfIssue=this.momentService.convertToConstTime(inv.dateOfIssue);
-
-    let pTerms = <FormGroup>rForm.get('paymentTerms');
-    this.pTermsService.patchPaymentTerms(inv.paymentTerms, pTerms);
-    
-    this.patchInvoiceExtraInfo(inv.extraInfo, <FormGroup>rForm.get('extraInfo'));
-    
-    rForm.patchValue(inv, {emitEvent: false, onlySelf:true});
-    
-    // console.log(inv);
-    // console.log(rForm);
-  }
-
-  patchInvoiceLine(data: IInvoiceLineGroup[], rForm:FormArray, fb:FormBuilder)
-  {
-    if(data==undefined || data==null || data.length==0) {return;}
-    rForm.controls=[];
-    data.forEach(group => {
-      let invLineGroup=this.formInvoiceLineGroupGroup(fb);
-      invLineGroup.get('corrections').patchValue(group.corrections, {emitEvent: false});
-      invLineGroup.get('current').patchValue(group.current, {emitEvent: false});
-      invLineGroup.get('original').patchValue(group.original, {emitEvent: false});
-      //invLineGroup.patchValue(group, {emitEvent:false});
-      rForm.push(invLineGroup);
-    });
-  }
-
-  patchInvoiceRates(data: IInvoiceRateGroup[], rForm:FormArray, fb: FormBuilder):void
-  {
-    if(data==undefined || data==null || data.length==0) {return;}
-    rForm.controls=[];
-    data.forEach(rate=>{
-      let rateGroup=this.formInvoiceRateGroupGroup(fb);
-      rateGroup.patchValue(rate, {emitEvent:false});
-      rForm.push(rateGroup);
-    })
-  }
-
-
-  patchInvoiceTotal(data: IInvoiceTotalGroup, rForm:FormGroup, fb:FormBuilder): void{
-    let invTotalCorrections=<FormGroup>rForm.get('corrections');
-    let invTotalCurrent=<FormGroup>rForm.get('current');
-    let invTotalOrginal=<FormGroup>rForm.get('original');
-        //invoice total
-        invTotalCorrections.patchValue(data.corrections, {emitEvent:false});
-        invTotalCurrent.patchValue(data.current, {emitEvent:false});
-        invTotalOrginal.patchValue(data.original, {emitEvent:false});
-  }
-
 
   patchInvoiceExtraInfo(info: IInvoiceExtraInfo, rForm: FormGroup) {
     this.patchInvoiceExtraInfoChecked(info.cmr, <FormGroup>rForm.get('cmr'));
@@ -912,11 +635,8 @@ formTransportAddressShortGroup(fb:FormBuilder)
     rForm.patchValue(info, { emitEvent: false});
   }
 
-  patchInvoiceExtraInfoChecked(info: IInvoiceExtraInfoChecked, rForm: FormGroup) {
-    if(info==null) {return;}
-    info.date=this.momentService.convertToConstTime(info.date);
-    rForm.patchValue(info, { emitEvent: false });
-  }
+
+
 
 
   patchLoad(s: ILoad, rForm: FormGroup, fb: FormBuilder, isDestroyed$: Subject<boolean>) {

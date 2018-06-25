@@ -3,7 +3,6 @@ import { ITransEuPerson } from '../../../shared/interfaces/i-load-trans-eu';
 import { ICompany } from '../../../shared/interfaces/icompany';
 import { IDialogData } from '../../../shared/interfaces/i-dialog-data';
 import { DialogDataTypes } from '../../../shared/enums/dialog-data-types.enum';
-import { IinputData } from '../../../shared/interfaces/iinput-data';
 import { Observable, Subject } from 'rxjs/Rx';
 import { InputDialogComponent } from '../../../shared/input-dialog/input-dialog.component';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
@@ -21,6 +20,7 @@ import { DialogTakNieComponent } from 'app/shared/dialog-tak-nie/dialog-tak-nie.
 import { INavDetailInfo } from 'app/shared/interfaces/inav-detail-info';
 import { CompanyService } from 'app/ui/company/services/company.service';
 import { FormControl } from '@angular/forms/src/model';
+import { IinputData } from '@bpCommonInterfaces/iinput-data';
 
 
 

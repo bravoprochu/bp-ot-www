@@ -1,13 +1,11 @@
-import { ICreationInfo } from '../../../shared/interfaces/i-creation-info';
-import { ICurrency } from "app/shared/interfaces/i-currency";
-import { ICompany } from "app/shared/interfaces/icompany";
 import { IInvoiceCommon } from './iinvoice-common';
+import { Moment } from 'moment';
 
 
 export interface IInvoiceBuy extends IInvoiceCommon {
     invoiceBuyId:number,
-    invoiceReceivedDate: string,
+    invoiceReceivedDate: Moment,
     isInvoiceReceived: boolean,
     paymentIsDone:boolean,
-    paymentDate:string,
+    paymentDate:Moment,
 }

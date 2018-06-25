@@ -1,10 +1,9 @@
-import { IPaymentTerms } from './iinvoice-payment-terms';
 import { ICreationInfo } from 'app/shared/interfaces/i-creation-info';
 
-import { IInvoiceLine } from './iinvoice-pos';
+import { IInvoicePos } from './iinvoice-pos';
 import { IInvoiceTotal } from './iinvoice-total';
-import { IInvoiceCommon } from '../../ui/invoice/interfaces/iinvoice-common';
-import { IInvoiceRate } from './iinvoice-rate-value';
+import { IInvoiceCommon } from './iinvoice-common';
+import { IInvoiceRate } from './iinvoice-rate';
 import { Moment } from 'moment';
 import { ICurrencyNbp } from '@bpShared/currency/interfaces/i-currency-nbp';
 
@@ -21,9 +20,9 @@ export interface IInvoiceSell extends IInvoiceCommon {
 
 export interface IInvoiceLineGroup
 {
-    corrections: IInvoiceLine[],
-    current: IInvoiceLine[],
-    original: IInvoiceLine[],    
+    corrections: IInvoicePos,
+    current: IInvoicePos,
+    original: IInvoicePos,    
 }
 
 

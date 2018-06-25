@@ -1,4 +1,3 @@
-import { IInvoiceSell } from '../shared/interfaces/iinvoice-sell';
 import { Headers, ResponseType } from '@angular/http';
 import { TokenService } from './token.service';
 import { JwtHelper } from 'angular2-jwt';

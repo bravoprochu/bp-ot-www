@@ -18,8 +18,6 @@ import { DateRangeComponent } from './date-range/date-range.component';
 import { SharedMaterialMinModule } from '@bpShared/shared-material-min/shared-material-min.module';
 import { SharedMaterialRestModule } from '@bpShared/shared-material-rest/shared-material-rest.module';
 import { RouterModule } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
-
 
 @NgModule({
   imports: [

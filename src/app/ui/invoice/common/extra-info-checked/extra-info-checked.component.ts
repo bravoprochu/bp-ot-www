@@ -1,6 +1,7 @@
 import { FormControl,FormGroup, Validators } from '@angular/forms';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { CommonFunctionsService } from 'app/services/common-functions.service';
+import { MomentCommonService } from '@bpShared/moment-common/moment-common.service';
 
 
 @Component({
@@ -17,7 +18,9 @@ export class ExtraInfoCheckedComponent implements OnInit,OnDestroy {
   
 
   constructor(
-    private cf: CommonFunctionsService
+    private cf: CommonFunctionsService,
+    private momentService: MomentCommonService
+
   ) { }
 
   ngOnInit() {
@@ -53,7 +56,7 @@ export class ExtraInfoCheckedComponent implements OnInit,OnDestroy {
       {
         this.date.setValidators(Validators.required);
         if(this.date.value==null){
-          this.date.setValue(this.cf.getToday());
+          this.date.setValue(this.momentService.getToday());
         }
       } else {
         this.date.clearValidators();
