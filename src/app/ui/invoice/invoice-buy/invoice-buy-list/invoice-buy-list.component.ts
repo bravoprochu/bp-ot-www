@@ -21,6 +21,10 @@ export class InvoiceBuyListComponent implements OnInit,OnDestroy, IListObj {
   @ViewChild(MatSort) sort:MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
+  public ngOnDestroy(): void {
+    this.isDestroyed$.next(true); this.isDestroyed$.unsubscribe();
+  }
+
   constructor(
     private cf: CommonFunctionsService,
     private df: InvoiceBuyService,
@@ -32,7 +36,7 @@ export class InvoiceBuyListComponent implements OnInit,OnDestroy, IListObj {
 
   ngOnInit() {
     this.dateRange=this.cf.dateRangeLastQuarter();
-    this.isDestroyed$=new Subject<boolean>();
+    this.isDestroyed$ = new Subject<boolean>();
     this.isPending=true;
     this.initData(this.dateRange);
     this.displayedColumns=['id','documentNo', 'dataSprzedazy', 'nabywca', 'waluta', 'netto', 'podatek', 'brutto'];
@@ -74,9 +78,7 @@ export class InvoiceBuyListComponent implements OnInit,OnDestroy, IListObj {
       })   
     }
 
-    public ngOnDestroy(): void {
-        this.isDestroyed$.next(true); this.isDestroyed$.unsubscribe();
-    }
+
 
     searchFilter(filterValue)
     {

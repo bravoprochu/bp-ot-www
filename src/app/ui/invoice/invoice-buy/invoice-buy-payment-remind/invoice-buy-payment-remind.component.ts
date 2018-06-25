@@ -4,8 +4,6 @@ import { MatDialog } from '@angular/material';
 import { FormControl } from '@angular/forms';
 import { PaymentRemindDialogComponent } from 'app/ui/invoice/payment-remind-dialog/payment-remind-dialog.component';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs';
-import { subscribeOn } from 'rxjs/operator/subscribeOn';
 
 @Component({
   selector: 'app-invoice-buy-payment-remind',
@@ -14,7 +12,7 @@ import { subscribeOn } from 'rxjs/operator/subscribeOn';
 })
 export class InvoiceBuyPaymentRemindComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
-    this.isDestroyed$.next(true); this.isDestroyed$.unsubscribe();
+    this.isAlive=false;
   }
 
   constructor(
@@ -23,15 +21,15 @@ export class InvoiceBuyPaymentRemindComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.isDestroyed$=new Subject<boolean>();
     this.unpaidSearch$=new FormControl();
     this.notConfirmedSearch$=new FormControl();
     this.initData();
     this.initForm();
+    this.isAlive=true;
   }
 
 
-  isDestroyed$: Subject<boolean>;
+  isAlive:Boolean
   
   unpaid:any[];
   unpaidFilterInfo:string;
@@ -51,23 +49,21 @@ export class InvoiceBuyPaymentRemindComponent implements OnInit, OnDestroy {
   {
     this.df.paymentRemind()
     .take(1)
-    .map(s=>{
+    .subscribe(s=>{
       this.unpaid=s["unpaid"];
       this.unpaidFiltered=s["unpaid"];
       this.unpaidStats=s["unpaidStats"];
       this.notConfirmed=s["notConfirmed"];
       this.notConfirmedFiltered=s["notConfirmed"];
       this.notConfirmedStats=s["notConfirmedStats"];
-      return s;
     })
-    .subscribe();
   }
 
   initForm()
   {
     this.unpaidSearch$
       .valueChanges
-      .takeUntil(this.isDestroyed$)
+      .takeWhile(w=>this.isAlive==true)
       .subscribe(s=>{
         this.unpaidFiltered=this.filterArr(s, this.unpaid);
         this.unpaidFilterInfo=s.length>0 ? `Zastosowano filtr, znaleziono: ${this.unpaidFiltered.length}`: "";
@@ -75,7 +71,7 @@ export class InvoiceBuyPaymentRemindComponent implements OnInit, OnDestroy {
 
       this.notConfirmedSearch$
       .valueChanges
-      .takeUntil(this.isDestroyed$)
+      .takeWhile(w=>this.isAlive==true)
       .subscribe(s=>{
         this.notConfirmedFiltered=this.filterArr(s, this.notConfirmed);
         this.notConfirmedFilterInfo=s.length>0 ? `Zastosowano filtr, znaleziono: ${this.notConfirmedFiltered.length}`: "";

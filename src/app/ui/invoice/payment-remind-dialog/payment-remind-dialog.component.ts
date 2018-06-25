@@ -8,13 +8,14 @@ import * as moment from 'moment';
   styleUrls: ['./payment-remind-dialog.component.css']
 })
 export class PaymentRemindDialogComponent implements OnInit {
+
   constructor(
     private dialogRef: MatDialogRef<PaymentRemindDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data:any
   ) { }
 
   ngOnInit() {
-    this.data.paymentDate= moment();
+    this.data.paymentDate= moment().format();
   }
 
   onNoClick(){
@@ -22,7 +23,7 @@ export class PaymentRemindDialogComponent implements OnInit {
   }
   onYesClick()
   {
-    this.dialogRef.close(moment(this.data.paymentDate));
+    this.dialogRef.close(moment(this.data.paymentDate).format());
   }
 
 }

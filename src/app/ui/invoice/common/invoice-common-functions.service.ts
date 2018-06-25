@@ -5,6 +5,7 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { DialogTakNieComponent } from '../../../shared/dialog-tak-nie/dialog-tak-nie.component';
 import { IDialogTakNieInfo } from '../../../shared/interfaces/idialog-tak-nie-info';
 import { MatDialog } from '@angular/material';
+import { IInvoiceLineGroup } from '../../../shared/interfaces/iinvoice-sell';
 import { Subject } from 'rxjs';
 
 @Injectable()
@@ -29,6 +30,19 @@ export class InvoiceCommonFunctionsService {
     }
   }
 
+  getInvoiceLinesCorrections(lines: IInvoiceLineGroup[], linesFA: FormArray){
+    linesFA.controls.forEach(lineG=>{
+      let corr=lineG.get('corrections');
+      let curr= <IInvoiceLine>lineG.get('current').value
+      let foundLineGroup=lines.find(f=>f.current.brutto_value==curr.brutto_value && f.current.name==curr.name && f.current.netto_value==curr.netto_value && f.current.vat_rate==curr.vat_rate);
+      if(foundLineGroup){
+        console.log('found', foundLineGroup);
+        corr.setValue(foundLineGroup.corrections, {emitEvent: false});
+      }
+    })
+  }
+
+
   lineAdd(invoiceLines: FormArray, fb: FormBuilder) {
     let newLineFg = this.cf.formInvoiceLineGroupGroup(fb);
     newLineFg.get('original').patchValue(this.getIInvoiceLine(null));
@@ -40,7 +54,6 @@ export class InvoiceCommonFunctionsService {
 
 
   lineRemove(idx: number, rForm: FormGroup, invoiceLines: FormArray, isDestroyed$:Subject<boolean>) {
-    
     let d = this.dialogTakNie.open(DialogTakNieComponent, { data: <IDialogTakNieInfo>{ title: "Faktury", question: "Czy na pewno usunąć tą pozycję ?" } });
     d.afterClosed()
       .takeUntil(isDestroyed$)
@@ -52,5 +65,6 @@ export class InvoiceCommonFunctionsService {
       })
   }
 
+  
 
 }

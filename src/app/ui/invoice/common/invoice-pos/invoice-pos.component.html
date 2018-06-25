@@ -1,12 +1,12 @@
 <mat-card>
-    <mat-card-content>
+    <mat-card-content fxLayout="column" fxLayoutGap="10px">
         <div [formGroup]="currentGroup">
-            <div fxLayout="row wrap" fxLayoutGap="20px">
+            <div fxLayoutWrap fxLayoutGap="20px">
                 <mat-form-field fxFlex="40" fxFlex.xs="100">
                     <textarea matTextareaAutosize matAutosizeMinRows="5" matInput formControlName="name" placeholder="Nazwa towaru/usługi"></textarea>
                     <!-- <input type="text" matInput formControlName="name" placeholder="Nazwa towaru/usługi"> -->
                 </mat-form-field>
-                <div fxLayout="row wrap" fxFlex="55" fxFlex.xs="100">
+                <div fxLayoutWrap fxFlex="55" fxFlex.xs="100">
                     <mat-form-field fxFlex="50" fxFlex.xs="25">
                         <input type="text" matInput formControlName="pkwiu" placeholder="PKWiU">
                     </mat-form-field>
@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <div [formGroup]="currentGroup" fxLayout="row wrap" *ngIf="isCorrection.value && currentIsCorrected.value">
+        <div [formGroup]="currentGroup" fxLayoutWrap *ngIf="isCorrection.value && currentIsCorrected.value">
             <mat-form-field fxFlex="100">
                 <input type="text" matInput placeholder="Przyczyna korekt" formControlName="correctionInfo">
             </mat-form-field>
@@ -39,89 +39,123 @@
         </div>
 
 
-        <div>&nbsp;</div>
-        <mat-divider></mat-divider>
-        <div>&nbsp;</div>        
-
-
-        <div fxLayout="row wrap">
-            <div fxFlex="100" fxLayout fxLayoutGap="20px" *ngIf="currentVatUnitValue.value">
-                <div>jedn. vat:</div>
-                <div>
-                    <strong>{{currentVatUnitValue.value | number: '1.2-2'}}</strong>
-                </div>
-                <div [style.color]="'blue'" *ngIf="isCorrection.value && currentIsCorrected.value">
-                    <strong>{{originalVatUnitValue.value | number: '1.2-2'}}</strong>
-                </div>
-                <div [style.color]="'red'" *ngIf="isCorrection.value && currentIsCorrected.value">
-                    <strong>{{correctionsVatUnitValue.value | number: '1.2-2'}}</strong>
-                </div>
-
-            </div>
-            <div fxFlex="100" fxLayout fxLayoutGap="20px" *ngIf="currentVatValue.value">
-                <div>vat razem:</div>
-
-                <div>
-                    <strong>{{currentVatValue.value | number: '1.2-2'}}</strong>
-                </div>
-                <div [style.color]="'blue'" *ngIf="isCorrection.value && currentIsCorrected.value">
-                    <strong>{{originalVatValue.value | number: '1.2-2'}}</strong>
-                </div>
-                <div [style.color]="'red'" *ngIf="isCorrection.value && currentIsCorrected.value">
-                    <strong>{{correctionsVatValue.value | number: '1.2-2'}}</strong>
-                </div>
-            </div>
-            <div fxFlex="100" fxLayout fxLayoutGap="20px" *ngIf="currentNettoValue.value">
-                <div>netto:</div>
-                <div>
-                    <strong>{{currentNettoValue.value | number: '1.2-2'}}</strong>
-                </div>
-                <div [style.color]="'blue'" *ngIf="isCorrection.value && currentIsCorrected.value">
-                    <strong>{{originalNettoValue.value | number: '1.2-2'}}</strong>
-                </div>
-                <div [style.color]="'red'" *ngIf="isCorrection.value && currentIsCorrected.value">
-                    <strong>{{correctionsNettoValue.value | number: '1.2-2'}}</strong>
-                </div>
-            </div>
-
-
-            <div fxFlex="100" fxLayout fxLayoutGap="20px" *ngIf="currentNettoValue.value">
-                <div>brutto:</div>
-                <div>
-                    <strong>{{currentBruttoValue.value | number: '1.2-2'}}</strong>
-                </div>
-                <div [style.color]="'blue'" *ngIf="isCorrection.value && currentIsCorrected.value">
-                    <strong>{{originalBruttoValue.value | number: '1.2-2'}}</strong>
-                </div>
-                <div [style.color]="'red'" *ngIf="isCorrection.value && currentIsCorrected.value">
-                    <strong>{{correctionsBruttoValue.value | number: '1.2-2'}}</strong>
-                </div>
-
-            </div>
-
-            <div fxFlex="100" fxLayout fxLayoutGap="20px" *ngIf="isCorrection.value && currentIsCorrected.value && correctionsQuantity.value">
-                <div>Ilość:</div>
-                <div [style.color]="'blue'">
-                    <strong>{{originalQuantity?.value}}</strong>
-                </div>
-                <div [style.color]="'red'">
-                    <strong>{{correctionsQuantity?.value}}</strong>
-                </div>
-
-            </div>
-            <div fxFlex="100" fxLayout fxLayoutGap="20px" *ngIf="isCorrection.value && currentIsCorrected.value && correctionsUnitPrice.value">
-                <div>cena jednostkowa:</div>
-
-                <div [style.color]="'blue'">
-                    <strong>{{originalUnitPrice?.value | number: '1.2-2'}}</strong>
-                </div>
-                <div [style.color]="'red'">
-                    <strong>{{correctionsUnitPrice?.value | number: '1.2-2'}}</strong>
-                </div>
-
-            </div>
-
+        <div>
+            <mat-divider></mat-divider>
         </div>
+        
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Szczegoły:
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div fxLayoutWrap>
+                <mat-form-field>
+                    <input type="number" matInput placeholder="Jednostkowo VAT" [formControl]="currentVatUnitValue">
+                </mat-form-field>
+                <mat-form-field>
+                    <input type="number" matInput placeholder="Wartość VAT razem" [formControl]="currentVatValue">
+                </mat-form-field>
+                <mat-form-field>
+                    <input type="number" matInput placeholder="Netto" [formControl]="currentNettoValue">
+                </mat-form-field>
+                <mat-form-field>
+                    <input type="number" matInput placeholder="Brutto" [formControl]="currentBruttoValue">
+                </mat-form-field>
+            </div>
+
+
+
+
+
+
+
+            <div fxLayoutWrap>
+                <div fxFlex="100" fxLayout fxLayoutGap="20px" *ngIf="currentVatUnitValue.value">
+                    <div>jedn. vat:</div>
+                    <div>
+                        <strong>{{currentVatUnitValue.value | number: '1.2-2'}}</strong>
+                    </div>
+                    <div [style.color]="'blue'" *ngIf="isCorrection.value && currentIsCorrected.value">
+                        <strong>{{originalVatUnitValue.value | number: '1.2-2'}}</strong>
+                    </div>
+                    <div [style.color]="'red'" *ngIf="isCorrection.value && currentIsCorrected.value">
+                        <strong>{{correctionsVatUnitValue.value | number: '1.2-2'}}</strong>
+                    </div>
+    
+                </div>
+                <div fxFlex="100" fxLayout fxLayoutGap="20px" *ngIf="currentVatValue.value">
+                    <div>vat razem:</div>
+    
+                    <div>
+                        <strong>{{currentVatValue.value | number: '1.2-2'}}</strong>
+                    </div>
+                    <div [style.color]="'blue'" *ngIf="isCorrection.value && currentIsCorrected.value">
+                        <strong>{{originalVatValue.value | number: '1.2-2'}}</strong>
+                    </div>
+                    <div [style.color]="'red'" *ngIf="isCorrection.value && currentIsCorrected.value">
+                        <strong>{{correctionsVatValue.value | number: '1.2-2'}}</strong>
+                    </div>
+                </div>
+                <div fxFlex="100" fxLayout fxLayoutGap="20px" *ngIf="currentNettoValue.value">
+                    <div>netto:</div>
+                    <div>
+                        <strong>{{currentNettoValue.value | number: '1.2-2'}}</strong>
+                    </div>
+                    <div [style.color]="'blue'" *ngIf="isCorrection.value && currentIsCorrected.value">
+                        <strong>{{originalNettoValue.value | number: '1.2-2'}}</strong>
+                    </div>
+                    <div [style.color]="'red'" *ngIf="isCorrection.value && currentIsCorrected.value">
+                        <strong>{{correctionsNettoValue.value | number: '1.2-2'}}</strong>
+                    </div>
+                </div>
+    
+    
+                <div fxFlex="100" fxLayout fxLayoutGap="20px" *ngIf="currentNettoValue.value">
+                    <div>brutto:</div>
+                    <div>
+                        <strong>{{currentBruttoValue.value | number: '1.2-2'}}</strong>
+                    </div>
+                    <div [style.color]="'blue'" *ngIf="isCorrection.value && currentIsCorrected.value">
+                        <strong>{{originalBruttoValue.value | number: '1.2-2'}}</strong>
+                    </div>
+                    <div [style.color]="'red'" *ngIf="isCorrection.value && currentIsCorrected.value">
+                        <strong>{{correctionsBruttoValue.value | number: '1.2-2'}}</strong>
+                    </div>
+    
+                </div>
+    
+                <div fxFlex="100" fxLayout fxLayoutGap="20px" *ngIf="isCorrection.value && currentIsCorrected.value && correctionsQuantity.value">
+                    <div>Ilość:</div>
+                    <div [style.color]="'blue'">
+                        <strong>{{originalQuantity?.value}}</strong>
+                    </div>
+                    <div [style.color]="'red'">
+                        <strong>{{correctionsQuantity?.value}}</strong>
+                    </div>
+    
+                </div>
+                <div fxFlex="100" fxLayout fxLayoutGap="20px" *ngIf="isCorrection.value && currentIsCorrected.value && correctionsUnitPrice.value">
+                    <div>cena jednostkowa:</div>
+    
+                    <div [style.color]="'blue'">
+                        <strong>{{originalUnitPrice?.value | number: '1.2-2'}}</strong>
+                    </div>
+                    <div [style.color]="'red'">
+                        <strong>{{correctionsUnitPrice?.value | number: '1.2-2'}}</strong>
+                    </div>
+    
+                </div>
+    
+            </div>
+        </mat-expansion-panel>
+
+
+
+
+        
+
 
 
     </mat-card-content>

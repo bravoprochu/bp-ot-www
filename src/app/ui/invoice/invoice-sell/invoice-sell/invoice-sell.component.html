@@ -57,7 +57,7 @@
                     <mat-datepicker-toggle matSuffix [for]="dpIssue"></mat-datepicker-toggle>
                     <mat-datepicker #dpIssue></mat-datepicker>
                 </mat-form-field>
-                <app-currency-list [rForm]="currency"></app-currency-list>
+                <app-currency [rForm]="currency"></app-currency>
                 <app-payment-terms [rForm]="paymentTerms"></app-payment-terms>
 
             </mat-expansion-panel>
@@ -164,7 +164,7 @@
                         <!-- {{ratesAg.value | json}} -->
 
                         <div *ngFor="let r of rates.value" fxLayout="column">
-                            <div fxLayout="row wrap">
+                            <div fxLayoutWrap>
                                 <div fxFlex>
                                     <span>{{r.vatRate}}</span>
                                 </div>
@@ -211,7 +211,7 @@
                     <mat-panel-title>Status dokumentu
                     </mat-panel-title>
                 </mat-expansion-panel-header>
-                <section fxFill fxLayout="row wrap" fxLayout.xs="column">
+                <section fxFill fxLayoutWrap fxLayout.xs="column">
                     <div [formGroup]="extraInfo" fxFlex="50" fxFlex.xs="100" fxLayout="column">
                         <div class="mat-h2">Potwierdzenia doręczeń</div>
                         <app-extra-info-checked *ngIf="isLoad" [rForm]="extraInfoCheckedCmr" [placeholder]="'CMR, potwierdzenie otrzymania'"></app-extra-info-checked>
@@ -249,15 +249,15 @@
                         Wydruk
                     </mat-panel-title>
                 </mat-expansion-panel-header>
-                <div fxLayout="row wrap">
-                    <section [formGroup]="extraInfo" fxFill fxLayout="row wrap" fxLayout.xs="column">
+                <div fxLayoutWrap>
+                    <section [formGroup]="extraInfo" fxFill fxLayoutWrap fxLayout.xs="column">
                         <div fxLayout="column" fxFlex="100">
                             <div class="mat-h2">Dodaj do wydruku</div>
                             <mat-checkbox *ngIf="isLoad || isTransportOffer" formControlName="is_load_no">Numer zlecenia </mat-checkbox>
-                            <mat-checkbox formControlName="is_tax_nbp_exchanged" *ngIf="currency.value.name!='PLN' && totalTax.value>0">Przelicznik podatku (średni kurs NBP)</mat-checkbox>
+                            <mat-checkbox formControlName="is_tax_nbp_exchanged" *ngIf="currency.value.name!='PLN'">Przelicznik podatku (średni kurs NBP)</mat-checkbox>
 
                             <div *ngIf="extraInfoIsTaxNbpExchanged.value" fxLayout="column">
-                                <div fxLayout="row wrap" fxLayoutGap="10px">
+                                <div fxLayoutWrap fxLayoutGap="10px">
                                     <app-currency-nbp [rForm]="extraInfoNbp" [placeholder]="'Wartość podatku w walucie obcej'"></app-currency-nbp>
                                     <button flex mat-mini-fab (click)="prepTaxExchangedInfo()" matTooltip="przelicz wartość nbp">
                                         <mat-icon>refresh</mat-icon>

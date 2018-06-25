@@ -1,6 +1,5 @@
 import { FormGroup, FormControl } from '@angular/forms';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
 
 
 
@@ -11,18 +10,16 @@ import { Subject } from 'rxjs';
 })
 export class InvoicePosResumeComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
-    this.isDestroyed$.next(true); this.isDestroyed$.unsubscribe();
+    this.isAlive=false;
   }
   @Input() rForm: FormGroup //formInvoice
   @Input() isCorrection: FormControl;
   constructor() { }
 
-  ngOnInit() { 
-    this.isDestroyed$=new Subject<boolean>();
-   }
+  ngOnInit() {  }
 
   
-  isDestroyed$: Subject<boolean>;
+  isAlive:boolean=true;
 
 
   get corrections():FormGroup

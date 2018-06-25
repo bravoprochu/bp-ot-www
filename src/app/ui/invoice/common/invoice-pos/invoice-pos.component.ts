@@ -6,6 +6,7 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/distinctUntilKeyChanged';
 import { CommonFunctionsService } from '../../../../services/common-functions.service';
 import { IInvoiceLine } from '../../../../shared/interfaces/iinvoice-pos';
+import { InvoiceBuyService } from '../../invoice-buy/services/invoice-buy.service';
 
 
 @Component({
@@ -21,7 +22,11 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
   @Input() isCorrection: FormControl;
   @Output() remove = new EventEmitter();
 
-  constructor(private cf: CommonFunctionsService) { }
+  constructor(
+    private cf: CommonFunctionsService,
+    private df: InvoiceBuyService
+
+  ) { }
 
   //#region getters
 
@@ -80,7 +85,9 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
   get currentVatUnitValue(): FormControl {
     return <FormControl>this.rForm.get('current.vat_unit_value');
   }
-
+  get currentVatRate(): FormControl {
+    return <FormControl>this.rForm.get('current.vat_rate');
+  }
   get currentVatValue(): FormControl {
     return <FormControl>this.rForm.get('current.vat_value');
   }
@@ -141,16 +148,22 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     //this.nettoValueUpdate(this.currentGroup.value, this.currentGroup);
-    this.currentGroup.valueChanges
+    //this.currentGroup.valueChanges
+    this.currentQuantity
+    .valueChanges
+    .merge(this.currentUnitPrice.valueChanges, this.currentVatRate.valueChanges)
       .debounceTime(150)
       //.distinctUntilChanged()
       .takeWhile(() => this.isAlive)
       .subscribe((s: any) => {
-        this.nettoValueUpdate(<IInvoiceLine>s, this.currentGroup);
+        if(this.currentGroup.valid){
+        this.nettoValueUpdate(<IInvoiceLine>this.currentGroup.value, this.currentGroup);
         if (this.isCorrection.value) {
           //if original has netto value - its a correction.. 
-          this.positionListCheckChanges(s);
+          console.log('merge - changeg', this.rForm.value);
+          this.positionListCheckChanges();
         }
+      }
       });
   }
 
@@ -189,66 +202,29 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
       form.get('vat_value').setValue(null, { emitEvent: false });
       form.get('vat_unit_value').setValue(null, { emitEvent: false });
     }
-
-    // if(this.isCorrection.value)
-    // {
-    //   let corrLine=<IInvoiceLine>{
-    //     brutto_value: this.currentBruttoValue.value - this.originalBruttoValue.value,
-    //     quantity: this.currentQuantity.value-this.originalQuantity.value,
-    //     netto_value: this.currentNettoValue.value - this.originalNettoValue.value,
-    //     vat_rate: s.vat_rate,
-    //     vat_value: this.currentVatValue.value-this.originalVatValue.value
-    //   }
-
-    //   this.correctionsGroup.patchValue(corrLine, {emitEvent: false});
-    //   this.currentIsCorrected.setValue(true, {emitEvent: false});
-    // } else {
-    //   this.currentIsCorrected.setValue(false, {emitEvent: false});
-    // }
-
   }
 
-  positionListCheckChanges(s): void {
+  positionListCheckChanges(): void {
     let pOrg = <IInvoiceLine>this.originalGroup.value;
-    let corrPos = <IInvoiceLine>s;
-
+    let currentPos = <IInvoiceLine>this.currentGroup.value;
     let changes: string[] = [];
 
-    if (corrPos.name != pOrg.name) { changes.push('nazwa pozycji'); }
-    if (corrPos.pkwiu != pOrg.pkwiu) { changes.push('PKWiU'); }
-    if (corrPos.quantity != pOrg.quantity) { changes.push('ilość'); }
-    if (corrPos.measurement_unit != pOrg.measurement_unit) { changes.push('jednostka'); }
-    if (corrPos.unit_price != pOrg.unit_price) { changes.push('cena jednostkowa'); }
-    if (corrPos.vat_rate != pOrg.vat_rate) { changes.push('stawka podatku'); }
+    if (currentPos.name != pOrg.name) { changes.push('nazwa pozycji'); }
+    if (currentPos.pkwiu != pOrg.pkwiu) { changes.push('PKWiU'); }
+    if (currentPos.quantity != pOrg.quantity) { changes.push('ilość'); }
+    if (currentPos.measurement_unit != pOrg.measurement_unit) { changes.push('jednostka'); }
+    if (currentPos.unit_price != pOrg.unit_price) { changes.push('cena jednostkowa'); }
+    if (currentPos.vat_rate != pOrg.vat_rate) { changes.push('stawka podatku'); }
 
     if (changes.length > 0) {
       this.correctionInfo.setValidators(Validators.required);
       this.correctionInfo.updateValueAndValidity();
-
-      //corrPosGroup.setValue(`Korekta: (${changes.join(', ')})`, {emitEvent: false});
-      let correctionData: IInvoiceLine = <IInvoiceLine>{}
-
-      correctionData.name = pOrg.name;
-
-      correctionData.brutto_value = corrPos.brutto_value - pOrg.brutto_value;
-      correctionData.netto_value = corrPos.netto_value - pOrg.netto_value;
-      correctionData.vat_value = corrPos.vat_value - pOrg.vat_value;
-      correctionData.vat_unit_value = corrPos.vat_unit_value - pOrg.vat_unit_value;
-      correctionData.vat_rate=pOrg.vat_rate;
-      
-
-      correctionData.quantity = changes.indexOf('ilość') > -1 ? corrPos.quantity - pOrg.quantity : 0;
-      correctionData.unit_price = changes.indexOf('cena jednostkowa') > -1 ? corrPos.unit_price - pOrg.unit_price : 0;
-
       this.changesInfo = changes.join(', ');
-      this.correctionsGroup.patchValue(correctionData, { emitEvent: false });
+      //this.correctionsGroup.patchValue(correctionData, { emitEvent: false });
       this.currentIsCorrected.setValue(true, { emitEvent: false });
     } else {
       this.correctionInfo.clearAsyncValidators();
       this.correctionInfo.updateValueAndValidity();
-
-      this.correctionsGroup.reset({}, { emitEvent: false });
-      this.currentIsCorrected.setValue(false, { emitEvent: false });
       this.changesInfo = null;
     }
   }

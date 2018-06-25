@@ -31,7 +31,7 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, AfterViewIni
   ) { }
 
   ngOnInit() {
-    this.isDestroyed$=new Subject<boolean>();
+    this.isDestroyed$ = new Subject<boolean>();
     this.dateRange=this.cf.dateRangeLastQuarter();
     this.initData(this.dateRange);
   }
@@ -61,7 +61,7 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, AfterViewIni
       .takeUntil(this.isDestroyed$)
       .subscribe(s=>{
         this.dataSource=new MatTableDataSource(s);
-        this.cf.toastMake(`Pobrano dane dla zakresu od ${dateRange.dateStart.format(this.cf.dateLocaleFormat())} do ${dateRange.dateEnd.format(this.cf.dateLocaleFormat())}, razem: ${s.length}`, "initData", this.actRoute);
+        this.cf.toastMake(`Pobrano dane dla zakresu od ${dateRange.dateStart} do ${dateRange.dateEnd}, razem: ${s.length}`, "initData", this.actRoute);
         this.isPending=false;
         
         this.dataSource.sort=this.sort;

@@ -6,8 +6,6 @@ import { Observable } from 'rxjs/Observable';
 import * as moment from 'moment';
 import { FormControl } from '@angular/forms';
 import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
-import { Subject, empty } from 'rxjs';
-import { MomentCommonService } from '@bpShared/moment-common/moment-common.service';
 
 
 @Component({
@@ -17,27 +15,26 @@ import { MomentCommonService } from '@bpShared/moment-common/moment-common.servi
 })
 export class InvoiceSellPaymentRemindComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
-    this.isDestroyed$.next(true); this.isDestroyed$.unsubscribe();
+    this.isAlive=false;
   }
 
   constructor(
     private df: InvoiceSellService,
-    private dialog: MatDialog,
-    private momentService: MomentCommonService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {
-    this.isDestroyed$=new Subject<boolean>();
     this.isPending=true;
     this.unpaidSearch$=new FormControl();
     this.unpaidOverdueSearch$=new FormControl();
     this.notConfirmedSearch$=new FormControl();
     this.initData();
     this.initForm();
+    this.isAlive=true;
   }
 
 
-  isDestroyed$: Subject<boolean>
+  isAlive:Boolean
   isPending: boolean;
   
   unpaid:any[];
@@ -86,7 +83,7 @@ export class InvoiceSellPaymentRemindComponent implements OnInit, OnDestroy {
   {
     this.unpaidSearch$
       .valueChanges
-      .takeUntil(this.isDestroyed$)
+      .takeWhile(w=>this.isAlive==true)
       .subscribe(s=>{
         this.unpaidFiltered=this.filterArr(s, this.unpaid);
         this.unpaidFilterInfo=s.length>0 ? `Zastosowano filtr, znaleziono: ${this.unpaidFiltered.length}`: "";
@@ -94,7 +91,7 @@ export class InvoiceSellPaymentRemindComponent implements OnInit, OnDestroy {
 
       this.unpaidOverdueSearch$
       .valueChanges
-      .takeUntil(this.isDestroyed$)
+      .takeWhile(w=>this.isAlive==true)
       .subscribe(s=>{
         this.unpaidOverdueFiltered=this.filterArr(s, this.unpaidOverdue);
         this.unpaidOverdueFilterInfo=s.length>0 ? `Zastosowano filtr, znaleziono: ${this.unpaidOverdueFiltered.length}`: "";
@@ -102,7 +99,7 @@ export class InvoiceSellPaymentRemindComponent implements OnInit, OnDestroy {
 
       this.notConfirmedSearch$
       .valueChanges
-      .takeUntil(this.isDestroyed$)
+      .takeWhile(w=>this.isAlive==true)
       .subscribe(s=>{
         this.notConfirmedFiltered=this.filterArr(s, this.notConfirmed);
         this.notConfirmedFilterInfo=s.length>0 ? `Zastosowano filtr, znaleziono: ${this.notConfirmedFiltered.length}`: "";
@@ -121,16 +118,14 @@ export class InvoiceSellPaymentRemindComponent implements OnInit, OnDestroy {
       }
       })
     .afterClosed()
-    .switchMap(pDate=>{
-      if(pDate!==undefined){
-        console.log();
+    .switchMap(sw=>{
+      if(sw!==undefined){
         this.isPending=true;
-        //let pDate=sw.substring(0,10);
-        return this.df.paymentConfirmation(payment["invoiceId"], this.momentService.getFormatedDate(pDate));
-        //return empty();
+        let pDate=sw.substring(0,10);
+        return this.df.paymentConfirmation(payment["invoiceId"], pDate);
       }else{
         this.isPending=false;
-        return empty();
+        return Observable.empty();
       }
     })
     .take(1)

@@ -1,7 +1,6 @@
 import { FormControl,FormGroup, Validators } from '@angular/forms';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { CommonFunctionsService } from 'app/services/common-functions.service';
-import { Subject } from 'rxjs';
 
 
 @Component({
@@ -11,7 +10,7 @@ import { Subject } from 'rxjs';
 })
 export class ExtraInfoCheckedComponent implements OnInit,OnDestroy {
   ngOnDestroy(): void {
-    this.isDestroyed$.next(true); this.isDestroyed$.unsubscribe();
+    this.isAlive=false;
   }
 @Input() rForm:FormGroup //formExtraInfocheckedGroup
 @Input() placeholder: string;
@@ -22,11 +21,11 @@ export class ExtraInfoCheckedComponent implements OnInit,OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.isDestroyed$=new Subject<boolean>();
+    this.isAlive=true;
     this.initForm();
   }
 
-  isDestroyed$: Subject<boolean>;
+  isAlive:boolean;
 
   get checked():FormControl
   {
@@ -48,13 +47,13 @@ export class ExtraInfoCheckedComponent implements OnInit,OnDestroy {
     this.rForm.get('checked')
     .valueChanges
     .startWith(false)
-    .takeUntil(this.isDestroyed$)
+    .takeWhile(()=>this.isAlive)
     .subscribe((s:boolean)=>{
       if(s==true)
       {
         this.date.setValidators(Validators.required);
         if(this.date.value==null){
-          this.date.setValue(this.cf.momentService.getTodayConstTimeMoment());
+          this.date.setValue(this.cf.getToday());
         }
       } else {
         this.date.clearValidators();

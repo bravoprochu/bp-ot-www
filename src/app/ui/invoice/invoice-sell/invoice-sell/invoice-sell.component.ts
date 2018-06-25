@@ -1,8 +1,10 @@
+import { ICurrency } from '../../../../shared/interfaces/i-currency';
 import { InvoiceSellService } from '../services/invoice-sell.service';
 import { CommonFunctionsService } from '../../../../services/common-functions.service';
 import { selector } from 'rxjs/operator/publish';
 import { IDetailObj } from '../../../../shared/idetail-obj';
 import { INavDetailInfo } from '../../../../shared/interfaces/inav-detail-info';
+import { ICurrencyNbp } from '../../../../shared/interfaces/i-currency-nbp';
 import { DialogTakNieComponent } from '../../../../shared/dialog-tak-nie/dialog-tak-nie.component';
 import { IDialogTakNieInfo } from '../../../../shared/interfaces/idialog-tak-nie-info';
 import { type } from 'os';
@@ -20,9 +22,6 @@ import { emit } from 'cluster';
 import { IInvoiceLine } from '../../../../shared/interfaces/iinvoice-pos';
 import { InvoiceCommonFunctionsService } from '../../common/invoice-common-functions.service';
 import { Subject } from 'rxjs';
-import { CurrencyCommonService } from '@bpShared/currency/currency-common.service';
-import { ICurrency } from '@bpShared/currency/interfaces/i-currency';
-import { ICurrencyNbp } from '@bpShared/currency/interfaces/i-currency-nbp';
 
 
 @Component({
@@ -33,14 +32,13 @@ import { ICurrencyNbp } from '@bpShared/currency/interfaces/i-currency-nbp';
 })
 export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   ngOnDestroy(): void {
-    this.isDestroyed$.next(true); this.isDestroyed$.unsubscribe();;
+    this.isDestroyed$.next(true); this.isDestroyed$.unsubscribe();
   }
 
   constructor(
     private df: InvoiceSellService,
     private dialogTakNie: MatDialog,
     private cf: CommonFunctionsService,
-    private currService: CurrencyCommonService,
     private icf: InvoiceCommonFunctionsService,
     public fb: FormBuilder,
     private actRoute: ActivatedRoute,
@@ -48,9 +46,9 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   ) { }
 
   ngOnInit() {
+    this.isDestroyed$ = new Subject<boolean>();
     this.isPending = true;
-    this.isDestroyed$=new Subject<boolean>();
-    this.extraInfoNbp = this.currService.getCurrencyNbpGroup(this.fb, this.isDestroyed$);
+    this.extraInfoNbp = this.cf.formCurrencyNbp(this.fb);
     this.initForm();
     this.initRouteId();
     //this.initData();
@@ -170,7 +168,9 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
     return <FormGroup>this.rForm.get('paymentTerms');
   }
 
-
+  get paymentIsTermsPaymentDays(): FormControl {
+    return <FormControl>this.rForm.get("paymentTerms.paymentDays");
+  }
 
 
   get invoiceTotal(): FormGroup {
@@ -225,6 +225,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
         title: "Faktura sprzedaży"
       },
       basicActions: {
+
       }
     }
 
@@ -234,7 +235,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   public dataObj: any;
   extraInfoNbp: FormGroup;
   isPending: boolean;
-  
+
 
   public navActions: IBasicActions;
   public rForm: FormGroup;
@@ -254,30 +255,32 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
         }
       });
 
-    this.invoiceLines.valueChanges
+    this.invoiceLines
+      .valueChanges
       .takeUntil(this.isDestroyed$)
-      .debounceTime(1000)
+      .debounceTime(2000)
       .switchMap(sw => {
         if (this.invoiceLines.valid) {
           return this.df.calcRates(this.rForm.value)
-          .take(1);
         } else {
           return Observable.empty();
         }
       })
-      .subscribe(s => {
+      .map((s:any)=>{
+        console.log('lines changed..', s);
         if (s == "error") {
-          console.log('error');
+
         } else {
           let data = <IInvoiceSell>s;
           this.cf.patchInvoiceRates(data.rates, this.rates, this.fb);
           this.cf.patchInvoiceTotal(data.invoiceTotal, this.invoiceTotal, this.fb);
+          //this.cf.patchInvoiceLines(data.invoiceLines, this.invoiceLines, this.fb);
           this.getCorrectionPaymenntInfo.setValue(data.getCorrectionPaymenntInfo, { emitEvent: false });
           this.getInvoiceValue.setValue(data.getInvoiceValue, { emitEvent: false });
+          this.icf.getInvoiceLinesCorrections(data.invoiceLines, this.invoiceLines);
         }
-
-      }
-      );
+      })
+      .subscribe();
 
     this.paymentIsDone
       .valueChanges
@@ -290,6 +293,8 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
         }
         this.paymentDate.updateValueAndValidity();
       });
+
+    this.paymentIsTermsPaymentDays.setValue(9, { emitEvent: false });
 
     this.sellingDate
       .valueChanges
@@ -304,9 +309,9 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
       .subscribe(s => {
         if (s) {
           let currencyNbp: ICurrencyNbp = <ICurrencyNbp>{
-            rateDate: this.sellingDate.value,
+            rate_date: this.sellingDate.value,
             currency: this.currency.value,
-            price: this.totalTax.value
+            price: this.totalTax.value,
           };
           this.extraInfoNbp.patchValue(currencyNbp, { emitEvent: true });
         } else {
@@ -322,7 +327,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
       .takeUntil(this.isDestroyed$)
       .subscribe((s: ICurrencyNbp) => {
         if (this.extraInfoNbp.valid && s.rate != null) {
-          let info = `Średni kurs z dnia ${this.cf.setMomentDate(s.rateDate)} (${s.rate}), Podatek VAT (${this.cf.roundToCurrency(s.price)}) wartość: ${this.cf.roundToCurrency(s.plnValue)} PLN`;
+          let info = `Średni kurs z dnia ${this.cf.setFormatedDate(s.rate_date)} (${s.rate}), Podatek VAT (${this.cf.roundToCurrency(s.price)}) wartość: ${this.cf.roundToCurrency(s.pln_value)} PLN`;
           this.extraInfoTaxExchangedInfo.setValue(info)
         } else {
           this.extraInfoTaxExchangedInfo.setValue("...przeliczam wartość...");
@@ -406,8 +411,6 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
       //setting corrections, original brutto_value, vat_value etc to 0..
       this.prepZeroValuesLinesForNonCorrectionInvoice();
     }
-
-    //console.log(JSON.parse(this.rForm.value));SON.parse(this.rForm.value));
     this.df.update(id, this.rForm.value)
       .take(1)
       .subscribe(s => {
@@ -422,13 +425,13 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
 
   //#region Invoice
 
-  invoicePosAdd(){
+  invoicePosAdd() {
     this.icf.lineAdd(this.invoiceLines, this.fb);
   }
-  invoicePosRemove(idx:number){
-    this.icf.lineRemove(idx,this.rForm, this.invoiceLines, this.isDestroyed$);
+  invoicePosRemove(idx: number) {
+    this.icf.lineRemove(idx, this.rForm, this.invoiceLines, this.isDestroyed$);
   }
-  
+
 
   invoiceClone() {
     return this.dialogTakNie.open(DialogTakNieComponent, { data: <IDialogTakNieInfo>{ title: 'Faktura sprzedaży klonik', question: 'Czy skopiować dane do nowotworzonej faktury ?' } })
@@ -437,6 +440,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
         if (s) {
           this.invoiceSellId.setValue(0);
           this.invoiceNo.setValue("clone - nowa");
+          this.creationInfo.reset();
           this.rForm.markAsDirty();
         }
       })
@@ -445,7 +449,6 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   printInvoice() {
     this.isPending = true;
     this.df.printInvoice(this.rForm.value)
-      .take(1)
       .map(res => {
         return new Blob([res, 'application/pdf'], { type: 'application/pdf' });
       })
@@ -466,7 +469,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   getCurrencyNbpExchange(): ICurrencyNbp {
     return <ICurrencyNbp>{
       currency: this.currency.value,
-      rateDate: this.sellingDate.value,
+      rate_date: this.sellingDate.value,
       price: this.cf.roundToCurrency(this.invoiceTotalCurrent.get('total_tax').value)
     }
   }
@@ -507,6 +510,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
       let current = g.get('current');
       let corr = g.get('corrections');
 
+      //corr.patchValue(this.icf.getIInvoiceLine("none"), { emitEvent: false });
       current.get('baseInvoiceLineId').setValue(current.get('invoice_pos_id').value, { emitEvent: false });
       current.get('isCorrected').setValue(false, { emitEvent: false });
       //original.reset({}, {emitEvent: false});
@@ -533,7 +537,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
     this.invoiceNo.setValue(null);
     this.invoiceOriginalPaid.setValue(this.paymentIsDone.value, { emitEvent: false });
     this.isCorrection.setValue(true);
-    
+
   }
 
 
