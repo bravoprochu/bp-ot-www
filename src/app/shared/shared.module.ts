@@ -1,4 +1,3 @@
-import { provideAuth } from 'angular2-jwt';
 import { TransEuPasswordComponent } from '../ui/trans-eu-password/trans-eu-password.component';
 import { LoginComponent } from '../auth/login/login.component';
 import { RouteListComponent } from './route-list/route-list.component';

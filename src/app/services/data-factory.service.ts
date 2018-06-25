@@ -1,6 +1,5 @@
 import { Headers, ResponseType } from '@angular/http';
 import { TokenService } from './token.service';
-import { JwtHelper } from 'angular2-jwt';
 import { Injectable } from '@angular/core';
 import { Observable } from "rxjs/Observable";
 import 'rxjs/add/operator/catch';

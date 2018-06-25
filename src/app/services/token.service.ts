@@ -1,13 +1,6 @@
-import { ActivatedRouteSnapshot, Route } from '@angular/router';
-import { observable } from 'rxjs/symbol/observable';
-import { ObjectUnsubscribedError, Observable, Subject } from 'rxjs/Rx';
-import { LoginComponent } from '../auth/login/login.component';
-import { JwtHelper } from 'angular2-jwt';
-import { split } from 'ts-node/dist';
-import { toBase64String } from '@angular/compiler/src/output/source_map';
+import { JwtHelperService } from '@auth0/angular-jwt';
 import { Injectable } from '@angular/core';
-import * as moment from 'moment';
-import {environment} from "../../environments/environment";
+import { environment} from "../../environments/environment";
 import { MatDialog } from '@angular/material';
 
 
@@ -16,7 +9,7 @@ import { MatDialog } from '@angular/material';
 export class TokenService {
 
   private _tokenName:string= environment.appName+"_token";
-  private jwtHelper:JwtHelper=new JwtHelper();
+  private jwtHelper:JwtHelperService =new JwtHelperService();
   private dialog:MatDialog;
   constructor(
   ) { }
