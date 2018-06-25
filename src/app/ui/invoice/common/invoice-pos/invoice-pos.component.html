@@ -1,12 +1,12 @@
 <mat-card>
     <mat-card-content fxLayout="column" fxLayoutGap="10px">
         <div [formGroup]="currentGroup">
-            <div fxLayoutWrap fxLayoutGap="20px">
+            <div fxLayout="row wrap" fxLayoutGap="20px">
                 <mat-form-field fxFlex="40" fxFlex.xs="100">
                     <textarea matTextareaAutosize matAutosizeMinRows="5" matInput formControlName="name" placeholder="Nazwa towaru/usługi"></textarea>
                     <!-- <input type="text" matInput formControlName="name" placeholder="Nazwa towaru/usługi"> -->
                 </mat-form-field>
-                <div fxLayoutWrap fxFlex="55" fxFlex.xs="100">
+                <div fxLayout="row wrap" fxFlex="55" fxFlex.xs="100">
                     <mat-form-field fxFlex="50" fxFlex.xs="25">
                         <input type="text" matInput formControlName="pkwiu" placeholder="PKWiU">
                     </mat-form-field>
@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <div [formGroup]="currentGroup" fxLayoutWrap *ngIf="isCorrection.value && currentIsCorrected.value">
+        <div [formGroup]="currentGroup" fxLayout="row wrap" *ngIf="isCorrection.value && currentIsCorrected.value">
             <mat-form-field fxFlex="100">
                 <input type="text" matInput placeholder="Przyczyna korekt" formControlName="correctionInfo">
             </mat-form-field>
@@ -50,7 +50,7 @@
                 </mat-panel-title>
             </mat-expansion-panel-header>
 
-            <div fxLayoutWrap>
+            <div fxLayout="row wrap">
                 <mat-form-field>
                     <input type="number" matInput placeholder="Jednostkowo VAT" [formControl]="currentVatUnitValue">
                 </mat-form-field>
@@ -71,7 +71,7 @@
 
 
 
-            <div fxLayoutWrap>
+            <div fxLayout="row wrap">
                 <div fxFlex="100" fxLayout fxLayoutGap="20px" *ngIf="currentVatUnitValue.value">
                     <div>jedn. vat:</div>
                     <div>

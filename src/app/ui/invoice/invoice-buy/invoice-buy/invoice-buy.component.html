@@ -29,7 +29,7 @@
                 </mat-panel-title>
             </mat-expansion-panel-header>
 
-            <div fxLayoutWrap fxLayoutGap="20px">
+            <div fxLayout="row wrap" fxLayoutGap="20px">
                 <mat-form-field fxFlex="70" fxFlex.xs="100">
                     <input type="text" matInput formControlName="invoiceNo" placeholder="Nazwa dokumentu, (nr faktury)">
                 </mat-form-field>
@@ -155,7 +155,7 @@
                     <hr>
 
                     <div *ngFor="let r of rates.value" fxLayout="column">
-                        <div fxLayoutWrap>
+                        <div fxLayout="row wrap">
                             <div fxFlex>
                                 <span>{{r.vatRate}}</span>
                             </div>
@@ -205,7 +205,7 @@
                     Dodatkowe info
                 </mat-panel-title>
             </mat-expansion-panel-header>
-            <div fxLayoutWrap fxLayout.xs="column">
+            <div fxLayout="row wrap" fxLayout.xs="column">
                 <app-creation-info fxFlex="100" [rForm]="creationInfo"></app-creation-info>
                 <div fxFlex="50" fxLayout="column">
                     <div class="mat-h2">Opłacenie faktury</div>
