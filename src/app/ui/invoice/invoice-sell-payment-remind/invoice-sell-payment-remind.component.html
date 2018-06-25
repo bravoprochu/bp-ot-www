@@ -1,0 +1,243 @@
+<app-pending *ngIf="isPending"></app-pending>
+<mat-tab-group>
+  <mat-tab label="Oczekujące">
+    <p class="mat-subheader">
+      Na liście znajdują się wszystkie faktury sprzedaży, które nie mają statusu potwierdzony odbiór przez nabywcę
+    </p>
+
+    <mat-form-field>
+      <mat-icon matPrefix>search</mat-icon>
+      <input type="search" [formControl]="notConfirmedSearch$" matInput placeholder="Wyszukaj płatność">
+    </mat-form-field>
+    {{notConfirmedFilterInfo}}
+    <mat-list>
+      <div *ngFor="let g of notConfirmedFiltered">
+        <mat-list-item>
+          <button mat-mini-fab [routerLink]="['/fakturaSprzedazy', g.invoiceId]" matTooltip="Przejdź do faktury id: {{g.invoiceId}}">
+            <mat-icon>zoom_in</mat-icon>
+          </button>
+          <h3 mat-line>
+            <span>{{g.paymentDate | date: 'yyyy-MM-dd'}}</span>
+            <small>
+              &nbsp;&nbsp;
+              <i>
+                {{g.invoiceNo}}
+              </i>
+              &nbsp;&nbsp;
+              <strong>
+                {{g.company.shortName}}
+              </strong>
+            </small>
+          </h3>
+          <h2 class="mat-h2" mat-line>
+            {{g.invoiceTotal.total_netto | number: '1.2-2'}} | {{g.invoiceTotal.total_tax | number: '1.2-2'}} |
+            <strong>
+              {{g.invoiceTotal.total_brutto | number: '1.2-2'}} {{g.currency.name}}
+              <span [style.color]="'red'" *ngIf="g.invoiceTotal.total_brutto !=g.invoiceValue">({{g.correctionPaymenntInfo}})</span>
+            </strong>
+          </h2>
+          <h5 class="mat-h5" mat-line>{{g.company.address}}
+            <span *ngIf="g.company.contact">|&nbsp;&nbsp;{{g.company.contact}}&nbsp;|</span>
+          </h5>
+          <h6 class="mat-h6" mat-line *ngFor="let bank of g.company.bankAccounts">
+            {{bank}}
+          </h6>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+      </div>
+    </mat-list>
+  </mat-tab>
+
+  <mat-tab label="Należności">
+    <p class="mat-subheader">
+      Lista należności, faktury otrzymane przez nabywcę, termin płatności nie został przekroczony.
+    </p>
+    <p>Data jest określona jako data sprzedaży plus ilość dni z terminu płatności. W przypadku faktur transportowych, termin
+      płatności określony jest jako data otrzymania potwierdzenia faktury (przez nabywcę) powiększona o ilość dni z warunków
+      płatności.
+    </p>
+    <mat-form-field>
+      <mat-icon matPrefix>search</mat-icon>
+      <input type="search" [formControl]="unpaidSearch$" matInput placeholder="Wyszukaj płatność">
+    </mat-form-field>
+    {{unpaidFilterInfo}}
+    <mat-list>
+      <div *ngFor="let g of unpaidFiltered">
+        <mat-list-item>
+          <button mat-mini-fab [routerLink]="['/fakturaSprzedazy', g.invoiceId]" matTooltip="Przejdź do faktury id: {{g.invoiceId}}">
+            <mat-icon>zoom_in</mat-icon>
+          </button>
+          <div>&nbsp;</div>
+          <button mat-mini-fab (click)="checkAsPaid(g, unpaid)" matTooltip="Wprowadź datę zapłaty">
+            <mat-icon>euro_symbol</mat-icon>
+          </button>
+          <h3 mat-line>
+            <span>{{g.paymentDate | date: 'yyyy-MM-dd'}}</span>
+            <small>
+              &nbsp;&nbsp;
+              <i>
+                {{g.invoiceNo}}
+              </i>
+              &nbsp;&nbsp;
+              <strong>
+                {{g.company.shortName}}
+              </strong>
+            </small>
+          </h3>
+          <h2 class="mat-h2" mat-line>
+            {{g.invoiceTotal.total_netto | number: '1.2-2'}} | {{g.invoiceTotal.total_tax | number: '1.2-2'}} |
+            <strong>
+              {{g.invoiceTotal.total_brutto | number: '1.2-2'}} {{g.currency.name}}
+              <span [style.color]="'red'" *ngIf="g.invoiceTotal.total_brutto !=g.invoiceValue">({{g.correctionPaymenntInfo}})</span>
+            </strong>
+          </h2>
+          <h5 class="mat-h5" mat-line>{{g.company.address}}
+            <span *ngIf="g.company.contact">|&nbsp;&nbsp;{{g.company.contact}}&nbsp;|</span>
+          </h5>
+          <h6 class="mat-h6" mat-line *ngFor="let bank of g.company.bankAccounts">
+            {{bank}}
+          </h6>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+      </div>
+    </mat-list>
+  </mat-tab>
+
+  <mat-tab label="Należności przeterminowane">
+    <p class="mat-subheader">
+      Lista należności przeterminowanych, faktury otrzymane przez nabywcę, termin płatności został PRZEKROCZONY.
+    </p>
+    <p>Data jest określona jako data sprzedaży plus ilość dni z terminu płatności. W przypadku faktur transportowych, termin
+      płatności określony jest jako data otrzymania potwierdzenia faktury (przez nabywcę) powiększona o ilość dni z warunków
+      płatności.
+    </p>
+    <mat-form-field>
+      <mat-icon matPrefix>search</mat-icon>
+      <input type="search" [formControl]="unpaidOverdueSearch$" matInput placeholder="Wyszukaj płatność">
+    </mat-form-field>
+    {{unpaidOverdueFilterInfo}}
+    <mat-list>
+      <div *ngFor="let g of unpaidOverdueFiltered">
+        <mat-list-item>
+          <button mat-mini-fab [routerLink]="['/fakturaSprzedazy', g.invoiceId]" matTooltip="Przejdź do faktury id: {{g.invoiceId}}">
+            <mat-icon>zoom_in</mat-icon>
+          </button>
+          <div>&nbsp;</div>
+          <button mat-mini-fab (click)="checkAsPaid(g, unpaidOverdue)" matTooltip="Wprowadź datę zapłaty">
+            <mat-icon>euro_symbol</mat-icon>
+          </button>
+          <h3 mat-line>
+            <span>{{g.paymentDate | date: 'yyyy-MM-dd'}}</span>
+            <small>
+              &nbsp;&nbsp;
+              <i>
+                {{g.invoiceNo}}
+              </i>
+              &nbsp;&nbsp;
+              <strong>
+                {{g.company.shortName}}
+              </strong>
+            </small>
+          </h3>
+          <h2 class="mat-h2" mat-line>
+            {{g.invoiceTotal.total_netto | number: '1.2-2'}} | {{g.invoiceTotal.total_tax | number: '1.2-2'}} |
+            <strong>
+              {{g.invoiceTotal.total_brutto | number: '1.2-2'}} {{g.currency.name}}
+              <span [style.color]="'red'" *ngIf="g.invoiceTotal.total_brutto !=g.invoiceValue">({{g.correctionPaymenntInfo}})</span>
+            </strong>
+            
+            
+          </h2>
+          <h5 class="mat-h5" mat-line>{{g.company.address}}
+            <span *ngIf="g.company.contact">|&nbsp;&nbsp;{{g.company.contact}}&nbsp;|</span>
+          </h5>
+          <h6 class="mat-h6" mat-line *ngFor="let bank of g.company.bankAccounts">
+            {{bank}}
+          </h6>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+      </div>
+    </mat-list>
+  </mat-tab>
+
+
+  <mat-tab label="Statystyki">
+    <div fxLayout="row wrap">
+    <mat-card fxFlex="50" fxFlex.xs="100">
+      <mat-card-title>
+        Oczekujące
+      </mat-card-title>
+      <mat-card-content>
+        <div *ngFor="let curr of notConfirmedStats">
+          <h4 class="mat-h4">
+            <small>
+              <i>
+                {{curr.total.total_netto | number: '1.2-2'}} (vat: {{curr.total.total_tax | number: '1.2-2'}})&nbsp;&nbsp;
+              </i>
+            </small>
+            <strong>{{curr.total.total_brutto | number: '1.2-2'}}</strong> {{curr.currency.name}}
+            <span [style.color]="'red'" *ngIf="curr.total.total_brutto !=curr.invoiceValue">({{curr.invoiceValue | number: "1.2-2"}})</span>
+          </h4>
+          <mat-divider></mat-divider>
+          <div>&nbsp;</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+
+    <mat-card fxFlex="50" fxFlex.xs="100">
+      <mat-card-title>
+        Należności
+      </mat-card-title>
+      <mat-card-content>
+        <div *ngFor="let curr of unpaidStats">
+          <h4 class="mat-h4">
+            <small>
+              <i>
+                {{curr.total.total_netto | number: '1.2-2'}} (vat: {{curr.total.total_tax | number: '1.2-2'}})&nbsp;&nbsp;
+              </i>
+            </small>
+            <strong>{{curr.total.total_brutto | number: '1.2-2'}}</strong> {{curr.currency.name}}
+            <span [style.color]="'red'" *ngIf="curr.total.total_brutto !=curr.invoiceValue">({{curr.invoiceValue | number: "1.2-2"}})</span>
+          </h4>
+          <mat-divider></mat-divider>
+          <div>&nbsp;</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+
+    <mat-card fxFlex="50" fxFlex.xs="100">
+      <mat-card-title>
+        Należności - przeterminowane
+      </mat-card-title>
+      <mat-card-content>
+        <div *ngFor="let curr of unpaidOverdueStats">
+          <h4 class="mat-h4">
+            <small>
+              <i>
+                {{curr.total.total_netto | number: '1.2-2'}} (vat: {{curr.total.total_tax | number: '1.2-2'}})&nbsp;&nbsp;
+              </i>
+            </small>
+            <strong>{{curr.total.total_brutto | number: '1.2-2'}}</strong> {{curr.currency.name}}
+            <span [style.color]="'red'" *ngIf="curr.total.total_brutto !=curr.invoiceValue">({{curr.invoiceValue | number: "1.2-2"}})</span>
+          </h4>
+          <mat-divider></mat-divider>
+          <div>&nbsp;</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+
+    <mat-card fxFlex="50" fxFlex.xs="100">
+        <button (click)="initData()" mat-raised-button>Odśwież dane</button>
+    </mat-card>
+    
+    
+    
+    
+    </div>
+
+    
+  </mat-tab>
+</mat-tab-group>

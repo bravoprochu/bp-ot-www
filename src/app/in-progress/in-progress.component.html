@@ -1,0 +1,78 @@
+<div fxLayout='column'>
+    <div style="height: 50px">&nbsp;</div>
+    <div fxLayoutAlign="center">
+        <em class="mat-caption">strona w budowie</em>
+    </div>
+    <div fxLayout='column' fxLayoutGap="10px" fxLayoutAlign="center center">
+        <h1 fxLayoutAlign='center' class="mat-display-3" style="font-family: 'Gloria Hallelujah'">OfferTrans</h1>
+        <em class="mat-body-2">61-757 Poznań, ul. Garbary 95/B14</em>
+        <div>&nbsp;</div>
+    </div>
+
+    <mat-tab-group [disableRipple]="true" [dynamicHeight]="true">
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <strong>Sprzedaż oraz Wynajem maszyn i urządzeń</strong>
+            </ng-template>
+            <p>
+                Firma OFFER ....z siedzibą w Wielkopolsce, z doświadczeniem w branży budowlanej i rolniczej zajmuje się wynajmem, serwisem i sprzedażą maszyn budowlanych na terenie całego kraju. Tylko u nas można wynająć każdą maszynę począwszy od mini koparek, przez ładowarki teleskopowe, a skończywszy na... koparko-ładowarkach z całą gamą osprzętu.
+            </p>
+            <p>
+                Wprowadziliśmy również nowatorską metodę dla Państwa, która polega na długoterminowym wynajmie maszyny z przejęciem na własność. Po spłacie ostatniej raty maszyna staje się własnością klienta!!!
+                Współpracują z nami zarówno nowo powstałe firmy jak i te z długoletnim doświadczeniem w branży. Nasze długoletnie doświadczenie, bogata oferta maszyn, elastyczność w działaniu powoduje, że każdy klient może wybrać gotowe rozwiązanie współpracy do swoich potrzeb.
+                Nasz uproszczona oferta współpracy trafia do wszystkich.
+            </p>
+            <p>
+                JAK STAĆ SIĘ WŁAŚCICIELEM MASZYNY W TEJ FORMULE ?
+            </p>
+            <ol>
+                <li>Skontaktuj się z nami w celu uzyskania wzoru umowy tel : ................................................( wzór umowy i OWUN - pobierz tutaj)</li>
+                <li>Przygotuj i prześlij na nasz adres e-mail...................... dokumenty Twojej firmy (dokumenty rejestrowe, dwa dokumenty tożsamości)</li>
+                <li>Po wyborze przedmiotu najmu i określeniu warunków spłat przygotujemy dla Państwa uzupełnioną umowę.</li>
+                <li>Po uiszczeniu wszystkich wymagalnych opłat maszyna zostaje dostarczona do klienta. </li>
+                <li>Transport dodatkowo płatny. Posiadamy własną spedycję.</li>
+            </ol>
+            <p>
+                Nie mając gotówki możesz stać się właścicielem maszyny !!! 
+            </p>
+
+
+            <mat-toolbar>
+                <span fxShow.gt.sm="true" fxHide.xs="true">Kontakt</span>
+                <div fxFlex>&nbsp;</div>
+                <mat-chip-list>
+                    <mat-chip>
+                        <span><strong>Krzysztof</strong> (+48) 509 967 909</span>,&nbsp;<a href="mailTo: maszyny@offerTrans.pl?Subject=Proszę%20o%20informację"><strong>maszyny</strong>@offerTrans.pl</a>
+                    </mat-chip>
+                </mat-chip-list>
+                <mat-toolbar-row>
+                    <div fxFlex>&nbsp;</div>
+                    <mat-chip-list>
+                        <mat-chip>
+                            <span><strong>Wojciech</strong> (+48) 607 698 627</span>,&nbsp;<a href="mailTo: biuro@offerTrans.pl?Subject=Proszę%20o%20informację"><strong>biuro</strong>@offerTrans.pl</a>
+                        </mat-chip>
+                    </mat-chip-list>
+                </mat-toolbar-row>
+            </mat-toolbar>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <strong>Spedycja</strong>
+            </ng-template>
+            <!--<div class="mat-h2">Jakieś info, zakres </div>-->
+            <mat-toolbar>
+                <span fxShow.gt.sm="true" fxHide.xs="true">Kontakt</span>
+                <div fxFlex>&nbsp;</div>
+                <mat-chip-list>
+                    <mat-chip>
+                        <span><strong>Tomasz</strong> (+48) 726 625 388</span>,&nbsp;<a href="mailTo: spedycja@offerTrans.pl?Subject=Proszę%20o%20informację"><strong>spedycja</strong>@offerTrans.pl</a>
+                    </mat-chip>
+                </mat-chip-list>
+            </mat-toolbar>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+
+
+
+<router-outlet></router-outlet>

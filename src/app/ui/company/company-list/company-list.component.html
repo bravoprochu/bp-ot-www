@@ -1,0 +1,58 @@
+<app-pending *ngIf="isPending"></app-pending>
+<app-nav-list 
+[title]="navTitle?.title" 
+[subtitle]="navTitle?.subtitle" 
+(onCreate)="createNew()"
+(onRefresh)="initData()"
+(onSearch)="searchFilter($event)"
+></app-nav-list>
+
+
+<!-- <div form [formGroup]="rForm">
+  <mat-form-field mat-no-float>
+     <input matInput formControlName="searchFor" placeholder="Znaleziono {{dataObj?.length}}">
+  </mat-form-field>
+  <div *ngIf="searchForCtrl.pending">duuuupa</div>
+</div> -->
+
+
+
+<div>
+
+  <mat-table [dataSource]="dataSource" matSort>
+
+    <ng-container matColumnDef="companyId">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
+      <mat-cell *matCellDef="let row">
+          <button mat-mini-fab (click)="edit(row.companyId)"><mat-icon>edit</mat-icon> </button>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="vat_id">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>NIP</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row.vat_id}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="short_name">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Skrot</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row.short_name}}</mat-cell>
+    </ng-container>
+    
+    <ng-container matColumnDef="addressList[0]addresCombined">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Adres</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row.addressList[0].addressCombined}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="telephone">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Telefon</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row.telephone}}</mat-cell>
+    </ng-container>
+
+    
+    <mat-header-row *matHeaderRowDef="tableHeaders"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: tableHeaders;"></mat-row>
+
+  </mat-table>
+  <mat-paginator #paginator></mat-paginator>
+</div>
+

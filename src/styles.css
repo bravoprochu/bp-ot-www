@@ -1,0 +1,27 @@
+/* You can add global styles to this file, and also import other style files */
+
+
+/* @import url('https://fonts.googleapis.com/css?family=Roboto+Condensed');
+@import url('https://fonts.googleapis.com/css?family=Gloria+Hallelujah'); */
+
+
+/* body, html {
+  font-family: 'Gloria Hallelujah';
+}
+
+body, html {
+    font-family: 'Roboto Condensed', sans-serif;
+} */
+
+/* @import url('https://fonts.googleapis.com/css?family=Gloria+Hallelujah|Open+Sans|Roboto'); */
+
+
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
+
+.layoutPadding{
+  margin-top: 0.4em;
+  margin-left: 0.4em;
+  margin-right: 0.4em;
+  margin-bottom: 0.4em;
+};

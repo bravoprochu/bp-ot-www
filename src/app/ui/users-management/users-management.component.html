@@ -1,0 +1,55 @@
+<app-pending *ngIf="isPending"></app-pending>
+<app-nav-detail *ngIf="!isPending"
+[navDetailInfo]="navDetailInfo"
+[rForm]="rForm"
+(navCancel)="navCancel()"
+(navDownload)="navDownload()"
+(navDelete)="navDelete()"
+(navSave)="navSave()"
+></app-nav-detail>    
+
+
+<div *ngFor="let user of rForm.controls; let i=index" [formGroup]="user">
+  <mat-expansion-panel *ngIf="user.get('status').value!=3">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{user.value?.userName}}
+      </mat-panel-title>
+      <mat-panel-description fxShow fxHide.xs>
+        {{userRolesDescription(user)}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>        
+
+    <div fxLayout="row" fxLayout="row wrap" fxLayoutAlign="start center">
+        <mat-form-field>
+            <input matInput placeholder="Email" formControlName="email">
+        </mat-form-field>
+
+        <mat-form-field><mat-select multiple placeholder="Uprawnienia" formControlName="roles" fxFlex="100">
+          <mat-option *ngFor="let role of rolesList" [value]="role.roleId">
+            {{role.name}}
+          </mat-option>
+        </mat-select></mat-form-field>
+        <div fxFlex="100">&nbsp;</div>
+
+        <mat-form-field>
+            <input matInput placeholder="TransEU nazwa użytkownika" formControlName="transId">
+        </mat-form-field>
+        
+        <mat-form-field>
+            <input matInput placeholder="TransEU hasło" formControlName="transUserSecret">
+        </mat-form-field>
+        
+
+        <mat-form-field><mat-select multiple placeholder="TransEU scope" formControlName="transScope" fxFlex="100">
+          <mat-option *ngFor="let scope of scopes" [value]="scope">
+            {{scope}}
+          </mat-option>
+        </mat-select></mat-form-field>
+        
+    </div>
+    <button mat-button (click)="removeAccount(user)">Usuń konto</button>
+  </mat-expansion-panel>
+</div>
+
+

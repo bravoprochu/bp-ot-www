@@ -1,0 +1,374 @@
+{
+    "buy": {
+        "buying_info": {
+            "company": {
+                "addressList": [
+                    {
+                        "addressId": 2,
+                        "address_type": "główny",
+                        "country": "AT",
+                        "postal_code": "6341",
+                        "locality": "Ebbs",
+                        "street_address": "Gießenweg ",
+                        "street_number": "7a"
+                    }
+                ],
+                "bankAccountList": [],
+                "companyId": 2,
+                "short_name": "Tirolia Spedition",
+                "legal_name": "Tirolia Spedition GmbH",
+                "vat_id": "ATU32158704",
+                "telephone": "(43) 5373400",
+                "fax": "",
+                "email": "cm@tirolia.at",
+                "url": "http://tirolia.at",
+                "employeeList": [],
+                "trans_id": 571026
+            },
+            "date": "2017-10-17",
+            "price": {
+                "price": 150,
+                "currency": {
+                    "currencyId": 26,
+                    "name": "EUR",
+                    "description": "euro"
+                },
+                "rate_date": "2017-10-17",
+                "rate": 4.2313,
+                "pln_value": 634.7
+            },
+            "paymentTerms": {
+                "day0": "2017-10-17",
+                "description": null,
+                "paymentTerm": {
+                    "paymentTermId": 3,
+                    "name": "przelew",
+                    "isDescription": false,
+                    "isPaymentDate": true
+                },
+                "paymentDate": "2017-12-16",
+                "paymentDays": 60
+            }
+        },
+        "load_info": {
+            "description": null,
+            "load_height": 1.3,
+            "load_length": 5.2,
+            "load_volume": 12.7,
+            "load_weight": 0.72,
+            "extraInfo": {
+                "is_ltl": null,
+                "is_lift_required": true,
+                "is_truck_crane_required": null,
+                "is_tir_cable_required": true,
+                "is_tracking_system_required": true,
+                "is_for_clearence": false,
+                "required_ways_of_loading": [
+                    {
+                        "value": "back",
+                        "viewValue": "tyłem"
+                    },
+                    {
+                        "value": "side",
+                        "viewValue": "bokiem"
+                    }
+                ],
+                "required_adr_classes": [
+                    {
+                        "value": "3",
+                        "viewValue": "Materiały ciekłe zapalne "
+                    },
+                    {
+                        "value": "4.1",
+                        "viewValue": "Materiały stałe zapalne "
+                    },
+                    {
+                        "value": "4.2",
+                        "viewValue": "Materiały samozapalne "
+                    },
+                    {
+                        "value": "8",
+                        "viewValue": "Materiały żrące "
+                    }
+                ],
+                "required_truck_body": {
+                    "value": "box-truck",
+                    "viewValue": "kontener"
+                },
+                "type_of_load": {
+                    "value": "full-truck-standard",
+                    "viewValue": "całopojazdowy - firana Standard"
+                }
+            }
+        },
+        "routes": [
+            {
+                "loading_date": "2017-10-23T10:15",
+                "loading_type": "Załadunek",
+                "address": {
+                    "addressId": 0,
+                    "address_type": "główny",
+                    "country": "PL",
+                    "postal_code": "61-608",
+                    "locality": "Poznań",
+                    "street_address": "Bolka",
+                    "street_number": "2/81"
+                },
+                "geo": {
+                    "latitude": null,
+                    "longitude": null
+                },
+                "info": "kiepski dojazd",
+                "pallets": [
+                    {
+                        "type": "EURO",
+                        "dimmension": null,
+                        "amount": 3,
+                        "is_stackable": null,
+                        "is_exchangeable": null,
+                        "info": null
+                    }
+                ]
+            },
+            {
+                "loading_date": "2017-10-23T12:00",
+                "loading_type": "Załadunek",
+                "address": {
+                    "addressId": 0,
+                    "address_type": "główny",
+                    "country": "PL",
+                    "postal_code": "62-098",
+                    "locality": "Koziegłowy",
+                    "street_address": "Końcowa",
+                    "street_number": "50"
+                },
+                "geo": {
+                    "latitude": null,
+                    "longitude": null
+                },
+                "info": null,
+                "pallets": [
+                    {
+                        "type": "EURO",
+                        "dimmension": null,
+                        "amount": 3,
+                        "is_stackable": null,
+                        "is_exchangeable": null,
+                        "info": null
+                    },
+                    {
+                        "type": "Other",
+                        "dimmension": "120x160",
+                        "amount": 3,
+                        "is_stackable": true,
+                        "is_exchangeable": true,
+                        "info": "ok, uwazaj"
+                    },
+                    {
+                        "type": "Other",
+                        "dimmension": "120x120",
+                        "amount": 2,
+                        "is_stackable": true,
+                        "is_exchangeable": true,
+                        "info": null
+                    }
+                ]
+            },
+            {
+                "loading_date": "2017-10-24T16:00",
+                "loading_type": "Rozładunek",
+                "address": {
+                    "addressId": 0,
+                    "address_type": "główny",
+                    "country": "PL",
+                    "postal_code": "62-095",
+                    "locality": "Murowana Goślina",
+                    "street_address": "Źródlana",
+                    "street_number": "23"
+                },
+                "geo": {
+                    "latitude": null,
+                    "longitude": null
+                },
+                "info": null,
+                "pallets": [
+                    {
+                        "type": "EURO",
+                        "dimmension": null,
+                        "amount": 5,
+                        "is_stackable": null,
+                        "is_exchangeable": null,
+                        "info": null
+                    }
+                ]
+            },
+            {
+                "loading_date": "2017-10-24T18:00",
+                "loading_type": "Rozładunek",
+                "address": {
+                    "addressId": 0,
+                    "address_type": "główny",
+                    "country": "PL",
+                    "postal_code": "64-608",
+                    "locality": "Oborniki",
+                    "street_address": "Nowa",
+                    "street_number": "13"
+                },
+                "geo": {
+                    "latitude": null,
+                    "longitude": null
+                },
+                "info": "wyjebka pl",
+                "pallets": [
+                    {
+                        "type": "EURO",
+                        "dimmension": null,
+                        "amount": 3,
+                        "is_stackable": null,
+                        "is_exchangeable": null,
+                        "info": null
+                    }
+                ]
+            }
+        ]
+    },
+    "sell": {
+        "selling_info": {
+            "company": {
+                "addressList": [
+                    {
+                        "addressId": 3,
+                        "address_type": "główny",
+                        "country": "PL",
+                        "postal_code": "20-149",
+                        "locality": "Lublin",
+                        "street_address": "Do Dysa",
+                        "street_number": " 5"
+                    }
+                ],
+                "bankAccountList": [],
+                "companyId": 3,
+                "short_name": "MQ Logistics Teresa",
+                "legal_name": "MQ Logistics Teresa Kucio",
+                "vat_id": "PL7131328383",
+                "telephone": "(48) 663122132",
+                "fax": "",
+                "email": "g.kucio@mqlogistics.pl",
+                "url": "http://mqlogistics.pl",
+                "employeeList": [],
+                "trans_id": 895893
+            },
+            "date": "2017-10-18",
+            "price": {
+                "price": 250,
+                "currency": {
+                    "currencyId": 36,
+                    "name": "PLN",
+                    "description": "polski złoty"
+                },
+                "rate_date": "2017-10-18",
+                "rate": 1,
+                "pln_value": 250
+            },
+            "paymentTerms": {
+                "day0": "2017-10-18",
+                "description": null,
+                "paymentTerm": {
+                    "paymentTermId": 3,
+                    "name": "przelew",
+                    "isDescription": false,
+                    "isPaymentDate": true
+                },
+                "paymentDate": "2017-12-17",
+                "paymentDays": 60
+            }
+        },
+        "principal": {
+            "addressList": [
+                {
+                    "addressId": 1,
+                    "address_type": "główny",
+                    "country": "PL",
+                    "postal_code": "61-757",
+                    "locality": "Poznań",
+                    "street_address": "Garbary ",
+                    "street_number": "95/B14"
+                }
+            ],
+            "bankAccountList": [
+                {
+                    "bankAccountId": 1,
+                    "type": "złotówkowe",
+                    "account_no": "PL23423423423423422342342342",
+                    "swift": "BP234SA"
+                },
+                {
+                    "bankAccountId": 2,
+                    "type": "walutowe",
+                    "account_no": "PL23423423423526263262362362",
+                    "swift": "BPAHG23"
+                }
+            ],
+            "companyId": 1,
+            "short_name": "OFFER TRANS",
+            "legal_name": "OFFER TRANS Małgorzata Rydz, Regina Rydz s.c.",
+            "vat_id": "PL9721265710",
+            "telephone": "(48) 607698627",
+            "fax": "",
+            "email": "spedycja@offertrans.pl",
+            "url": null,
+            "employeeList": [
+                {
+                    "companyEmployeeId": 1,
+                    "given_name": "Wojciech",
+                    "family_name": "Rydz",
+                    "trans_id": "905754-1",
+                    "email": "spedycja@offertrans.pl",
+                    "telephone": null,
+                    "is_driver": false
+                },
+                {
+                    "companyEmployeeId": 2,
+                    "given_name": "Tomasz",
+                    "family_name": "Bobrowski",
+                    "trans_id": "905754-2",
+                    "email": "spedycja@offertrans.pl",
+                    "telephone": "(48) 726625388",
+                    "is_driver": false
+                },
+                {
+                    "companyEmployeeId": 3,
+                    "given_name": "Bartosz",
+                    "family_name": "Prochowski",
+                    "trans_id": "905754-3",
+                    "email": "spedycja@offertrans.pl",
+                    "telephone": "(48) 509229735",
+                    "is_driver": false
+                }
+            ],
+            "trans_id": 905754
+        },
+        "contact_persons_list": [
+            {
+                "companyEmployeeId": 2,
+                "given_name": "Tomasz",
+                "family_name": "Bobrowski",
+                "trans_id": "905754-2",
+                "email": "spedycja@offertrans.pl",
+                "telephone": "(48) 726625388",
+                "is_driver": false
+            },
+            {
+                "companyEmployeeId": 3,
+                "given_name": "Bartosz",
+                "family_name": "Prochowski",
+                "trans_id": "905754-3",
+                "email": "spedycja@offertrans.pl",
+                "telephone": "(48) 509229735",
+                "is_driver": false
+            }
+        ]
+    },
+    "loadNo": "12/10/2017",
+    "loadId": null
+}

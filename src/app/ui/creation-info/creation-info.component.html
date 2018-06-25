@@ -1,0 +1,30 @@
+<div *ngIf="createdBy">
+    <div class="mat-elevation-z2" fxLayout="row wrap">
+        <div fxFlex="45" class="layoutPadding">
+            <div>
+                <i>Utworznie:</i>
+              </div>
+              <p>
+                {{createdDateTime | date: 'yyyy-MM-dd HH:mm'}}
+                ({{createdBy}})
+              </p>
+        </div>
+        
+        
+        
+        <div *ngIf="modifyBy" class="layoutPadding" fxFlex="45">
+            <div>
+                <i>Modyfikacja</i>
+            </div>
+            <p>
+                {{modifyDateTime | date: 'yyyy-MM-dd HH:mm'}}
+                ({{modifyBy}})
+            </p>  
+        </div>
+    </div>
+    <div>
+        &nbsp;&nbsp;&nbsp;
+    </div>
+</div>
+
+

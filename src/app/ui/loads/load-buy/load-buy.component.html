@@ -1,0 +1,226 @@
+<mat-toolbar>
+  <span>Zakup ładunku</span>
+  <div fxFlex></div>
+  <div *ngIf="!transEu.value.loadTransEuId">
+      <button mat-mini-fab (click)="navSave()" matTooltip="Zapisz dane w bazie" [disabled]="buyingInfo.invalid || buy.pristine || loadInfo.invalid || routes.controls.length==0" ><mat-icon>save</mat-icon></button>
+  </div>
+</mat-toolbar>
+
+
+
+<div [formGroup]="rForm" fxLayout="column">
+
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title fxLayout fxLayoutAlign="space-between center">
+          <div>
+            Cena, data zakupu, dane sprzedawcy
+          </div>
+          <mat-icon *ngIf="buyingInfo.invalid" color="warn">info</mat-icon>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div fxLayout="column">
+        <mat-form-field [formGroup]="buyingInfo">
+          <input matInput formControlName="date" type="date" placeholder="Data zakupu">
+        </mat-form-field>
+        <app-currency-nbp [rForm]="buyingInfoPrice" [placeholder]="'Cena zakupu'"></app-currency-nbp>
+        <app-payment-terms [rForm]="buyingInfoPaymentTerms"></app-payment-terms>
+        <app-company-card [rForm]="buyingInfoCompany" [placeholder]="'Sprzedający'" [fb]="fb"></app-company-card>
+      </div>
+
+    </mat-expansion-panel>
+
+
+    <!-- TRASY -->
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title fxLayout fxLayoutAlign="space-between center">
+          <span>Trasy</span>
+          <mat-icon color="warn" *ngIf="routes.invalid">error</mat-icon>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="mat-h2">Dodaj punkt trasy
+        <button mat-mini-fab type="button" (click)="routeAdd()" [disabled]="routes.invalid">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+
+      <mat-accordion>
+        <mat-expansion-panel *ngFor="let load of routes.controls; index as i">
+          <mat-expansion-panel-header>
+            <mat-panel-title fxLayout fxLayoutAlign="space-between center">
+              <div>
+                <span>{{i+1}})</span>
+                <mark>{{load.get('loading_type').value}}</mark>
+                <strong>{{load.get('loading_date').value | date: 'yyyy-MM-dd HH:mm'}}</strong>
+                <span>{{load.get('address').value.country}}</span>
+                <span>{{load.get('address').value.locality}}</span>
+                <span>{{load.get('address').value.street_address}}</span>
+                <!-- <span *ngIf="load.get('pallets').controls.length>0">palet</span> -->
+              </div>
+
+              <div>
+                <mat-icon color="warn" *ngIf="load.invalid">error</mat-icon>
+                <mat-icon color="accent" *ngIf="routes.controls.length!=1" (click)="routeRemove(i)">delete</mat-icon>
+              </div>
+            </mat-panel-title>
+
+          </mat-expansion-panel-header>
+          <app-loading [formGroup]="routeGetAt(i)"></app-loading>
+
+          <div class="mat-h2">Palety
+            <button mat-mini-fab [disabled]="load.get('pallets').invalid" (click)="palletAdd(load)">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+
+          <mat-accordion>
+            <mat-expansion-panel *ngFor="let pallet of load.get('pallets').controls; index as i" [formGroup]="pallet">
+              <mat-expansion-panel-header>
+                <mat-panel-title fxLayout fxLayoutAlign="space-between center">
+                  <div>{{i+1}}) {{pallet.get('type').value.viewValue}}</div>
+                  <div>
+                    <mat-icon color="warn" *ngIf="pallet.invalid">error</mat-icon>
+                    <mat-icon color="accent" (click)="palletRemove(load, i)">delete</mat-icon>
+                  </div>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <div fxLayout="row wrap">
+                <mat-form-field fxFlex fxFlex.xs="100">
+                  <mat-select formControlName="type" placeholder="Typ palety" [compareWith]="cf.compareWithValueViewValue">
+                    <mat-option *ngFor="let palletType of palletsTypes" [value]="palletType">
+                      {{palletType.viewValue}} 
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field fxFlex fxFlex.xs="50">
+                  <input type="number" matInput formControlName="amount" placeholder="Ilość">
+                </mat-form-field>
+                <div *ngIf="pallet.get('type').value.value==palletsTypes[0].value"  fxFlex="100">
+                  <mat-form-field>
+                    <input type="text" matInput formControlName="dimmension" placeholder="Wymiary (cm x cm)">
+                  </mat-form-field>
+                  <mat-checkbox formControlName="is_stackable" >Paleta piętrowalna (stackable)</mat-checkbox>
+                  <mat-checkbox formControlName="is_exchangeable">Paleta wymienialna (exchangeable)</mat-checkbox>
+                </div>
+                <mat-form-field fxFlex="100">
+                  <textarea matTextareaAutosize matInput formControlName="info" placeholder="Info"></textarea>
+                </mat-form-field>
+              </div>
+
+            </mat-expansion-panel>
+          </mat-accordion>
+        </mat-expansion-panel>
+      </mat-accordion>
+
+
+    </mat-expansion-panel>
+
+    <!-- TYP ŁADNKU -->
+    <mat-expansion-panel [formGroup]="loadInfo">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Wymiary ładunku</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <!-- <mat-form-field>
+      <mat-select formControlName="required_truck_body" placeholder="Potrzebne nadwozie">
+        <mat-option *ngFor="let body of truckBody" [value]="body.id">
+          {{body.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field> -->
+      <div>
+        <mat-form-field>
+          <input type="number" matInput formControlName="load_height" placeholder="Wysokość (metry MTR)">
+        </mat-form-field>
+        <mat-form-field>
+          <input type="number" matInput formControlName="load_length" placeholder="Długość (metry MTR)">
+        </mat-form-field>
+        <mat-form-field>
+          <input type="number" matInput formControlName="load_volume" placeholder="Objętość (kubik MTQ)">
+        </mat-form-field>
+        <mat-form-field>
+          <input type="number" matInput formControlName="load_weight" placeholder="Ciężar (tony TNE)">
+        </mat-form-field>
+      </div>
+      <!-- <mat-form-field fxFlexFill>
+        <textarea matInput matTextareaAutosize type="text" formControlName="description" placeholder="Opis, dodatkowe informacje"></textarea>
+      </mat-form-field> -->
+    </mat-expansion-panel>
+
+    <!-- DODATKOWE INFO, UWAGI -->
+    <mat-expansion-panel [formGroup]="loadInfoExtra">
+      <mat-expansion-panel-header>
+          <mat-panel-title fxLayout fxLayoutAlign="space-between center">
+              <div>
+                Dodatkowe info
+              </div>
+              <mat-icon *ngIf="loadInfoExtra.invalid" color="warn">info</mat-icon>
+            </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div fxLayout="column" fxLayoutGap="10px">
+        <mat-slide-toggle formControlName="is_ltl">
+          Doładunek ? (LTL)
+        </mat-slide-toggle>
+        <mat-slide-toggle formControlName="is_lift_required">
+          Wymagana winda ? (lift)
+        </mat-slide-toggle>
+        <mat-slide-toggle formControlName="is_truck_crane_required">
+          Gotowy do załadunku (truck crane)
+        </mat-slide-toggle>
+        <mat-slide-toggle formControlName="is_tir_cable_required">
+          Linka celna (tir cable)
+        </mat-slide-toggle>
+        <mat-slide-toggle formControlName="is_tracking_system_required">
+          GPS (tracking system)
+        </mat-slide-toggle>
+        <mat-slide-toggle formControlName="is_for_clearence">
+          Do oclenia (for clearence)
+        </mat-slide-toggle>
+        <div>&nbsp;</div>
+      </div>
+      <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutFill>
+
+        <mat-form-field>
+          <mat-select formControlName="required_truck_body" placeholder="Potrzebne nadwozie" [compareWith]="cf.compareWithValueViewValue">
+            <mat-option *ngFor="let body of truckBody" [value]="body">
+              {{body.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field fxFlex fxFlex.xs="100">
+          <mat-select multiple formControlName="required_ways_of_loading" placeholder="Załadunek" [compareWith]="cf.compareWithValueViewValue">
+            <mat-option *ngFor="let way of waysOfLoading" [value]="way">
+              {{way.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field fxFlex fxFlex.xs="100">
+          <mat-select multiple formControlName="required_adr_classes" placeholder="ADR" [compareWith]="cf.compareWithValueViewValue">
+            <mat-option *ngFor="let adr of adr_classes" [value]="adr">
+              {{adr.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field fxFlex fxFlex.xs="100">
+          <mat-select formControlName="type_of_load" placeholder="Typ ładunku" [compareWith]="cf.compareWithValueViewValue">
+            <mat-option *ngFor="let type of typeOfLoad" [value]="type">
+              {{type.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+
+        <div>&nbsp;</div>
+      </div>
+
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

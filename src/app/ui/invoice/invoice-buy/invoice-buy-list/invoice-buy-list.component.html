@@ -1,0 +1,66 @@
+<app-pending *ngIf="isPending"></app-pending>
+<app-nav-list 
+[title]="navTitle?.title" 
+[subtitle]="navTitle?.subtitle" 
+[dateRange]="dateRange" 
+(onCreate)="createNew()"
+(onRefresh)="initData(dateRange)"
+(onSearch)="searchFilter($event)"
+(onDateRange)="getDataByRange($event)" ></app-nav-list>
+
+
+
+
+
+<div>
+    <mat-table #table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <button mat-mini-fab (click)="edit(row.id)" matTooltip="Edytuj ID: {{row.id}} " [matTooltipPosition]="'right'">
+                    <mat-icon >edit</mat-icon></button>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="documentNo">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Dok</mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.documentNo}}</mat-cell>
+        </ng-container>     
+    
+        <ng-container matColumnDef="dataSprzedazy">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Data sprzedaży</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.dataSprzedazy}}</mat-cell>
+        </ng-container>
+    
+        <ng-container matColumnDef="nabywca">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Nabywca</mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.nabywca}}</mat-cell>
+        </ng-container>
+    
+        <ng-container matColumnDef="waluta">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Waluta</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.waluta}}</mat-cell>
+        </ng-container>
+    
+        <ng-container matColumnDef="netto">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Netto</mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.netto | number: "1.2-2"}}</mat-cell>
+        </ng-container>
+    
+        <ng-container matColumnDef="podatek">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Podatek</mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.podatek | number: "1.2-2"}}</mat-cell>
+        </ng-container>    
+        <ng-container matColumnDef="brutto">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Brutto</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.brutto | number: "1.2-2"}}</mat-cell>
+        </ng-container>   
+    
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <mat-paginator #paginator></mat-paginator>
+</div>
+
+<!-- <app-invoice-buy-payment-remind></app-invoice-buy-payment-remind> -->
+

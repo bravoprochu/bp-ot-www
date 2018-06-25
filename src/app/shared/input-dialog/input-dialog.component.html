@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>{{data.title}}</h1>
+<div mat-dialog-content>
+  <p>{{data.question}}</p>
+  <mat-form-field [formGroup]="rForm">
+    <input matInput tabindex="1" (keyup.enter)="onYesClick()" formControlName="inputValue" type="{{data.inputText}}">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between">
+  <button mat-button [disabled]="rForm.invalid" mat-dialog-close="data.value" (click)="onYesClick()" tabindex="2">Ok</button>
+  <button mat-button (click)="onNoClick()" tabindex="-1">Anuluj</button>
+</div>

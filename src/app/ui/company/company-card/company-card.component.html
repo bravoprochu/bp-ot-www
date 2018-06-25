@@ -1,0 +1,43 @@
+<div>
+  <div fxLayout fxLayoutAlign="center center">
+        
+                  <mat-form-field fxFlex="80">
+                      <input matInput type="search" [formControl]="search$" [matAutocomplete]="ac" placeholder="{{placeholder}}, wyszukaj dane">
+                  </mat-form-field>
+                
+                  <mat-autocomplete #ac="matAutocomplete" [displayWith]="displayWith">
+                    <mat-option *ngFor="let c of data$ | async" [value]="c">
+                      <strong>{{c.short_name}}</strong>
+                      <span *ngIf="addressList.length>0">{{c.addressList[0].addressCombined}}</span>
+                    </mat-option>
+                  </mat-autocomplete>
+              <button mat-mini-fab (click)="companyAdd()"><mat-icon>add_person</mat-icon></button>
+  </div>
+  <div fxLayout="column" fxLayoutAlign="start center">
+          <div fxLayout="column" fxLayoutAlign="start center">
+              <div class="mat-h2">{{rForm.value.legal_name}}
+                  <small *ngIf="rForm.value.short_name">({{rForm.value.short_name}})</small>
+              </div>
+              <div class="mat-h3" *ngIf="addressList.length>0">
+                  <!-- <span>{{addressList.at(0).get('address_type').value}}</span> -->
+                  <span>{{addressList.at(0).get('country').value}}</span>
+                  <span>{{addressList.at(0).get('locality').value}}</span>
+                  <span>{{addressList.at(0).get('street_address').value}}</span>
+                  <span>{{addressList.at(0).get('street_number').value}}</span>
+              </div>
+              <div class="mat-h4">{{rForm.value.vat_id}}</div>
+              <div fxLayout fxLayout.xs="column" fxFill fxLayoutAlign="space-between start">
+                <div fxFlex="50" fxFlex.xs="100">
+                  <div class="mat-h5" *ngIf="rForm.value.telephone">Tel: {{rForm.value.telephone}}</div>
+                  <div class="mat-h5" *ngIf="rForm.value.fax">Fax: {{rForm.value.fax}}</div>
+                </div>
+                <div class="mat-h5">{{rForm.value.email}}</div>
+              </div>
+              <div fxFill class="mat-h5">{{rForm.value.url}}</div>
+          </div>
+  </div>
+</div>
+
+
+
+      

@@ -1,0 +1,211 @@
+<app-pending *ngIf="isPending"></app-pending>
+<app-nav-detail *ngIf="!isPending" [navDetailInfo]="navDetailInfo" [rForm]="rForm" (navCancel)="navCancel()" (navDownload)="navDownload()"
+    (navDelete)="navDelete()" (navSave)="navSave()">
+</app-nav-detail>
+
+
+
+
+<div *ngIf="!isPending" [formGroup]="rForm" fxLayout="column" fxFill class="mat-typography">
+    <div fxLayout="column" fxLayoutAlign="center center" class="mat-headline">
+        <div>Faktura nr: {{rForm.get('invoiceNo').value}}
+            <small *ngIf="rForm.value.loadId">{{rForm.value.isInvoiceReceived==true? "(potwierdzona)" : "(!)"}}</small>
+        </div>
+        <small [style.cursor]="'pointer'" *ngIf="rForm.value.loadId" routerLink="/ladunek/{{rForm.value.loadId}}">(ładunek: {{rForm.value.loadNo}}) </small>
+
+    </div>
+    <mat-accordion>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title fxLayout fxLayoutAlign="space-between">
+                    <div>Podstawowe informacje</div>
+                    <div>
+                        <strong>
+                            <span>{{dateOfSell.value | date: 'yyyy-MM-dd'}}</span>
+                        </strong>
+                        <span *ngIf="currency.valid">, {{currency.value.name}}</span>
+                        <span>, {{paymentTerms.value.paymentTerm.name}}</span>
+                    </div>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div fxLayout="row wrap" fxLayoutGap="20px">
+                <mat-form-field fxFlex="70" fxFlex.xs="100">
+                    <input type="text" matInput formControlName="invoiceNo" placeholder="Nazwa dokumentu, (nr faktury)">
+                </mat-form-field>
+                <mat-checkbox formControlName="isInvoiceReceived" matTooltip="Oznacza fizyczne otrzymanie dokumentu faktury">Faktura potwierdzona</mat-checkbox>
+
+                <div fxFlex="70" fxLayout fxLayout.xs="column">
+                    <mat-form-field>
+                        <input matInput placeholder="Data sprzedaży" type="date" formControlName="dateOfSell">
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput placeholder="Data wystawienia" type="date" formControlName="dateOfIssue">
+                    </mat-form-field>
+                    <mat-form-field *ngIf="isInvoiceReceived.value">
+                        <input matInput placeholder="Data otrzymania" type="date" formControlName="invoiceReceivedDate">
+                    </mat-form-field>
+                </div>
+
+                <app-currency-list [rForm]="currency"></app-currency-list>
+
+                <app-payment-terms [rForm]="paymentTerms"></app-payment-terms>
+
+                <mat-form-field fxFill>
+                    <input type="text" matInput formControlName="info" placeholder="Info, uwagi">
+                </mat-form-field>
+
+            </div>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title fxLayout fxLayoutAlign="space-between">
+                    Sprzedawca
+                    <strong>
+                        <span>{{companySellerShortName.value}}</span>
+                    </strong>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <app-company-card fxFill [rForm]="companySeller" [fb]="fb" [placeholder]="'Sprzedawca'"></app-company-card>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title fxLayout fxLayoutAlign="space-between">
+                    Pozycje faktury
+                    <strong>
+                        <span *ngIf="invoiceLines.length>0">{{invoiceLines.length}}</span>
+                    </strong>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <button mat-mini-fab (click)="invoicePosAdd()" [disabled]="invoiceLines.invalid || isCorrection.value" [matTooltipPosition]="'right'"
+                matTooltip="Dodaj pozycje faktury">
+                <mat-icon>add</mat-icon>
+            </button>
+            <div>&nbsp;</div>
+            <div fxLayout="column" fxLayoutGap="10px">
+                <app-invoice-sell-pos *ngFor="let p of invoiceLines.controls; index as idx" fxFlex="100" [rForm]="p" [isCorrection]="isCorrection"
+                    (remove)="invoicePosRemove(idx)"></app-invoice-sell-pos>
+            </div>
+        </mat-expansion-panel>
+
+
+<mat-expansion-panel *ngIf="invoiceLines.controls.length>0">
+    <mat-expansion-panel-header>
+        <mat-panel-title fxLayout fxLayoutAlign="space-between">
+            Wartość razem &nbsp;
+            <div>
+                netto|vat|brutto
+                <strong>
+                    <span>{{invoiceTotalCurrent.value.total_netto | number: '1.2'}}</span> |
+                    <span>{{invoiceTotalCurrent.value.total_tax | number: '1.2'}}</span> |
+                    <span>{{invoiceTotalCurrent.value.total_brutto | number: '1.2'}}</span>
+                </strong>
+            </div>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div fxLayout="column" fxLayoutGap="10px">
+        <app-invoice-sell-pos-resume [rForm]="invoiceTotal" [isCorrection]="isCorrection"></app-invoice-sell-pos-resume>
+
+        <div *ngIf="invoiceLines.controls.length>0">
+            <div fxLayout fxLayoutAlign="end center">
+                <div fxFlex>
+                    <span>stawka</span>
+                </div>
+                <div fxFlex fxLayout>
+                    <span>netto&nbsp;</span>
+                    <div *ngIf="isCorrection.value">/
+                        <span [style.color]="'blue'">przed </span>/
+                        <span [style.color]="'red'"> korekta</span>
+                    </div>
+
+                </div>
+                <div fxFlex fxLayout>
+                    <span>podatek</span>
+                    <div *ngIf="isCorrection.value">/
+                        <span [style.color]="'blue'">przed </span>/
+                        <span [style.color]="'red'"> korekta</span>
+                    </div>
+                </div>
+                <div fxFlex fxLayout>
+                    <span>brutto</span>
+                    <div *ngIf="isCorrection.value">/
+                        <span [style.color]="'blue'">przed </span>/
+                        <span [style.color]="'red'"> korekta</span>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <hr>
+
+            <div *ngFor="let r of rates.value" fxLayout="column">
+                <div fxLayout="row wrap">
+                    <div fxFlex>
+                        <span>{{r.vatRate}}</span>
+                    </div>
+                    <div fxFlex>
+                        <div fxLayout>
+                            <div>{{r.current.netto_value | number: '1.2-2'}}</div>
+                            <div *ngIf="isCorrection.value" fxLayout>
+                                <div [style.color]="'blue'">/{{r.original.netto_value | number: '1.2-2'}}</div>/
+                                <div [style.color]="'red'">{{r.corrections.netto_value | number: '1.2-2'}}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div fxFlex>
+                        <div fxLayout>
+                            <div>{{r.current.vat_value | number: '1.2-2'}}</div>
+                            <div *ngIf="isCorrection.value" fxLayout>
+                                <div [style.color]="'blue'">/{{r.original.vat_value | number: '1.2-2'}}</div>/
+                                <div [style.color]="'red'">{{r.corrections.vat_value | number: '1.2-2'}}</div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div fxFlex>
+                        <div fxLayout>
+                            <div>{{r.current.brutto_value | number: '1.2-2'}}</div>
+                            <div *ngIf="isCorrection.value" fxLayout>
+                                <div [style.color]="'blue'">/{{r.original.brutto_value | number: '1.2-2'}}</div>/
+                                <div [style.color]="'red'">{{r.corrections.brutto_value | number: '1.2-2'}}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</mat-expansion-panel>	
+
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Dodatkowe info
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div fxLayout="row wrap" fxLayout.xs="column">
+                <app-creation-info fxFlex="100" [rForm]="creationInfo"></app-creation-info>
+                <div fxFlex="50" fxLayout="column">
+                    <div class="mat-h2">Opłacenie faktury</div>
+                    <mat-checkbox formControlName="paymentIsDone">
+                        <span *ngIf="!paymentIsDone.value">Zapłacono</span>
+                        <span *ngIf="paymentIsDone.value">Zapłacono przelew/gotówkę</span>
+                    </mat-checkbox>
+                    <mat-form-field *ngIf="paymentIsDone.value">
+                        <input matInput [matDatepicker]="picker" formControlName="paymentDate" placeholder="Data płatności">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-expansion-panel>
+
+    </mat-accordion>
+</div>

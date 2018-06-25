@@ -1,0 +1,80 @@
+<app-pending *ngIf="isPending"></app-pending>
+<app-nav-list 
+[title]="navTitle?.title" 
+[subtitle]="navTitle?.subtitle" 
+[dateRange]="dateRange" 
+(onCreate)="createNew()"
+(onRefresh)="initData(dateRange)"
+(onSearch)="searchFilter($event)"
+(onDateRange)="getDataByRange($event)" ></app-nav-list>
+
+
+<div>
+    <mat-table #table [dataSource]="dataSource" matSort>
+            <ng-container matColumnDef="transportOfferId">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    <button mat-mini-fab (click)="edit(row.transportOfferId)" matTooltip="Edytuj ID: {{row.transportOfferId}} " [matTooltipPosition]="'right'">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="statusCode">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>StatusCode</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.statusCode}}</mat-cell>
+            </ng-container>
+        
+            <ng-container matColumnDef="documentNo">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Numer zlecenia</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.documentNo}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="fracht">
+
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Fracht</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.fracht | currency: row.currency}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="companySeller">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Kontrahent</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.companySeller}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="loadDate">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Data załadunku</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.loadDate}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="loadPlace">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Miejscowość</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.loadPlace}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="loadPostalCode">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Kod</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.loadPostalCode}}</mat-cell>
+            </ng-container>
+
+
+
+            <ng-container matColumnDef="unloadDate">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Data rozładunku</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.unloadDate}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="unloadPlace">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Miejscowość</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.unloadPlace}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="unloadPostalCode">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Kod</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.unloadPostalCode}}</mat-cell>
+            </ng-container>
+        
+      
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #paginator></mat-paginator>
+</div>

@@ -1,0 +1,56 @@
+<div fxLayout="row wrap" fxLayoutAlign="space-between center" fxLayoutAlign.xs="end" class="layoutPadding">
+  <div fxLayout="column" fxLayoutGap="-0.1em" fxFlex="50" fxFlex.xs="100">
+    <div class="mat-h2" class="mat-h2">{{navDetailInfo.title.title}}</div>
+    <div class="mat-h4" class="mat-h5">{{navDetailInfo.title.subtitle}}</div>
+  </div>
+
+
+
+  <div fxLayout fxLayoutGap="0.5em">
+    <div>
+      <app-test [rForm]="rForm" matTooltip="console.log(rForm)" [matTooltipPosition]="'below'"></app-test>
+      <button mat-mini-fab (click)="getCode()" matTooltip="JSON.stringify" [matTooltipPosition]="'below'">
+        <mat-icon>code</mat-icon>
+      </button>
+    </div>
+
+    <!-- gdy component jest uzywany jako dialog; przycisk ok przesyla dane -->
+    <div *ngIf="dialogData && dialogData.type==1">
+      <button mat-mini-fab (click)="dialogOk()" [disabled]="rForm.invalid || !dialogKeyValid" *ngIf="dialogData" matTooltip="Zaktualizuj dane"
+        [matTooltipPosition]="'below'">
+        <mat-icon>send</mat-icon>
+      </button>
+
+      <button mat-mini-fab (click)="dialogCancel()" *ngIf="dialogData" matTooltip="Anuluj aktualizacje i zamknij" [matTooltipPosition]="'below'">
+        <mat-icon>exit_to_app</mat-icon>
+      </button>
+    </div>
+
+    <div>
+      <button mat-mini-fab (click)="goBack()" *ngIf="!navDetailInfo.basicActions.canNotGoBack" matTooltip="Wróć do widoku list"
+        [matTooltipPosition]="'below'">
+        <mat-icon>undo</mat-icon>
+      </button>
+
+      <!-- <button mat-mini-fab *ngIf="!dialogData" [disabled]="!canDownload" (click)="download()" matTooltip="Pobierz ponownie dane z serwera"
+            [matTooltipPosition]="'before'">
+            <mat-icon>cloud_download</mat-icon>
+          </button> -->
+
+      <button mat-mini-fab [disabled]="!(rForm.dirty && rForm.valid)" (click)="save()" matTooltip="Zaktualizuj/zapisz dane w bazie"
+        [matTooltipPosition]="'below'">
+        <mat-icon>save</mat-icon>
+      </button>
+
+      <!-- <button mat-mini-fab [disabled]="!rForm.touched" (click)="cancel()" matTooltip="Resetuj dane formularza" [matTooltipPosition]="'before'">
+            <mat-icon>cancel</mat-icon>
+          </button> -->
+
+      <button mat-mini-fab [disabled]="!navDetailInfo.basicActions.canDelete" (click)="delete()" matTooltip="Usuń dane z bazy"
+        [matTooltipPosition]="'before'">
+        <mat-icon>delete</mat-icon>
+      </button>
+
+    </div>
+  </div>
+</div>

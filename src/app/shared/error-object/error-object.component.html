@@ -1,0 +1,10 @@
+<div style="overflow:auto; height: 100px">
+    <h4 class="mat-h4" *ngFor="let err of errorObj">
+        {{err.errorDescription}}
+        <ul>
+            <li *ngFor="let errorDiscr of err.errors">
+                {{errorDiscr}}
+            </li>
+        </ul>
+    </h4>
+</div>

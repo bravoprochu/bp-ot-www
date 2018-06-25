@@ -1,0 +1,83 @@
+<app-pending *ngIf="isPending"></app-pending>
+<app-nav-detail *ngIf="!isPending"
+    [navDetailInfo]="navDetailInfo"
+    [rForm]="rForm"
+    (navCancel)="navCancel()"
+    (navDownload)="navDownload()"
+    (navDelete)="navDelete()"
+    (navSave)="navSave()">
+</app-nav-detail>
+
+<mat-card *ngIf="!isPending">
+    <mat-card-content>
+        <div [formGroup]="rForm" class="mat-typography">
+            <div>
+                <app-creation-info [rForm]="creationInfo"></app-creation-info>
+                <div fxLayout="row wrap" fxLayout.xs="column">
+                    <div fxFlex="100" [style.cursor]="'pointer'" *ngIf="invoiceSellId.value" routerLink="/fakturaSprzedazy/{{invoiceSellId.value}}"
+                        fxLayout="column" fxLayoutGap="-0.5em" fxLayoutAlign="center center">
+                        <div class="mat-h3">Faktura sprzedaży</div>
+                        <div class="mat-h2">{{invoiceSellNo.value}}</div>
+                    </div>
+                    <div fxFlex="100" fxLayoutGap="10px" fxLayoutAlign="center center">
+                        <button *ngIf="!invoiceSellId.value && id.value>0 && rForm.pristine" mat-mini-fab color="warn" (click)="invoiceSellGen()"
+                            matTooltip="Potwierdź dostarczenie towaru">
+                            <mat-icon>done</mat-icon>
+                        </button>
+                        <!-- <mat-checkbox *ngIf="!invoiceSellId.value && id.value>0 && currency.get('name').value!='PLN'" formControlName="invoiceInPLN">
+                            Faktura w PLN
+                        </mat-checkbox> -->
+                    </div>
+                    <div fxFlex="100" fxLayout fxLayoutAlign="start end">
+                        <mat-form-field fxFlex>
+                            <input type="text" matInput formControlName="offerNo" placeholder="Numer zlecenia">
+                        </mat-form-field>
+                        <mat-form-field [formGroup]="tradeInfo">
+                            <input matInput placeholder="Data sprzedaży" [matDatepicker]="dpSell" formControlName="date">
+                            <mat-datepicker-toggle matSuffix [for]="dpSell"></mat-datepicker-toggle>
+                            <mat-datepicker #dpSell></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <app-currency-nbp [rForm]="price" [placeholder]="'Fracht netto'"></app-currency-nbp>
+                <app-payment-terms [rForm]="paymentTerms"></app-payment-terms>
+
+                <app-company-card [rForm]="company" [fb]="fb" [placeholder]="'Zleceniodawca'"></app-company-card>
+
+                <div fxLayout fxLayout.xs="column" fxLayoutGap="20px">
+                    <div [formGroup]="load" fxLayout="column" fxLayoutAlign="center center">
+                        <div class="mat-h2">Załadunek</div>
+                        <div fxLayout="row wrap">
+                            <mat-form-field fxFlex="100">
+                                <input type="datetime-local" matInput formControlName="date" placeholder="Data załadunku">
+                            </mat-form-field>
+                            <mat-form-field fxFlex="30">
+                                <input type="text" matInput formControlName="postalCode" placeholder="Kod pocztowy">
+                            </mat-form-field>
+                            <mat-form-field fxFlex="70">
+                                <input type="text" matInput formControlName="locality" placeholder="Miejscowość">
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div [formGroup]="unload" fxLayout="column" fxLayoutAlign="center center">
+                        <div class="mat-h2">Rozładunek</div>
+                        <div fxLayout="row wrap">
+                            <mat-form-field fxFlex="100">
+                                <input type="datetime-local" matInput formControlName="date" placeholder="Data rozładunku">
+                            </mat-form-field>
+                            <mat-form-field fxFlex="30">
+                                <input type="text" matInput formControlName="postalCode" placeholder="Kod pocztowy">
+                            </mat-form-field>
+                            <mat-form-field fxFlex="70">
+                                <input type="text" matInput formControlName="locality" placeholder="Miejscowość">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>

@@ -1,0 +1,11 @@
+<div fxLayout="column">
+        <mat-toolbar>
+                <app-user-info></app-user-info>
+                <div fxFlex>&nbsp;</div>
+                <div>{{navTitle?.title}}&nbsp;&nbsp;</div>
+                <button *ngIf="isLoggedIn" type="button" mat-mini-fab (click)="menuShow()" [matTooltipPosition]="'left'" matTooltip="Główne menu">
+                        <mat-icon>menu</mat-icon>
+                </button>
+        </mat-toolbar>
+        <router-outlet fxLayoutFill></router-outlet>
+</div>

@@ -1,0 +1,45 @@
+<!-- <form  novalidate (ngSubmit)="signIn(loginFormGroup.value)" fxLayoutFill> -->
+    
+  <mat-tab-group [dynamicHeight]="true">
+      <mat-tab label="Zaloguj" [formGroup]="loginFormGroup">
+        
+          <div fxLayout="column" fxLayoutAlign="center stretch">
+                <div>&nbsp;</div>
+              <mat-form-field fxFlexFill>
+                  <input type="text" matInput placeholder="nazwa użytkownika (email)" formControlName="userName">
+              </mat-form-field>
+              <mat-form-field fxFlexFill>
+                <input type="password" matInput placeholder="hasło" formControlName="password" (keyup.enter)="login()">
+              </mat-form-field>
+              <button mat-raised-button color="warn" (click)="login()" [disabled]="loginFormGroup.invalid || (password().value != confirmPassword().value) || loginFormGroup.disabled">Zaloguj</button>
+              <!-- <div>&nbsp;</div>
+              <button mat-raised-button color="primary" [disabled]="!loginFormGroup.get('userName').valid">Przypomnij hasło</button> -->
+            </div>
+      </mat-tab>
+    
+      <mat-tab label="Zarejestruj" [formGroup]="registerFormGroup">
+          
+        <div fxLayout="column" fxLayoutAlign="center stretch">
+            <div>&nbsp;</div>
+            <mat-form-field fxFlexFill>
+                <input type="text" matInput placeholder="nazwa użytkownika (email)" formControlName="userName">
+            </mat-form-field>
+            <mat-form-field fxFlexFill>
+              <input type="password" matInput placeholder="hasło" formControlName="password">
+            </mat-form-field>
+            <mat-form-field fxFlexFill>
+              <input type="password" matInput placeholder="powtórz hasło" formControlName="confirmPassword">
+            </mat-form-field>
+            <div>&nbsp;</div>
+            <div>
+                Hasło powinno zawierać (przynajmniej) dużą, małą literę, cyfrę oraz znak specjalny..
+            </div>
+            <div>&nbsp;</div>
+            <button mat-raised-button color="accent" (click)="register()" [disabled]="registerFormGroup.invalid || (password().value != confirmPassword().value) || registerFormGroup.disabled">Zarejestruj</button>
+            <div>&nbsp;</div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+<app-error-object [errorObj]="errorObj"></app-error-object>
+<app-pending *ngIf="isPending"></app-pending>
+<!-- </form> -->

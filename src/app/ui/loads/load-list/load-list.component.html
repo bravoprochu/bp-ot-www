@@ -1,0 +1,134 @@
+<app-pending *ngIf="isPending"></app-pending>
+<app-nav-list [title]="navTitle?.title" 
+[subtitle]="navTitle?.subtitle" 
+(onCreate)="createNew()"
+(onRefresh)="initData()"
+></app-nav-list>
+
+
+
+<div *ngIf="!isPending">
+        <mat-table #table [dataSource]="dataSource">
+                <ng-container matColumnDef="loadId">
+                    <mat-header-cell *matHeaderCellDef> ID </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        <button mat-mini-fab (click)="edit(row.loadId)" matTooltip="Edytuj ID: {{row.loadId}} " [matTooltipPosition]="'right'">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+            
+                <ng-container matColumnDef="loadNo">
+                    <mat-header-cell *matHeaderCellDef>Dok</mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.loadNo}}</mat-cell>
+                </ng-container>
+            
+                <ng-container matColumnDef="companyBuyer">
+                    <mat-header-cell *matHeaderCellDef>Zakup</mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.buy.buying_info.company.short_name}}</mat-cell>
+                </ng-container>
+            
+                <ng-container matColumnDef="buyingDate">
+                    <mat-header-cell *matHeaderCellDef>Data zakupu</mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.buy.buying_info.date | date: 'yyyy-MM-dd'}}</mat-cell>
+                </ng-container>
+            
+                <ng-container matColumnDef="buyingPrice">
+                    <mat-header-cell *matHeaderCellDef>Cena zakupu</mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.buy.buying_info.price.price | number: '1.2-2'}} {{row.buy.buying_info.price.currency.name}}</mat-cell>
+                </ng-container>
+            
+            
+                <ng-container matColumnDef="companySeller">
+                    <mat-header-cell *matHeaderCellDef>Sprzedaż</mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.sell? (row.sell.selling_info.company.short_name) : ""}}</mat-cell>
+                </ng-container>
+            
+                <ng-container matColumnDef="sellingDate">
+                    <mat-header-cell *matHeaderCellDef>Data sprzedaży</mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.sell? (row.sell.selling_info.date | date: 'yyyy-MM-dd') : ""}}</mat-cell>
+                </ng-container>
+            
+                <ng-container matColumnDef="sellingPrice">
+                    <mat-header-cell *matHeaderCellDef>Cena sprzedaży</mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.sell? (row.sell.selling_info.price.price | number: '1.2-2') : ""}} {{row.sell? row.sell.selling_info.price.currency.name:
+                        null}}</mat-cell>
+                </ng-container>
+            
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+</div>
+
+
+<section *ngIf="!isPending">
+        <div class="mat-h3">
+                <mat-expansion-panel [expanded]="false">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Info, odświeżanie
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div fxLayout="column" fxLayoutAlign="start space-around" fxLayoutFill>
+                        <div>Pobiera ładunki z transa co określony czas w sekundach (suwak po lewej); wyświetlam podstawowe dane ale tutaj
+                            można zrobić duuuużo.., podkreślam tylko te ładunki ktorych miejsce ladunku to Poznań</div>
+                        <div>
+                            Odśwież co {{slider.value}}s
+                        </div>
+                        <mat-slider #slider fxFlexFill [step]="1" [min]="0" [max]="20" [thumbLabel]="true" [value]="refreshTime" [vertical]="false"></mat-slider>
+                        <div>&nbsp;</div>
+                    </div>
+                </mat-expansion-panel>
+            
+            </div>
+            
+            <div>
+                <ol fxFlex="80">
+                    <li *ngFor="let l of dataObj">{{l.creation_date | date: 'yyyy-MM-dd HH:mm:ss'}} {{l.id}} {{l.loading_place.address.locality}} - {{l.unloading_place.address.locality}}
+                        [{{l.price_currency}}, {{l.price | number: '1.2'}}] {{l.timeAgo(l.creation_date)}} </li>
+                </ol>
+                <ol>
+                    <li *ngFor="let c of contrahentsIds">{{c}}</li>
+                </ol>
+            </div>
+            
+            <div>
+                &nbsp;
+            </div>
+            <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="20px">
+                <div fxFlexFill *ngIf="slider.value>0">
+                    <div fxLayout class="mat-h5">
+                        <div fxFlex="30">
+                            Data utworzenia
+                        </div>
+                        <div fxFlex="10">
+                            Waluta
+                        </div>
+                        <div fxFlex="30">
+                            Data załadunku
+                        </div>
+                        <div fxFlex="30">
+                            Miejsce załadunku
+                        </div>
+                    </div>
+                    <mat-divider></mat-divider>
+            
+                    <div class="mat-h5" *ngFor="let load of dataObj$ | async ; let i=index" fxLayout="row" [ngStyle]="{'font-weight': load.loading_place.address.locality=='Poznań'? 'bold': 'normal'}">
+                        <div fxFlex="30">
+                            {{load.creation_date | date: 'yyyy-MM-dd HH:mm:ss'}}
+                        </div>
+                        <div fxFlex="10">
+                            {{load.price_currency? load.price_currency: '&nbsp;&nbsp;&nbsp;'}}
+                        </div>
+                        <div fxFlex="30">
+                            {{load.loading_date | date: 'yyyy-MM-dd HH:mm:ss'}}
+                        </div>
+                        <div fxFlex="30">
+                            {{load.loading_place.address.country}} {{load.loading_place.address.postal_code}} {{load.loading_place.address.locality}}
+                        </div>
+            
+                    </div>
+                </div>
+            </div>
+</section>
+

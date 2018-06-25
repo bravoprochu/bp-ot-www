@@ -1,0 +1,21 @@
+<div [formGroup]="formGroup">
+        <mat-form-field>
+          <input matInput formControlName="address_type" placeholder="Typ adresu">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="text" maxlength="2" formControlName="country" placeholder="Państwo">
+          <mat-error>Pole jest wymagane</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="text" formControlName="postal_code" placeholder="Kod pocztowy">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="text" formControlName="locality" placeholder="Miejscowość">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="text" formControlName="street_address" placeholder="Ulica">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="text" formControlName="street_number" placeholder="Numer">
+        </mat-form-field>
+</div>

@@ -1,0 +1,154 @@
+{
+    "companyBuyer": {
+        "addressList": [
+            {
+                "addressId": 4,
+                "address_type": "główny",
+                "country": "PL",
+                "postal_code": "42-200",
+                "locality": "Częstochowa",
+                "street_address": "Dmowskiego ",
+                "street_number": "1 a"
+            }
+        ],
+        "companyId": 3,
+        "short_name": "ZW Kompleks",
+        "legal_name": "Zakład Wielobranżowy KOMPLEKS Sp. J. Rafał Magiera i Jan Zrostek",
+        "vat_id": "PL5730004591",
+        "telephone": "(48) 343410168",
+        "fax": "",
+        "email": "kompleks@post.pl",
+        "url": "http://kompleks-transport.pl",
+        "employeeList": [
+            {
+                "companyEmployeeId": 7,
+                "given_name": "Rafał",
+                "family_name": "Magiera",
+                "trans_id": "78784-1",
+                "email": "rafal.magiera@kompleks-transport.pl",
+                "telephone": "(48) 343410168",
+                "is_driver": false,
+                "status": null
+            },
+            {
+                "companyEmployeeId": 8,
+                "given_name": "Jan",
+                "family_name": "Zrostek",
+                "trans_id": "78784-2",
+                "email": "kompleks@post.pl",
+                "telephone": "(48) 343410168",
+                "is_driver": false,
+                "status": null
+            },
+            {
+                "companyEmployeeId": 9,
+                "given_name": "Magdalena",
+                "family_name": "Kowalska",
+                "trans_id": "78784-3",
+                "email": "m.lipka@kompleks-transport.pl",
+                "telephone": "(48) 343410168",
+                "is_driver": false,
+                "status": null
+            },
+            {
+                "companyEmployeeId": 10,
+                "given_name": "Arkadiusz",
+                "family_name": "Bieniek",
+                "trans_id": "78784-4",
+                "email": "a.bieniek@kompleks-transport.pl",
+                "telephone": "(48) 343410168",
+                "is_driver": false,
+                "status": null
+            },
+            {
+                "companyEmployeeId": 11,
+                "given_name": "Maciej",
+                "family_name": "Różycki",
+                "trans_id": "78784-5",
+                "email": "m.rozycki@kompleks-transport.pl",
+                "telephone": "(48) 343410168",
+                "is_driver": false,
+                "status": null
+            },
+            {
+                "companyEmployeeId": 12,
+                "given_name": "Monika",
+                "family_name": "Król",
+                "trans_id": "78784-7",
+                "email": "m.szymczynska@kompleks-transport.pl",
+                "telephone": null,
+                "is_driver": false,
+                "status": null
+            }
+        ],
+        "trans_id": null,
+        "status": null
+    },
+    "dateOfIssue": "2017-10-21",
+    "extraInfo": null,
+    "isExtraInfo": null,
+    "invoiceNo": null,
+    "invoicePos": [],
+    "invoiceTotal": {
+        "totalNetto": 0,
+        "totalTax": 0,
+        "totalBrutto": 0,
+        "totalTaxExchanged": null
+    },
+    "companySeller": {
+        "addressList": [
+            {
+                "addressId": 3,
+                "address_type": "główny",
+                "country": "PL",
+                "postal_code": "61-757",
+                "locality": "Poznań",
+                "street_address": "Garbary 95/B14",
+                "street_number": "23"
+            }
+        ],
+        "companyId": 2,
+        "short_name": "Offer Trans",
+        "legal_name": "Offer Trans Małgorzata Rydz, Regina Rydz s.c.",
+        "vat_id": "PL9721265710",
+        "telephone": "(48) 607698627",
+        "fax": "",
+        "email": "spedycja@offertrans.pl",
+        "url": null,
+        "employeeList": [
+            {
+                "companyEmployeeId": 4,
+                "given_name": "Wojciech",
+                "family_name": "Rydz",
+                "trans_id": "905754-1",
+                "email": "spedycja@offertrans.pl",
+                "telephone": null,
+                "is_driver": false,
+                "status": null
+            },
+            {
+                "companyEmployeeId": 5,
+                "given_name": "Tomasz",
+                "family_name": "Bobrowski",
+                "trans_id": "905754-2",
+                "email": "spedycja@offertrans.pl",
+                "telephone": "(48) 726625388",
+                "is_driver": false,
+                "status": null
+            },
+            {
+                "companyEmployeeId": 6,
+                "given_name": "Bartosz",
+                "family_name": "Prochowski",
+                "trans_id": "905754-3",
+                "email": "spedycja@offertrans.pl",
+                "telephone": "(48) 509229735",
+                "is_driver": false,
+                "status": null
+            }
+        ],
+        "trans_id": null,
+        "status": null
+    },
+    "sellingDate": "2017-10-21"
+}

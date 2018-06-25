@@ -1,0 +1,6 @@
+<div  fxLayout fxLayoutAlign="start center">
+    <div fxShow fxHide.xs>Witaj&nbsp;<span *ngIf="!userName">Nieznajomy</span><span *ngIf="userName">{{userName}}</span> &nbsp;&nbsp;</div>
+    <button *ngIf="!userName" type="button" mat-mini-fab (click)="login()" color="primary" [matTooltipPosition]="'right'" matTooltip="Zaloguj" ><mat-icon>perm_identity</mat-icon></button>&nbsp;
+    <!-- <button *ngIf="userName" type="button" mat-mini-fab (click)="moreInfo()" color="primary" [matTooltipPosition]="'right'" matTooltip="Pokaż profil użytkownika"><mat-icon>info_outline</mat-icon></button>&nbsp; -->
+    <button *ngIf="userName" type="button" mat-mini-fab (click)="logout()" color="warn" [matTooltipPosition]="'right'" matTooltip="Wyloguj" ><mat-icon>exit_to_app</mat-icon></button>
+</div>
