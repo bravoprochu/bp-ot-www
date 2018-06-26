@@ -13,6 +13,7 @@ import { MomentCommonService } from '@bpShared/moment-common/moment-common.servi
 import { ICreationInfo } from '@bpCommonInterfaces/i-creation-info';
 import { PaymentTermsService } from '@bpShared/payment-terms/payment-terms.service';
 import { CurrencyCommonService } from '@bpShared/currency/currency-common.service';
+import {InvoiceDatesEnum} from '../interfaces/invoice-dates-enum';
 
 @Injectable()
 export class InvoiceCommonFunctionsService {
@@ -199,22 +200,48 @@ export class InvoiceCommonFunctionsService {
     });
   }
 
+  getInvoiceDatesGroup(fb: FormBuilder, isDestroyed$: Subject<boolean>, dateFileds?: InvoiceDatesEnum[]): FormGroup {
+    dateFileds = dateFileds !== undefined ? dateFileds : [InvoiceDatesEnum.issue, InvoiceDatesEnum.sell];
 
-
-
-
-  
-  isRateInInvoicePos(rate: any, posArr: IInvoiceRate[]): number {
-    let res: number = -1;
-    let idx: number = 0;
-    posArr.forEach(pos => {
-      if (rate == pos.vat_rate) {
-        res = idx;
-      }
-      idx++
+    let res = fb.group({
+      combined: [],
+      dateFileds: [dateFileds],
+      issue: [this.momentService.getTodayConstTimeMoment()],
+      received: [this.momentService.getTodayConstTimeMoment()],
+      sell: [this.momentService.getTodayConstTimeMoment()]
     });
+
+    let combined = res.get('combined');
+    let issue = res.get('issue');
+    let received = res.get('received');
+    let sell = res.get('sell');
+
+    combined.patchValue(this.getCombined(dateFileds, res), { emitEvent: false });
     return res;
   }
+
+  getCombined(dateFileds: InvoiceDatesEnum[], invoiceDatesFormGroup: FormGroup): string {
+    let isIssue = dateFileds.indexOf(InvoiceDatesEnum.issue) > -1;
+    let isReceived = dateFileds.indexOf(InvoiceDatesEnum.received) > -1;
+    let isSell = dateFileds.indexOf(InvoiceDatesEnum.sell) > -1;
+
+    let issue = invoiceDatesFormGroup.get('issue');
+    let received = invoiceDatesFormGroup.get('received');
+    let sell = invoiceDatesFormGroup.get('sell');
+
+    let i = isIssue ? `Wyst: ${this.momentService.getFormatedDate(issue.value)}` : null;
+    let r = isReceived ? `Otrzym: ${this.momentService.getFormatedDate(received.value)}` : null;
+    let s = isSell ? `Sprzed: ${this.momentService.getFormatedDate(sell.value)}` : null;
+
+    let resArr: string[] = [];
+    if (s != null) { resArr.push(s); }
+    if (i != null) { resArr.push(i); }
+    if (r != null) { resArr.push(r); }
+
+    return resArr.join(', ');
+  }
+
+
 
   getIInvoiceLine(vatRate: string) {
     return <IInvoicePos>{
@@ -235,12 +262,23 @@ export class InvoiceCommonFunctionsService {
       let curr= <IInvoicePos>lineG.get('current').value
       let foundLineGroup=lines.find(f=>f.current.brutto_value==curr.brutto_value && f.current.name==curr.name && f.current.netto_value==curr.netto_value && f.current.vat_rate==curr.vat_rate);
       if(foundLineGroup){
-        console.log('found', foundLineGroup);
         corr.setValue(foundLineGroup.corrections, {emitEvent: false});
       }
     })
   }
 
+
+  isRateInInvoicePos(rate: any, posArr: IInvoiceRate[]): number {
+    let res: number = -1;
+    let idx: number = 0;
+    posArr.forEach(pos => {
+      if (rate == pos.vat_rate) {
+        res = idx;
+      }
+      idx++
+    });
+    return res;
+  }
 
   lineAdd(invoiceLines: FormArray, fb: FormBuilder) {
     let newLineFg = this.formInvoiceLineGroupGroup(fb);

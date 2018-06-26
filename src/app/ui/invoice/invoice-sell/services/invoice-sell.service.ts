@@ -25,7 +25,7 @@ export class InvoiceSellService extends DataFactoryService {
    .take(1)
    .catch(err=> {
     return Observable.of("error");
-  })
+  })    
    //.catch(this.errorHandler);
  }
 

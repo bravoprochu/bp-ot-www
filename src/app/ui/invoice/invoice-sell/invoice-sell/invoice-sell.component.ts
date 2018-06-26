@@ -268,9 +268,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
         }
       })
       .map((s:any)=>{
-        console.log('lines changed..', s);
         if (s == "error") {
-
         } else {
           let data = <IInvoiceSell>s;
           this.icf.patchInvoiceRates(data.rates, this.rates, this.fb);

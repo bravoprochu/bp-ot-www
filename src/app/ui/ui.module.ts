@@ -2,7 +2,6 @@ import { TransportService } from './transport/services/transport.service';
 import { TransportComponent } from './transport/transport/transport.component';
 import { InvoiceBuyService } from './invoice/invoice-buy/services/invoice-buy.service';
 import { NgModule } from '@angular/core';
-import { FlexLayoutModule } from "@angular/flex-layout";
 import { HttpClientModule } from '@angular/common/http';
 import { UiRoutingModule } from 'app/ui/ui-routing.module';
 import { AddressComponent } from 'app/ui/address/address.component';
@@ -98,7 +97,7 @@ import { CurrencyModule } from '@bpShared/currency/currency.module';
     TranseuService,
     TransportService,
     UsersManagementService,
-    InvoiceCommonFunctionsService
+    InvoiceCommonFunctionsService,
   ],
   entryComponents:[
     PaymentRemindDialogComponent
