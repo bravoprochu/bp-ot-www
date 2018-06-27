@@ -6,14 +6,13 @@ import { IDialogTakNieInfo } from '../../../shared/interfaces/idialog-tak-nie-in
 import { MatDialog } from '@angular/material';
 import { Subject } from 'rxjs';
 import { IInvoicePos } from '../interfaces/iinvoice-pos';
-import {IInvoiceBuy} from '../interfaces/iinvoice-buy';
+import { IInvoiceBuy } from '../interfaces/iinvoice-buy';
 import { IInvoiceLineGroup, IInvoiceExtraInfo, IInvoiceSell, IInvoiceExtraInfoChecked, IInvoiceRateGroup, IInvoiceTotalGroup } from '../interfaces/iinvoice-sell';
-import {IInvoiceRate} from '../interfaces/iinvoice-rate';
+import { IInvoiceRate } from '../interfaces/iinvoice-rate';
 import { MomentCommonService } from '@bpShared/moment-common/moment-common.service';
 import { ICreationInfo } from '@bpCommonInterfaces/i-creation-info';
 import { PaymentTermsService } from '@bpShared/payment-terms/payment-terms.service';
 import { CurrencyCommonService } from '@bpShared/currency/currency-common.service';
-import {InvoiceDatesEnum} from '../interfaces/invoice-dates-enum';
 
 @Injectable()
 export class InvoiceCommonFunctionsService {
@@ -33,7 +32,7 @@ export class InvoiceCommonFunctionsService {
       "invoiceBuyId": [0],
       "companySeller": this.cf.formCompanyGroup(fb),
       "creationInfo": this.cf.formCreationInfo(fb),
-      "currency": this.currService.getCurrencyListGroup(fb,isDestroyed$),
+      "currency": this.currService.getCurrencyListGroup(fb, isDestroyed$),
       "dateOfIssue": [this.momentService.getTodayConstTimeMoment(), Validators.required],
       "dateOfSell": [this.momentService.getTodayConstTimeMoment(), Validators.required],
       "info": [null],
@@ -47,11 +46,11 @@ export class InvoiceCommonFunctionsService {
       "isInvoiceReceived": [true],
       "isCorrection": [false],
       "invoiceReceivedDate": [this.momentService.getToday()],
-      "loadId":[null],
+      "loadId": [null],
       "loadNo": [null],
       "paymentIsDone": [false],
       "paymentDate": [this.momentService.getToday()],
-      "paymentTerms": this.pTermsService.getPaymentTermsGroup(fb,isDestroyed$),
+      "paymentTerms": this.pTermsService.getPaymentTermsGroup(fb, isDestroyed$),
       "rates": fb.array([]),
     });
 
@@ -63,9 +62,9 @@ export class InvoiceCommonFunctionsService {
       "invoiceSellId": [0],
       "baseInvoiceId": [0],
       "companyBuyer": this.cf.formCompanyGroup(fb),
-      "companySeller": this.cf.formCompanyGroup(fb),
+      // "companySeller": this.cf.formCompanyGroup(fb),
       "correctionId": [null],
-      "currency": this.currService.getCurrencyListGroup(fb,isDestroyed$),
+      "currency": this.currService.getCurrencyListGroup(fb, isDestroyed$),
       "dateOfIssue": [this.momentService.getTodayConstTimeMoment(), Validators.required],
       "dateOfSell": [this.momentService.getTodayConstTimeMoment(), Validators.required],
       "extraInfo": this.formInvoiceSellExtraInfoGroup(fb),
@@ -76,7 +75,7 @@ export class InvoiceCommonFunctionsService {
       "info": [null],
       "isCorrection": [false],
       "invoiceNo": [null],
-      "invoiceOriginalNo":[],
+      "invoiceOriginalNo": [],
       "invoiceOriginalPaid": [false],
       "invoiceLines": fb.array([]),
       "invoiceTotal": fb.group({
@@ -86,18 +85,18 @@ export class InvoiceCommonFunctionsService {
       }),
       "paymentIsDone": [false],
       "paymentDate": [null],
-      "paymentTerms": this.pTermsService.getPaymentTermsGroup(fb,isDestroyed$),
+      "paymentTerms": this.pTermsService.getPaymentTermsGroup(fb, isDestroyed$),
       // "rates": fb.array([]),
       rates: fb.array([])
-      
+
 
     });
-    
+
 
     res.get('dateOfSell').valueChanges
       .takeUntil(isDestroyed$)
       .subscribe(s => {
-        res.get('paymentTerms.day0').patchValue(s, {emitEvent: false});
+        res.get('paymentTerms.day0').patchValue(s, { emitEvent: false });
       })
     return res;
   }
@@ -112,10 +111,9 @@ export class InvoiceCommonFunctionsService {
     });
   }
 
-  formInvoiceRateGroupGroup(fb: FormBuilder)
-  {
+  formInvoiceRateGroupGroup(fb: FormBuilder) {
     return fb.group({
-      "vatRate":[null],
+      "vatRate": [null],
       "original": this.formInvoiceRatesValuesGroup(fb),
       "current": this.formInvoiceRatesValuesGroup(fb),
       "corrections": this.formInvoiceRatesValuesGroup(fb)
@@ -160,7 +158,7 @@ export class InvoiceCommonFunctionsService {
       "vat_unit_value": [null],
       "vat_value": [null],
       "vat_rate": [null, Validators.required],
-      });
+    });
   }
 
 
@@ -180,14 +178,13 @@ export class InvoiceCommonFunctionsService {
       "vat_unit_value": [null],
       "vat_value": [null],
       "vat_rate": [null],
-      });
+    });
   }
 
-  formInvoiceLineGroupGroup(fb:FormBuilder)
-  {
+  formInvoiceLineGroupGroup(fb: FormBuilder) {
     return fb.group({
       "corrections": this.formInvoiceLineNoValidationGroup(fb),
-      "current":  this.formInvoiceLineGroup(fb),
+      "current": this.formInvoiceLineGroup(fb),
       "original": this.formInvoiceLineNoValidationGroup(fb)
     })
   }
@@ -199,48 +196,6 @@ export class InvoiceCommonFunctionsService {
       "total_tax": [0, Validators.required],
     });
   }
-
-  getInvoiceDatesGroup(fb: FormBuilder, isDestroyed$: Subject<boolean>, dateFileds?: InvoiceDatesEnum[]): FormGroup {
-    dateFileds = dateFileds !== undefined ? dateFileds : [InvoiceDatesEnum.issue, InvoiceDatesEnum.sell];
-
-    let res = fb.group({
-      combined: [],
-      dateFileds: [dateFileds],
-      issue: [this.momentService.getTodayConstTimeMoment()],
-      received: [this.momentService.getTodayConstTimeMoment()],
-      sell: [this.momentService.getTodayConstTimeMoment()]
-    });
-
-    let combined = res.get('combined');
-    let issue = res.get('issue');
-    let received = res.get('received');
-    let sell = res.get('sell');
-
-    combined.patchValue(this.getCombined(dateFileds, res), { emitEvent: false });
-    return res;
-  }
-
-  getCombined(dateFileds: InvoiceDatesEnum[], invoiceDatesFormGroup: FormGroup): string {
-    let isIssue = dateFileds.indexOf(InvoiceDatesEnum.issue) > -1;
-    let isReceived = dateFileds.indexOf(InvoiceDatesEnum.received) > -1;
-    let isSell = dateFileds.indexOf(InvoiceDatesEnum.sell) > -1;
-
-    let issue = invoiceDatesFormGroup.get('issue');
-    let received = invoiceDatesFormGroup.get('received');
-    let sell = invoiceDatesFormGroup.get('sell');
-
-    let i = isIssue ? `Wyst: ${this.momentService.getFormatedDate(issue.value)}` : null;
-    let r = isReceived ? `Otrzym: ${this.momentService.getFormatedDate(received.value)}` : null;
-    let s = isSell ? `Sprzed: ${this.momentService.getFormatedDate(sell.value)}` : null;
-
-    let resArr: string[] = [];
-    if (s != null) { resArr.push(s); }
-    if (i != null) { resArr.push(i); }
-    if (r != null) { resArr.push(r); }
-
-    return resArr.join(', ');
-  }
-
 
 
   getIInvoiceLine(vatRate: string) {
@@ -256,13 +211,13 @@ export class InvoiceCommonFunctionsService {
     }
   }
 
-  getInvoiceLinesCorrections(lines: IInvoiceLineGroup[], linesFA: FormArray){
-    linesFA.controls.forEach(lineG=>{
-      let corr=lineG.get('corrections');
-      let curr= <IInvoicePos>lineG.get('current').value
-      let foundLineGroup=lines.find(f=>f.current.brutto_value==curr.brutto_value && f.current.name==curr.name && f.current.netto_value==curr.netto_value && f.current.vat_rate==curr.vat_rate);
-      if(foundLineGroup){
-        corr.setValue(foundLineGroup.corrections, {emitEvent: false});
+  getInvoiceLinesCorrections(lines: IInvoiceLineGroup[], linesFA: FormArray) {
+    linesFA.controls.forEach(lineG => {
+      let corr = lineG.get('corrections');
+      let curr = <IInvoicePos>lineG.get('current').value
+      let foundLineGroup = lines.find(f => f.current.brutto_value == curr.brutto_value && f.current.name == curr.name && f.current.netto_value == curr.netto_value && f.current.vat_rate == curr.vat_rate);
+      if (foundLineGroup) {
+        corr.setValue(foundLineGroup.corrections, { emitEvent: false });
       }
     })
   }
@@ -290,7 +245,7 @@ export class InvoiceCommonFunctionsService {
   }
 
 
-  lineRemove(idx: number, rForm: FormGroup, invoiceLines: FormArray, isDestroyed$:Subject<boolean>) {
+  lineRemove(idx: number, rForm: FormGroup, invoiceLines: FormArray, isDestroyed$: Subject<boolean>) {
     let d = this.dialogTakNie.open(DialogTakNieComponent, { data: <IDialogTakNieInfo>{ title: "Faktury", question: "Czy na pewno usunąć tą pozycję ?" } });
     d.afterClosed()
       .takeUntil(isDestroyed$)
@@ -307,97 +262,91 @@ export class InvoiceCommonFunctionsService {
     this.cf.patchCompanyData(inv.companySeller, <FormGroup>rForm.get('companySeller'), fb);
     let invoicePosList = (<FormArray>rForm.get('invoiceLines'));
     let ratesValueList = (<FormArray>rForm.get('rates'));
-    let creationInfo=<FormGroup>rForm.get('creationInfo');
-    let paymentTerms=<FormGroup>rForm.get('paymentTerms');
+    let creationInfo = <FormGroup>rForm.get('creationInfo');
+    let paymentTerms = <FormGroup>rForm.get('paymentTerms');
 
     this.cf.patchCreationInfo(<ICreationInfo>inv, creationInfo);
 
-    inv.invoiceReceivedDate=this.momentService.convertToConstTime(inv.invoiceReceivedDate);
+    inv.invoiceReceivedDate = this.momentService.convertToConstTime(inv.invoiceReceivedDate);
     this.patchInvoiceLine(inv.invoiceLines, invoicePosList, fb);
     this.patchInvoiceRates(inv.rates, ratesValueList, fb);
     this.pTermsService.patchPaymentTerms(inv.paymentTerms, paymentTerms);
-    
+
     inv.dateOfIssue = this.momentService.convertToConstTime(inv.dateOfIssue);
-    inv.paymentDate=this.momentService.convertToConstTime(inv.paymentDate);
+    inv.paymentDate = this.momentService.convertToConstTime(inv.paymentDate);
     inv.dateOfSell = this.momentService.convertToConstTime(inv.dateOfSell);
-    rForm.patchValue(inv, {emitEvent:false});
+    rForm.patchValue(inv, { emitEvent: false });
   }
 
   patchInvoiceSell(inv: IInvoiceSell, rForm: FormGroup, fb: FormBuilder): void {
-    
+
     this.cf.patchCompanyData(inv.companyBuyer, <FormGroup>rForm.get('companyBuyer'), fb);
-    this.cf.patchCompanyData(inv.companySeller, <FormGroup>rForm.get('companySeller'), fb);
-    
-    let creationInfo=<FormGroup>rForm.get('creationInfo');
-    let currency= <FormGroup>rForm.get('currency');
+    // this.cf.patchCompanyData(inv.companySeller, <FormGroup>rForm.get('companySeller'), fb);
 
-    let invLines=<FormArray>rForm.get('invoiceLines');
+    let creationInfo = <FormGroup>rForm.get('creationInfo');
+    let currency = <FormGroup>rForm.get('currency');
 
-    let invTotal=<FormGroup>rForm.get('invoiceTotal');
+    let invLines = <FormArray>rForm.get('invoiceLines');
 
-    let rates=<FormArray>rForm.get('rates');
+    let invTotal = <FormGroup>rForm.get('invoiceTotal');
+
+    let rates = <FormArray>rForm.get('rates');
 
 
     this.cf.patchCreationInfo(<ICreationInfo>inv, creationInfo);
 
-    
+
     //invoiceLines
     this.patchInvoiceLine(inv.invoiceLines, <FormArray>invLines, fb);
- 
+
     //rates
     this.patchInvoiceRates(inv.rates, rates, fb);
 
     this.patchInvoiceTotal(inv.invoiceTotal, invTotal, fb);
     inv.dateOfSell = this.momentService.convertToConstTime(inv.dateOfSell);
-    inv.dateOfIssue=this.momentService.convertToConstTime(inv.dateOfIssue);
+    inv.dateOfIssue = this.momentService.convertToConstTime(inv.dateOfIssue);
 
     let pTerms = <FormGroup>rForm.get('paymentTerms');
     this.pTermsService.patchPaymentTerms(inv.paymentTerms, pTerms);
-    
+
     this.cf.patchInvoiceExtraInfo(inv.extraInfo, <FormGroup>rForm.get('extraInfo'));
-    
-    rForm.patchValue(inv, {emitEvent: false, onlySelf:true});
-  }  
+
+    rForm.patchValue(inv, { emitEvent: false, onlySelf: true });
+  }
 
 
-  
-  patchInvoiceLine(data: IInvoiceLineGroup[], rForm:FormArray, fb:FormBuilder)
-  {
-    if(data==undefined || data==null || data.length==0) {return;}
-    rForm.controls=[];
+
+  patchInvoiceLine(data: IInvoiceLineGroup[], rForm: FormArray, fb: FormBuilder) {
+    if (data == undefined || data == null || data.length == 0) { return; }
+    rForm.controls = [];
     data.forEach(group => {
-      let invLineGroup=this.formInvoiceLineGroupGroup(fb);
-      invLineGroup.get('corrections').patchValue(group.corrections, {emitEvent: false});
-      invLineGroup.get('current').patchValue(group.current, {emitEvent: false});
-      invLineGroup.get('original').patchValue(group.original, {emitEvent: false});
+      let invLineGroup = this.formInvoiceLineGroupGroup(fb);
+      invLineGroup.get('corrections').patchValue(group.corrections, { emitEvent: false });
+      invLineGroup.get('current').patchValue(group.current, { emitEvent: false });
+      invLineGroup.get('original').patchValue(group.original, { emitEvent: false });
       //invLineGroup.patchValue(group, {emitEvent:false});
       rForm.push(invLineGroup);
     });
   }
 
-  patchInvoiceRates(data: IInvoiceRateGroup[], rForm:FormArray, fb: FormBuilder):void
-  {
-    if(data==undefined || data==null || data.length==0) {return;}
-    rForm.controls=[];
-    data.forEach(rate=>{
-      let rateGroup=this.formInvoiceRateGroupGroup(fb);
-      rateGroup.patchValue(rate, {emitEvent:false});
+  patchInvoiceRates(data: IInvoiceRateGroup[], rForm: FormArray, fb: FormBuilder): void {
+    if (data == undefined || data == null || data.length == 0) { return; }
+    rForm.controls = [];
+    data.forEach(rate => {
+      let rateGroup = this.formInvoiceRateGroupGroup(fb);
+      rateGroup.patchValue(rate, { emitEvent: false });
       rForm.push(rateGroup);
     })
   }
 
 
-  patchInvoiceTotal(data: IInvoiceTotalGroup, rForm:FormGroup, fb:FormBuilder): void{
-    let invTotalCorrections=<FormGroup>rForm.get('corrections');
-    let invTotalCurrent=<FormGroup>rForm.get('current');
-    let invTotalOrginal=<FormGroup>rForm.get('original');
-        //invoice total
-        invTotalCorrections.patchValue(data.corrections, {emitEvent:false});
-        invTotalCurrent.patchValue(data.current, {emitEvent:false});
-        invTotalOrginal.patchValue(data.original, {emitEvent:false});
+  patchInvoiceTotal(data: IInvoiceTotalGroup, rForm: FormGroup, fb: FormBuilder): void {
+    let invTotalCorrections = <FormGroup>rForm.get('corrections');
+    let invTotalCurrent = <FormGroup>rForm.get('current');
+    let invTotalOrginal = <FormGroup>rForm.get('original');
+    //invoice total
+    invTotalCorrections.patchValue(data.corrections, { emitEvent: false });
+    invTotalCurrent.patchValue(data.current, { emitEvent: false });
+    invTotalOrginal.patchValue(data.original, { emitEvent: false });
   }
-
-
-
-
 }

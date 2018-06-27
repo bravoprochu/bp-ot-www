@@ -48,5 +48,5 @@ export const environment = {
  export const DEFAULT_APP_VALUES = {
   routeParamName: "id",
   dateLocalFormat: "YYYY-MM-DD",
-  defaultConstHour: 9,
+  defaultConstHour: 0,
 }

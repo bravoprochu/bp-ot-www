@@ -28,7 +28,10 @@ export class MomentCommonService {
   }
 
   getToday(): moment.Moment{
-    return moment();
+    //return moment();
+    let res=moment();
+    this.setConstTimeMoment(res);
+    return res;
   }
 
   getTodayFormated(): string{

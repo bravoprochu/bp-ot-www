@@ -30,7 +30,7 @@
 
     <ng-container matColumnDef="dataSprzedazy">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Data sprzedaży</mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.dataSprzedazy}}</mat-cell>
+            <mat-cell *matCellDef="let row"> {{row.dataSprzedazy | date: 'yyyy-MM-dd'}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="nabywca">

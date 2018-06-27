@@ -95,7 +95,7 @@ export class PaymentTermsService {
     let updatePaymentDateBasedOnDays = (day: moment.Moment, days: number) => {
       if (!day.isValid) { return; }
       if (days < 0) { return; }
-      let _date: moment.Moment = moment(day).add(days, "days");
+      let _date: moment.Moment = day.clone().add(days, "days");
       this.mc.setConstTimeMoment(_date);
       paymentDate.setValue(_date, { emitEvent: false });
     }
