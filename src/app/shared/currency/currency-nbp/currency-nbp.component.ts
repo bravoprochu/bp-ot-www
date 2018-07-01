@@ -67,6 +67,7 @@ export class CurrencyNbpComponent implements OnInit, OnDestroy {
       .subscribe(
         (_data: any) => {
           this.cf.patchCurrencyNbpResult(_data, this.rForm);
+          this.rForm.updateValueAndValidity();
         },
       )
   }
