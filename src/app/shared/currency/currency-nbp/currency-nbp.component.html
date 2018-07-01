@@ -3,7 +3,7 @@
 </mat-form-field>
 
 <mat-form-field *ngIf="currency.value.name!='PLN'">
-  <input matInput placeholder="Data kursu" [max]="maxDate"  [matDatepicker]="dp" [formControl]="rateDate">
+  <input matInput placeholder="Data kursu" [(ngModel)]="date" [max]="maxDate"  [matDatepicker]="dp" (dateInput)="dateInputChange($event)" (dateChange)="dateChange($event)">
   <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
   <mat-datepicker #dp="matDatepicker"></mat-datepicker>
 </mat-form-field>

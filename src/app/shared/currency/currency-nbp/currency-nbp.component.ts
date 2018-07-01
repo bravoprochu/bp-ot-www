@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { CurrencyCommonService } from '@bpShared/currency/currency-common.service';
 import { Moment } from 'moment';
 import { MomentCommonService } from '@bpShared/moment-common/moment-common.service';
+import { MatDatepickerInputEvent } from '@angular/material';
 
 
 @Component({
@@ -27,7 +28,9 @@ export class CurrencyNbpComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.date=this.rateDate.value;
     this.maxDate=this.momentService.getNow();
+    
     this.isDestroyed$ = new Subject<boolean>();
     this.placeholder = this.placeholder !== undefined ? this.placeholder : "Wartość";
     
@@ -35,6 +38,7 @@ export class CurrencyNbpComponent implements OnInit, OnDestroy {
 
   isDestroyed$: Subject<boolean>;
   maxDate: Moment
+  date: Moment;
 
 
 
@@ -60,6 +64,17 @@ export class CurrencyNbpComponent implements OnInit, OnDestroy {
     return <FormControl>this.rForm.get('rateDate');
   }
   //#endregion
+
+  dateInputChange(ev: MatDatepickerInputEvent<Moment>){
+    if(ev.value){
+    console.log('input change...',ev.value.toLocaleString());
+    }    
+  }
+
+  dateChange(ev: MatDatepickerInputEvent<Date>){
+    console.log('date changed', ev.value);
+    this.rateDate.setValue(ev.value, {emitEvent: true});
+  }
 
   refresh() {
     this.cf.getNbpService$(this.rForm.value).pipe(

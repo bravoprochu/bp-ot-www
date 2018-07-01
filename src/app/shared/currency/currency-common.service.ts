@@ -5,11 +5,10 @@ import { ICurrencyNbpResult } from './interfaces/i-currency-nbp-result';
 import { FormGroup, FormBuilder, FormControlDirective, FormControl, Validators } from '@angular/forms';
 import { Subject, empty, of, observable, Observable, throwError } from 'rxjs';
 import * as moment from 'moment';
-import { map, merge, takeUntil, tap, take, switchMap, debounceTime, distinctUntilChanged, catchError, repeat, retry, delay } from 'rxjs/operators';
+import { map, merge, takeUntil, tap, take, switchMap, debounceTime, distinctUntilChanged, catchError, repeat, retry, delay, distinctUntilKeyChanged } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { MomentCommonService } from '@bpShared/moment-common/moment-common.service';
 import { ICurrencyNbpResultRate } from '@bpShared/currency/interfaces/i-currency-nbp-result-rate';
-import { DEFAULT_APP_VALUES } from 'environments/environment.prod';
 
 
 
@@ -36,22 +35,23 @@ export class CurrencyCommonService {
     //    initCurrencyName = initCurrencyName ? initCurrencyName : "PLN";
     let res = fb.control({});
     let initCurr = CURRENCY_LIST.find(f => f.name == initCurrencyName) ? CURRENCY_LIST.find(f => f.name == initCurrencyName) : CURRENCY_LIST.find(f => f.name == "PLN")
-    res.patchValue(initCurr, { emitEvent: false });
+    res.setValue(initCurr, { emitEvent: false });
     return res;
   }
 
 
   getCurrencyNbpGroup(fb: FormBuilder, isDestroyed$: Subject<boolean>, initCurrencyName?: string): FormGroup {
-    initCurrencyName = initCurrencyName ? initCurrencyName : "EUR";
+    let _initCurrencyName = initCurrencyName ? initCurrencyName : "EUR";
 
     //helper method
     let res = fb.group({
       "price": [0, Validators.compose([Validators.required, Validators.min(0)])],
-      "currency": this.getCurrencyListGroup(fb, isDestroyed$, initCurrencyName),
+      "currency": this.getCurrencyListGroup(fb, isDestroyed$, _initCurrencyName),
       "plnValue": [null],
       "rate": [0],
       "rateDate": [this.mC.isCurrencyNbpValidDate(this.mC.getTodayConstTimeMoment())]
     });
+
 
     let rateDate = res.get('rateDate');
     let rate = res.get('rate');
@@ -62,14 +62,15 @@ export class CurrencyCommonService {
     // plnValue.disable();
     // rate.disable();
 
-    let rateDate$ = rateDate.valueChanges.pipe(
+    let rateDate$ = rateDate
+      .valueChanges.pipe(
       takeUntil(isDestroyed$),
-      map((_date: moment.Moment) => {
-        if (_date instanceof moment) {
-          rateDate.setValue(this.mC.isCurrencyNbpValidDate(_date), { emitEvent: false });
-        }
-        return _date;
-      }),
+      // map((_date: moment.Moment) => {
+      //   if (_date instanceof moment) {
+      //     rateDate.setValue(this.mC.isCurrencyNbpValidDate(_date), { emitEvent: false });
+      //   }
+      //   return _date;
+      // }),
     );
 
     let price$ = price.valueChanges.pipe(
@@ -97,7 +98,21 @@ export class CurrencyCommonService {
           price: price.value,
           rateDate: _rateDate
         }
-        return this.getNbpRate$(_nbp);
+
+        if (_nbp.price == null ||
+          _nbp.price == 0 ||
+          _nbp.currency == null ||
+          _nbp.rateDate == null
+        ) {
+          console.log('getNbpRate return empty');
+          return empty();
+        }
+        if (_nbp.currency.name == this.findCurrencyByName("pln").name) {
+          return of(<ICurrencyNbpResult>{
+            rates: []
+          });
+        }
+        return this.getNbpService$(_nbp);
       }),
     )
       .subscribe(
@@ -109,29 +124,34 @@ export class CurrencyCommonService {
     return res;
   }
 
+  getCurrencyNbp$(_currNBP: ICurrencyNbp):Observable<ICurrencyNbp> {
+    console.log('getCurrencyNBP$', _currNBP);
+   
+    return this.getNbpService$(_currNBP).pipe(
+//      tap(()=>console.log('getCurrencyNbp$ from _currNBP', _currNBP)),
+      switchMap((_nbpResult: ICurrencyNbpResult)=>{
+        console.log('switchMap');
+        let rate: ICurrencyNbpResultRate = _nbpResult.rates[0];
+        return of(<ICurrencyNbp>{
+          currency: _currNBP.currency,
+          plnValue: _currNBP.price * rate.mid,
+          price: _currNBP.price,
+          rate: _nbpResult.rates[0].mid,
+          rateDate: this.mC.convertToMoment(rate.effectiveDate)
+        }).pipe(
+          tap(()=>console.log('getCurrencyNbp$ Icurrncy from _currNBP', _nbpResult)),
+        );
+      }
+    ));
+  }
 
-  getNbpRate$(nbp: ICurrencyNbp): Observable<ICurrencyNbpResult> {
-    if (nbp.price == null ||
-      nbp.price == 0 ||
-      nbp.currency == null ||
-      nbp.rateDate == null
-    ) {
-      return empty();
-    }
-
-    if (nbp.currency.name == this.findCurrencyByName("pln").name) {
-
-      return of(<ICurrencyNbpResult>{
-        rates: []
-      });
-    }
-
-
+  
+  getNbpService$(nbp: ICurrencyNbp): Observable<ICurrencyNbpResult> {
     //
     // if nbp service returns not found (weekend day/ holiday etc.. ) 
     // request rateDate (a day before) (retry 5 times..)
     //
-
+    console.log('nbpService$', nbp);
     let dayBefore: number = 0
 
     let nbpService$ = (_dayBefore) => this.httpClient.get(`//api.nbp.pl/api/exchangerates/rates/a/${nbp.currency.name.toLowerCase()}/${this.mC.getFormatedDate(nbp.rateDate.subtract(_dayBefore, "days"))}`)
@@ -142,6 +162,7 @@ export class CurrencyCommonService {
 
     return nbpService$(0)
       .pipe(
+        tap(()=>console.log('nbpService, dayBefore [try]', dayBefore)),
         catchError(error => {
           if (error instanceof HttpErrorResponse) {
             if (error.status == 404) {
@@ -161,17 +182,19 @@ export class CurrencyCommonService {
 
 
   patchCurrencyList(data: ICurrency, rForm: FormControl) {
-    rForm.setValue(data, { emitEvent: true });
+      rForm.setValue(data ? data: this.findCurrencyByName('pln'), { emitEvent: false});
+      rForm.markAsDirty();
   }
 
 
   patchCurrencyNbp(data: ICurrencyNbp, rForm: FormGroup) {
-
+    let d= moment.isMoment(data.rateDate);
     data.rateDate = moment.isMoment(data.rateDate) ? data.rateDate : moment(data.rateDate);
     // rForm.patchValue(data, {emitEvent: false});
     let currency = <FormControl>rForm.get('currency');
     this.patchCurrencyList(data.currency, currency);
     rForm.setValue(data, { emitEvent: false });
+    rForm.markAsDirty();
   }
 
 
@@ -185,7 +208,6 @@ export class CurrencyCommonService {
     let _rFormRateDate = <FormControl>rForm.get("rateDate");
 
     let _plnValue = isNbpResRates ? Math.round((_rate * _rFormPrice.value) * 100) / 100 : _rFormPrice.value;
-
     let _rateDate = isNbpResRates ? moment(_nbpRes.rates[0].effectiveDate) : null;
 
     _rFormPlnValue.setValue(_plnValue, { emitEvent: false });
