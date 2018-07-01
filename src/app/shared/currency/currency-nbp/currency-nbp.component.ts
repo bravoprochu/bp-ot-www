@@ -2,9 +2,8 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { CurrencyCommonService } from '@bpShared/currency/currency-common.service';
-import { switchMap, takeUntil, take, tap } from 'rxjs/operators';
-import { ICurrencyNbpResult } from '@bpShared/currency/interfaces/i-currency-nbp-result';
-import { ICurrency } from '@bpShared/currency/interfaces/i-currency';
+import { Moment } from 'moment';
+import { MomentCommonService } from '@bpShared/moment-common/moment-common.service';
 
 
 @Component({
@@ -23,15 +22,19 @@ export class CurrencyNbpComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    private cf: CurrencyCommonService
+    private cf: CurrencyCommonService,
+    private momentService: MomentCommonService,
   ) { }
 
   ngOnInit() {
+    this.maxDate=this.momentService.getNow();
     this.isDestroyed$ = new Subject<boolean>();
     this.placeholder = this.placeholder !== undefined ? this.placeholder : "Wartość";
+    
   }
 
   isDestroyed$: Subject<boolean>;
+  maxDate: Moment
 
 
 
@@ -59,7 +62,7 @@ export class CurrencyNbpComponent implements OnInit, OnDestroy {
   //#endregion
 
   refresh() {
-    this.cf.getNbpRate$(this.rForm.value).pipe(
+    this.cf.getNbpService$(this.rForm.value).pipe(
     )
       .subscribe(
         (_data: any) => {

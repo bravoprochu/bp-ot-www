@@ -3,7 +3,7 @@
 </mat-form-field>
 
 <mat-form-field *ngIf="currency.value.name!='PLN'">
-  <input matInput placeholder="Data kursu" [matDatepicker]="dp" [formControl]="rateDate">
+  <input matInput placeholder="Data kursu" [max]="maxDate"  [matDatepicker]="dp" [formControl]="rateDate">
   <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
   <mat-datepicker #dp="matDatepicker"></mat-datepicker>
 </mat-form-field>
@@ -18,6 +18,6 @@
   <input matInput disabled placeholder="wartość PLN" value="{{plnValue.value}}">
 </mat-form-field>
 
-<button mat-mini-fab (click)="refresh()">
+<button mat-mini-fab (click)="refresh()" *ngIf="rate.value>0">
   <mat-icon>refresh</mat-icon>
 </button>
