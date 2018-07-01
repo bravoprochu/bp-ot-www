@@ -28,7 +28,6 @@ export class CurrencyNbpComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.date=this.rateDate.value;
     this.maxDate=this.momentService.getNow();
     
     this.isDestroyed$ = new Subject<boolean>();
@@ -38,9 +37,6 @@ export class CurrencyNbpComponent implements OnInit, OnDestroy {
 
   isDestroyed$: Subject<boolean>;
   maxDate: Moment
-  date: Moment;
-
-
 
 
 
@@ -65,16 +61,16 @@ export class CurrencyNbpComponent implements OnInit, OnDestroy {
   }
   //#endregion
 
-  dateInputChange(ev: MatDatepickerInputEvent<Moment>){
-    if(ev.value){
-    console.log('input change...',ev.value.toLocaleString());
-    }    
-  }
+  // dateInputChange(ev: MatDatepickerInputEvent<Moment>){
+  //   if(ev.value){
+  //   console.log('input change...',ev.value.toLocaleString());
+  //   }    
+  // }
 
-  dateChange(ev: MatDatepickerInputEvent<Date>){
-    console.log('date changed', ev.value);
-    this.rateDate.setValue(ev.value, {emitEvent: true});
-  }
+  // dateChange(ev: MatDatepickerInputEvent<Date>){
+  //   console.log('date changed', ev.value);
+  //   this.rateDate.setValue(ev.value, {emitEvent: true});
+  // }
 
   refresh() {
     this.cf.getNbpService$(this.rForm.value).pipe(
