@@ -1,12 +1,9 @@
 import { ITransportOffer } from '../interfaces/itransport-offer';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { IListObj } from '../../../shared/ilist-obj';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ITitle } from 'app/shared/ititle';
 import { IDetailObj } from 'app/shared/idetail-obj';
 import { INavDetailInfo } from 'app/shared/interfaces/inav-detail-info';
 import { CommonFunctionsService } from 'app/services/common-functions.service';
-import { LoadService } from 'app/ui/loads/services/load.service';
 import { FormGroup } from '@angular/forms/src/model';
 import { TransportService } from 'app/ui/transport/services/transport.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,10 +11,9 @@ import { MatDialog } from '@angular/material';
 import { DialogTakNieComponent } from 'app/shared/dialog-tak-nie/dialog-tak-nie.component';
 import { IDialogTakNieInfo } from 'app/shared/interfaces/idialog-tak-nie-info';
 import { Observable } from 'rxjs/Observable';
-import { observable } from 'rxjs/symbol/observable';
 import { Subject } from 'rxjs';
-import { MomentCommonModule } from '@bpShared/moment-common/moment-common.module';
 import * as moment from 'moment';
+import { ICurrency } from '@bpShared/currency/interfaces/i-currency';
 
 @Component({
   selector: 'app-transport',
@@ -156,10 +152,13 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
       this.unloadDate.patchValue(this.cf.getNextHour(2));
     }
   }
+
+
   invoiceSellGen() {
+    console.log(this.id.value);
     if (!this.id.value) { return; }
     let id = this.id.value;
-    let actCurr=this.currency.get('name').value;
+    let actCurr: ICurrency= <ICurrency>this.currency.value;
 
     if (!this.invoiceSellId.value) {
       this.isPending = true;
@@ -169,11 +168,11 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
         .afterClosed()
         .switchMap(czyPLN=>{
           if(czyPLN){
-            if(actCurr=="PLN"){
+            if(actCurr.name=="PLN"){
               console.log('waluta pln so OK !')
               return Observable.of(true);
             } else{
-              return this.dialogTakNie.open(DialogTakNieComponent, {data: <IDialogTakNieInfo>{title: "Waluta faktury", question: `UWAGA, sprawdź regulamin zlecenia.  Zlecenie jest w ${actCurr}, czy faktura ma być przeliczona i wystawiona w walucie PLN ?`}}).afterClosed()
+              return this.dialogTakNie.open(DialogTakNieComponent, {data: <IDialogTakNieInfo>{title: "Waluta faktury", question: `UWAGA, sprawdź regulamin zlecenia.  Zlecenie jest w ${actCurr.description}, czy faktura ma być przeliczona i wystawiona w walucie PLN ?`}}).afterClosed()
             }
           } else {
             this.isPending=false;

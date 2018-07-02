@@ -13,13 +13,15 @@ import { IBasicActions } from 'app/shared/ibasic-actions';
 import { Observable } from 'rxjs/Observable';
 import { FormControl } from '@angular/forms/src/model';
 import { saveAs } from "file-saver"
-import { Subject } from 'rxjs';
-import {InvoiceCommonFunctionsService} from '../../common/invoice-common-functions.service'
+import { Subject, of, empty } from 'rxjs';
+import { InvoiceCommonFunctionsService } from '../../common/invoice-common-functions.service'
 import { CurrencyCommonService } from '@bpShared/currency/currency-common.service';
 import { ICurrencyNbp } from '@bpShared/currency/interfaces/i-currency-nbp';
 import { MomentCommonService } from '@bpShared/moment-common/moment-common.service';
+import { IInvoiceSell } from '../../interfaces/iinvoice-sell';
+import { map, takeUntil, debounceTime, switchMap, delay, take, tap } from 'rxjs/operators';
 import { ICurrency } from '@bpShared/currency/interfaces/i-currency';
-import {IInvoiceSell} from '../../interfaces/iinvoice-sell';
+
 
 
 @Component({
@@ -49,7 +51,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   ngOnInit() {
     this.isDestroyed$ = new Subject<boolean>();
     this.isPending = true;
-    this.extraInfoNbp = this.currService.getCurrencyNbpGroup(this.fb, this.isDestroyed$, 'pln')
+    //this.extraInfoNbp = this.currService.getCurrencyNbpGroup(this.fb, this.isDestroyed$, 'pln')
     this.initForm();
     this.initRouteId();
     //this.initData();
@@ -76,6 +78,10 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
 
   get currency(): FormControl {
     return <FormControl>this.rForm.get('currency');
+  }
+
+  get currencyNbp(): FormGroup {
+    return <FormGroup>this.rForm.get('extraInfo.currencyNbp');
   }
 
   get extraInfo(): FormGroup {
@@ -247,15 +253,6 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   public initForm(): void {
     this.rForm = this.icf.formInvoiceSellGroup(this.fb, this.isDestroyed$);
 
-    this.currency
-      .valueChanges
-      .takeUntil(this.isDestroyed$)
-      .subscribe((s: ICurrency) => {
-        if (this.currency.valid) {
-          this.extraInfoNbp.get('currency').patchValue(s, { emitEvent: false });
-        }
-      });
-
     this.invoiceLines
       .valueChanges
       .takeUntil(this.isDestroyed$)
@@ -267,7 +264,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
           return Observable.empty();
         }
       })
-      .map((s:any)=>{
+      .map((s: any) => {
         if (s == "error") {
         } else {
           let data = <IInvoiceSell>s;
@@ -302,45 +299,55 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
         this.paymentTerms.get('day0').patchValue(s, { emitEvent: true });
       });
 
-    this.extraInfoIsTaxNbpExchanged
-      .valueChanges
-      .takeUntil(this.isDestroyed$)
-      .subscribe(s => {
-        if (s) {
-          let currencyNbp: ICurrencyNbp = <ICurrencyNbp>{
-            rateDate: this.sellingDate.value,
-            currency: this.currency.value,
-            price: this.totalTax.value,
-          };
-          this.extraInfoNbp.patchValue(currencyNbp, { emitEvent: true });
-        } else {
-          this.extraInfoNbp.reset();
-          this.extraInfoTaxExchangedInfo.reset();
-        }
-      });
 
-    this.extraInfoNbp
-      .valueChanges
-      .debounceTime(1000)
-      .distinctUntilChanged()
-      .takeUntil(this.isDestroyed$)
-      .subscribe((s: ICurrencyNbp) => {
-        if (this.extraInfoNbp.valid && s.rate != null) {
-          let info = `Średni kurs z dnia ${this.momentService.getFormatedDate(s.rateDate)} (${s.rate}), Podatek VAT (${this.cf.roundToCurrency(s.price)}) wartość: ${this.cf.roundToCurrency(s.plnValue)} PLN`;
+    this.extraInfoIsTaxNbpExchanged.valueChanges.pipe(
+      takeUntil(this.isDestroyed$),
+      tap(()=>this.currencyNbp.disable({emitEvent:false})),
+      switchMap((_isChecked: boolean) => {
+        let _currNbp = <ICurrencyNbp>{
+          currency: <ICurrency>this.currency.value,
+          price: this.cf.roundToCurrency(this.totalTax.value),
+          rateDate: this.sellingDate.value
+        }
+
+        if (_isChecked && (<ICurrencyNbp>this.currencyNbp.value).rate==0) {
+          //this.currencyNbp.patchValue(_currNbp, { emitEvent: true });
+          console.log('check i rate: ', this.currencyNbp.value);
+          return this.currService.getCurrencyNbp$(_currNbp)
+        } else {
+          this.currencyNbp.enable({emitEvent: false});
+          console.log('extraInfoIsTaxNbpExchanged !checked');
+          return empty();
+        }
+      })
+    )
+      .subscribe(
+        (_currNbp: ICurrencyNbp) => {
+          this.currencyNbp.enable({emitEvent: false});
+          this.currencyNbp.setValue(_currNbp, {emitEvent: false});
+          let info = `Średni kurs z dnia ${this.momentService.getFormatedDate(_currNbp.rateDate)} (${_currNbp.rate}), Podatek VAT (${this.cf.roundToCurrency(this.totalTax.value)}) wartość: ${this.cf.roundToCurrency(this.totalTax.value * _currNbp.rate)} PLN`;
+           
           this.extraInfoTaxExchangedInfo.setValue(info)
-        } else {
-          this.extraInfoTaxExchangedInfo.setValue("...przeliczam wartość...");
-          this.prepTaxExchangedInfo();
+        },
+      );
 
-        }
-      });
+
+    this.currencyNbp.valueChanges.pipe(
+      takeUntil(this.isDestroyed$),
+    )
+      .subscribe(
+        (_currNbp: ICurrencyNbp) => {
+          let info = `Średni kurs z dnia ${this.momentService.getFormatedDate(_currNbp.rateDate)} (${_currNbp.rate}), Podatek VAT (${this.cf.roundToCurrency(this.totalTax.value)}) wartość: ${this.cf.roundToCurrency(this.totalTax.value * _currNbp.rate)} PLN`;
+          this.extraInfoTaxExchangedInfo.setValue(info)
+        },
+    );
+
 
     //total brutto in words - checkbox change
     this.extraInfo.get('is_in_words')
       .valueChanges
       .takeUntil(this.isDestroyed$)
       .subscribe(s => {
-        console.log('is in words', s);
         this.extraInfoTtotalBruttoInWords.patchValue(this.prepTotalInWord());
       });
 
@@ -363,7 +370,6 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
       });
 
   }
-
 
   public initData(): void {
     if (this.routeId > 0) {
@@ -458,10 +464,6 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
         this.cf.toastMake("Faktura została wygenerowana", "printInvoice", this.actRoute);
       })
   }
-
-
-
-
 
 
 

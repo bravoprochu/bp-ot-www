@@ -1,5 +1,3 @@
-import { ICreationInfo } from 'app/shared/interfaces/i-creation-info';
-
 import { IInvoicePos } from './iinvoice-pos';
 import { IInvoiceTotal } from './iinvoice-total';
 import { IInvoiceCommon } from './iinvoice-common';
@@ -45,6 +43,7 @@ export interface IInvoiceTotalGroup
 export interface IInvoiceExtraInfo
 {
     cmr: IInvoiceExtraInfoChecked,
+    currencyNbp: ICurrencyNbp,
     recived: IInvoiceExtraInfoChecked,
     sent: IInvoiceExtraInfoChecked
     invoiceBuyId?:number,

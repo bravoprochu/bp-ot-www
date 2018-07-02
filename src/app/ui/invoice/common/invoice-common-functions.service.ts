@@ -13,6 +13,7 @@ import { MomentCommonService } from '@bpShared/moment-common/moment-common.servi
 import { ICreationInfo } from '@bpCommonInterfaces/i-creation-info';
 import { PaymentTermsService } from '@bpShared/payment-terms/payment-terms.service';
 import { CurrencyCommonService } from '@bpShared/currency/currency-common.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Injectable()
 export class InvoiceCommonFunctionsService {
@@ -62,13 +63,12 @@ export class InvoiceCommonFunctionsService {
       "invoiceSellId": [0],
       "baseInvoiceId": [0],
       "companyBuyer": this.cf.formCompanyGroup(fb),
-      // "companySeller": this.cf.formCompanyGroup(fb),
       "correctionId": [null],
       "currency": this.currService.getCurrencyListGroup(fb, isDestroyed$),
       "dateOfIssue": [this.momentService.getTodayConstTimeMoment(), Validators.required],
       "dateOfSell": [this.momentService.getTodayConstTimeMoment(), Validators.required],
-      "extraInfo": this.formInvoiceSellExtraInfoGroup(fb),
       "creationInfo": this.cf.formCreationInfo(fb),
+      "extraInfo": this.formInvoiceSellExtraInfoGroup(fb,isDestroyed$),
       "getCorrectionPaymenntInfo": [null],
       "getInvoiceValue": [null],
       "correctionTotalInfo": [null],
@@ -87,13 +87,12 @@ export class InvoiceCommonFunctionsService {
       "paymentDate": [null],
       "paymentTerms": this.pTermsService.getPaymentTermsGroup(fb, isDestroyed$),
       // "rates": fb.array([]),
-      rates: fb.array([])
-
-
+      "rates": fb.array([])
     });
 
 
-    res.get('dateOfSell').valueChanges
+
+   res.get('dateOfSell').valueChanges
       .takeUntil(isDestroyed$)
       .subscribe(s => {
         res.get('paymentTerms.day0').patchValue(s, { emitEvent: false });
@@ -120,11 +119,12 @@ export class InvoiceCommonFunctionsService {
     });
   }
 
-  formInvoiceSellExtraInfoGroup(fb: FormBuilder) {
+  formInvoiceSellExtraInfoGroup(fb: FormBuilder, isDestroyed$: Subject<boolean>) {
     return fb.group({
       'cmr': this.cf.formExtraInfoCheckedGroup(fb),
       'recived': this.cf.formExtraInfoCheckedGroup(fb),
       'sent': this.cf.formExtraInfoCheckedGroup(fb),
+      'currencyNbp': this.currService.getCurrencyNbpGroup(fb,isDestroyed$),
       'invoiceBuyId': [],
       'invoiceBuyNo': [],
       'invoiceSellId': [],
@@ -281,7 +281,6 @@ export class InvoiceCommonFunctionsService {
   patchInvoiceSell(inv: IInvoiceSell, rForm: FormGroup, fb: FormBuilder): void {
 
     this.cf.patchCompanyData(inv.companyBuyer, <FormGroup>rForm.get('companyBuyer'), fb);
-    // this.cf.patchCompanyData(inv.companySeller, <FormGroup>rForm.get('companySeller'), fb);
 
     let creationInfo = <FormGroup>rForm.get('creationInfo');
     let currency = <FormGroup>rForm.get('currency');
@@ -309,9 +308,13 @@ export class InvoiceCommonFunctionsService {
     let pTerms = <FormGroup>rForm.get('paymentTerms');
     this.pTermsService.patchPaymentTerms(inv.paymentTerms, pTerms);
 
+    //default settings for currencyNbp
+    if(!inv.extraInfo.currencyNbp.currency){
+      inv.extraInfo.currencyNbp.currency= this.currService.findCurrencyByName('eur');
+      inv.extraInfo.currencyNbp.rateDate=this.momentService.getToday();
+    }
     this.cf.patchInvoiceExtraInfo(inv.extraInfo, <FormGroup>rForm.get('extraInfo'));
-
-    rForm.patchValue(inv, { emitEvent: false, onlySelf: true });
+    rForm.patchValue(inv, {onlySelf: true, emitEvent: false});
   }
 
 
