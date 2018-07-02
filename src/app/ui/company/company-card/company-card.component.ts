@@ -22,7 +22,7 @@ import { empty } from 'rxjs';
 })
 export class CompanyCardComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
-    this.isDestroyed$.next(true); this.isDestroyed$.unsubscribe();
+    this.isDestroyed$.next(true); this.isDestroyed$.complete(); this.isDestroyed$.unsubscribe();
   }
   @Input() placeholder: string;
   @Input() rForm: FormGroup; //formCompanyGroup

@@ -20,7 +20,7 @@ import 'rxjs/add/operator/mergeAll';
 })
 export class RouteListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
-    this.isDestroyed$.next(true); this.isDestroyed$.unsubscribe();
+    this.isDestroyed$.next(true); this.isDestroyed$.complete(); this.isDestroyed$.unsubscribe();
   }
   @Input() sideNav:any;
 

@@ -24,7 +24,7 @@ export class InvoiceBuyListComponent implements OnInit,OnDestroy, IListObj {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   public ngOnDestroy(): void {
-    this.isDestroyed$.next(true); this.isDestroyed$.unsubscribe();
+    this.isDestroyed$.next(true); this.isDestroyed$.complete(); this.isDestroyed$.unsubscribe();
   }
 
   constructor(

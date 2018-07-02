@@ -12,7 +12,7 @@ import { Subject } from 'rxjs';
 })
 export class NavListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
-    this.isDestroyed$.next(true); this.isDestroyed$.unsubscribe();
+    this.isDestroyed$.next(true); this.isDestroyed$.complete(); this.isDestroyed$.unsubscribe();
   }
 @Output() onCreate=new EventEmitter()
 @Output() onDateRange=new EventEmitter()

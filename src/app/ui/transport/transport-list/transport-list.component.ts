@@ -22,7 +22,7 @@ export class TransportListComponent implements OnInit, IListObj, OnDestroy {
   @ViewChild(MatSort) sort:MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   ngOnDestroy(): void {
-    this.isDestroyed$.next(true); this.isDestroyed$.unsubscribe();
+    this.isDestroyed$.next(true); this.isDestroyed$.complete(); this.isDestroyed$.unsubscribe();
   }
 
   constructor(

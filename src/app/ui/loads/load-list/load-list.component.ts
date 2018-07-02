@@ -25,7 +25,7 @@ import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 export class LoadListComponent implements OnInit, OnDestroy, IListObj, AfterViewInit {
 
   ngOnDestroy(): void {
-    this.isDestroyed$.next(true); this.isDestroyed$.unsubscribe();
+    this.isDestroyed$.next(true); this.isDestroyed$.complete(); this.isDestroyed$.unsubscribe();
   }
   @ViewChild('slider') slider: MatSlider
 

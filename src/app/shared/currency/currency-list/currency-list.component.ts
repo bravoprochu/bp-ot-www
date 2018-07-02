@@ -18,7 +18,7 @@ export class CurrencyListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.isDestroyed$.next(true);
-    this.isDestroyed$.unsubscribe();
+    this.isDestroyed$.complete(); this.isDestroyed$.unsubscribe();
   }
 
   constructor(

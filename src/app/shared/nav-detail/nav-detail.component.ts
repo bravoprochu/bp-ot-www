@@ -15,7 +15,7 @@ import { Subject } from 'rxjs';
 })
 export class NavDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
-    this.isDestroyed$.next(true); this.isDestroyed$.unsubscribe();
+    this.isDestroyed$.next(true); this.isDestroyed$.complete(); this.isDestroyed$.unsubscribe();
   }
   @Input() dialogData?: any;
   @Input() rForm:FormGroup

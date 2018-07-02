@@ -32,7 +32,7 @@ import { ICurrency } from '@bpShared/currency/interfaces/i-currency';
 })
 export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   ngOnDestroy(): void {
-    this.isDestroyed$.next(true); this.isDestroyed$.unsubscribe();
+    this.isDestroyed$.next(true); this.isDestroyed$.complete(); this.isDestroyed$.unsubscribe();
   }
 
   constructor(
@@ -260,7 +260,9 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
         switchMap(sw => {
           console.log('switchMap', sw)
         if (this.invoiceLines.valid) {
-          return this.df.calcRates(this.rForm.value)
+          return this.df.calcRates(this.rForm.value).pipe(
+            takeUntil(this.isDestroyed$)
+          )
         } else {
           return Observable.empty();
         }
@@ -279,12 +281,6 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
       })
     )
      .subscribe(
-        (_data:any)=>{
-        console.log('invoiceLines',_data);
-         
-        },
-        (err)=>console.log('invoiceLines error', err),
-        ()=>console.log('invoiceLines finish..')
       );
 
     this.paymentIsDone
@@ -346,15 +342,12 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
     )
       .subscribe(
         (_curr: ICurrency) => {
-          console.log('currencyChange', _curr);
           if (_curr.name == "PLN") {
             this.extraInfoIsTaxNbpExchanged.setValue(false, { emitEvent: false });
               let currNbpCurrency = this.currencyNbp.get('currency');
               (<FormControl>currNbpCurrency).setValue(_curr, { emitEvent: this.extraInfoIsTaxNbpExchanged.value });
           }
         },
-        (err) => console.log('currencyChange error', err),
-        () => console.log('currencyChange finish..')
       )
 
 

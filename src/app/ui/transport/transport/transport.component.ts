@@ -22,7 +22,7 @@ import { ICurrency } from '@bpShared/currency/interfaces/i-currency';
 })
 export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
   ngOnDestroy(): void {
-    this.isDestroyed$.next(true); this.isDestroyed$.unsubscribe();;
+    this.isDestroyed$.next(true); this.isDestroyed$.complete(); this.isDestroyed$.unsubscribe();;
   }
 
   constructor(

@@ -37,7 +37,7 @@ export class LoadTransEuComponent implements OnInit, OnDestroy {
     this.initForm();
   }
   ngOnDestroy(): void {
-    this.isDestroyed$.next(true); this.isDestroyed$.unsubscribe();
+    this.isDestroyed$.next(true); this.isDestroyed$.complete(); this.isDestroyed$.unsubscribe();
   }
 
     get contactPersonsList():FormArray

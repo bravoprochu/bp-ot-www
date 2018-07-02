@@ -19,7 +19,7 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
 
 
   ngOnDestroy(): void {
-    this.isDestroyed$.next(true); this.isDestroyed$.unsubscribe();
+    this.isDestroyed$.next(true); this.isDestroyed$.complete(); this.isDestroyed$.unsubscribe();
   }
 
 
@@ -42,15 +42,20 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
         merge(this.currentUnitPrice.valueChanges, this.currentVatRate.valueChanges),
         debounceTime(150)
       )
-      .subscribe((s: any) => {
-        if (this.currentGroup.valid) {
-          this.nettoValueUpdate(<IInvoicePos>this.currentGroup.value, this.currentGroup);
-          if (this.isCorrection.value) {
-            //if original has netto value - its a correction.. 
-            this.positionListCheckChanges();
+      .subscribe(
+        (_data: any) => {
+          if (this.currentGroup.valid) {
+            this.nettoValueUpdate(<IInvoicePos>this.currentGroup.value, this.currentGroup);
+            if (this.isCorrection.value) {
+              //if original has netto value - its a correction.. 
+              this.positionListCheckChanges();
+            }
           }
-        }
-      });
+
+        },
+        (err) => console.log('pos error', err),
+        () => console.log('pos finish..')
+      );
   }
 
 
