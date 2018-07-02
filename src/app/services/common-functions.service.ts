@@ -22,6 +22,7 @@ import { IPaymentTerms } from '@bpShared/payment-terms/i-payment-terms';
 import { MomentCommonService } from '@bpShared/moment-common/moment-common.service';
 import { InvoiceCommonFunctionsService } from '@bpUI/invoice/common/invoice-common-functions.service';
 import { IInvoiceExtraInfoChecked, IInvoiceExtraInfo } from '@bpUI/invoice/interfaces/iinvoice-sell';
+import { DEFAULT_APP_VALUES } from 'environments/environment';
 
 
 @Injectable()
@@ -748,8 +749,13 @@ export class CommonFunctionsService {
 
     this.patchCreationInfo(tr.creationInfo, creationInfo);
 
-    tr.load.date = this.setFormatedDateTime(tr.load.date);
-    tr.unload.date = this.setFormatedDateTime(tr.unload.date);
+    // tr.load.date = this.setFormatedDateTime(tr.load.date);
+    // tr.unload.date = this.setFormatedDateTime(tr.unload.date);
+
+
+    tr.load.date = moment(tr.load.date).utc(false).format(this.dateTimeLocaleFormat());
+    tr.unload.date = moment(tr.unload.date).utc(false).format(this.dateTimeLocaleFormat());
+
 
     this.patchCompanyData(tr.tradeInfo.company, <FormGroup>rForm.get('tradeInfo.company'), fb, false);
     this.patchTradeInfo(tr.tradeInfo, <FormGroup>rForm.get('tradeInfo'), fb);
