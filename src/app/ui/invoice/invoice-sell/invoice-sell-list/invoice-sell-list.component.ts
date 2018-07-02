@@ -10,6 +10,8 @@ import { IListObj } from '../../../../shared/ilist-obj';
 import { ITitle } from '../../../../shared/ititle';
 import { InvoiceSellService } from '../services/invoice-sell.service';
 import { Subject } from 'rxjs';
+import { Moment } from 'moment';
+import { DEFAULT_APP_VALUES } from 'environments/environment';
 
 @Component({
   selector: 'app-invoice-sell-list',
@@ -61,7 +63,7 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, AfterViewIni
       .takeUntil(this.isDestroyed$)
       .subscribe(s=>{
         this.dataSource=new MatTableDataSource(s);
-        this.cf.toastMake(`Pobrano dane dla zakresu od ${dateRange.dateStart} do ${dateRange.dateEnd}, razem: ${s.length}`, "initData", this.actRoute);
+        this.cf.toastMake(`Pobrano dane dla zakresu od ${(<Moment>dateRange.dateStart).format(DEFAULT_APP_VALUES.dateLocalFormat)} do ${(<Moment>dateRange.dateEnd).format(DEFAULT_APP_VALUES.dateLocalFormat)}, razem: ${s.length}`, "initData", this.actRoute);
         this.isPending=false;
         
         this.dataSource.sort=this.sort;
