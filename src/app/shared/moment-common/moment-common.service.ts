@@ -21,6 +21,11 @@ export class MomentCommonService {
     }
   }
 
+  convertToMoment(date: string){
+    let d= moment(date);
+    return d.isValid? d: moment();
+  }
+
   getTodayConstTimeFormated(): string {
     let todayConstTime = moment();
     this.setConstTimeMoment(todayConstTime);

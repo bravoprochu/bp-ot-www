@@ -28,15 +28,15 @@ import { IInvoiceExtraInfoChecked, IInvoiceExtraInfo } from '@bpUI/invoice/inter
 export class CommonFunctionsService {
 
   constructor(
-    private snackBar:MatSnackBar,
+    private snackBar: MatSnackBar,
     private pTermsService: PaymentTermsService,
     private currService: CurrencyCommonService,
     public momentService: MomentCommonService,
   ) {
-    this.logArr=[];
+    this.logArr = [];
   }
 
-  logArr:ILogItem[];
+  logArr: ILogItem[];
   compareWithValueViewValue(obj1: IValueViewValue, obj2: IValueViewValue): boolean {
     if (obj1 == null || obj2 == null) { return false }
     return obj1.viewValueDictionaryId == obj2.viewValueDictionaryId;
@@ -50,8 +50,7 @@ export class CommonFunctionsService {
     return "YYYY-MM-DDTHH:mm";
   }
 
-  getNextHour(hoursToAdd:number=1)
-  {
+  getNextHour(hoursToAdd: number = 1) {
     return moment().add(hoursToAdd, 'hours').minutes(0).format(this.dateTimeLocaleFormat());
   }
 
@@ -59,7 +58,7 @@ export class CommonFunctionsService {
   getViewValueGroupName(): IViewValueGroupName[] {
     return [{ "viewValueGroupNameId": 1, "name": "waysOfLoad", "description": "waysOfLoad" }, { "viewValueGroupNameId": 2, "name": "addrClasses", "description": "addrClasses" }, { "viewValueGroupNameId": 3, "name": "truckBody", "description": "truckBody" }, { "viewValueGroupNameId": 4, "name": "typeOfLoad", "description": "typeOfLoad" }, { "viewValueGroupNameId": 5, "name": "loadRoutePalletType", "description": "loadRoutePalletType" }];
   }
-  
+
   getViewValueDictionary(): IValueViewValue[] {
     return [{ "viewValueDictionaryId": 47, "value": "back", "viewValue": "tyłem", "viewValueGroupNameId": 1 }, { "viewValueDictionaryId": 45, "value": "top", "viewValue": "góra", "viewValueGroupNameId": 1 }, { "viewValueDictionaryId": 61, "value": "side", "viewValue": "bokiem", "viewValueGroupNameId": 1 }, { "viewValueDictionaryId": 33, "value": "2", "viewValue": "Gazy", "viewValueGroupNameId": 2 }, { "viewValueDictionaryId": 34, "value": "3", "viewValue": "Materiały ciekłe zapalne", "viewValueGroupNameId": 2 }, { "viewValueDictionaryId": 35, "value": "4.1", "viewValue": "Materiały stałe zapalne", "viewValueGroupNameId": 2 }, { "viewValueDictionaryId": 36, "value": "4.2", "viewValue": "Materiały samozapalne", "viewValueGroupNameId": 2 }, { "viewValueDictionaryId": 37, "value": "4.3", "viewValue": "Materiały wytwarzające w zetknięciu z wodą gazy palne", "viewValueGroupNameId": 2 }, { "viewValueDictionaryId": 38, "value": "5.1", "viewValue": "Materiały utleniające", "viewValueGroupNameId": 2 }, { "viewValueDictionaryId": 39, "value": "5.2", "viewValue": "Nadtlenki organiczne", "viewValueGroupNameId": 2 }, { "viewValueDictionaryId": 40, "value": "6.1", "viewValue": "Materiały trujące", "viewValueGroupNameId": 2 }, { "viewValueDictionaryId": 41, "value": "6.2", "viewValue": "Materiały zakaźne", "viewValueGroupNameId": 2 }, { "viewValueDictionaryId": 42, "value": "7", "viewValue": "Materiały promieniotwórcze", "viewValueGroupNameId": 2 }, { "viewValueDictionaryId": 43, "value": "8", "viewValue": "Materiały żrące", "viewValueGroupNameId": 2 }, { "viewValueDictionaryId": 44, "value": "9", "viewValue": "Różne materiały i przedmioty niebezpieczne", "viewValueGroupNameId": 2 }, { "viewValueDictionaryId": 1, "value": "1", "viewValue": "Materiały i przedmioty wybuchowe", "viewValueGroupNameId": 2 }, { "viewValueDictionaryId": 2, "value": "log-trailer", "viewValue": "dłużyca", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 3, "value": "oversized-cargo", "viewValue": "ponadgabaryt", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 4, "value": "hook-lift", "viewValue": "hakowiec", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 5, "value": "container-20-40", "viewValue": "kontener 20/40", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 6, "value": "dump-truck", "viewValue": "wywrotka", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 7, "value": "koffer", "viewValue": "koffer (stała zabudowa)", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 8, "value": "swap-body-system", "viewValue": "wymienne podwozie", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 9, "value": "jumbo", "viewValue": "jumbo", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 10, "value": "cooler", "viewValue": "chłodnia", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 11, "value": "curtainsider", "viewValue": "firanka", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 12, "value": "tanker", "viewValue": "cysterna", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 13, "value": "silos", "viewValue": "silos", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 14, "value": "removal-truck", "viewValue": "meblowóz", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 48, "value": "tent", "viewValue": "plandeka", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 49, "value": "isotherm", "viewValue": "izoterma", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 50, "value": "box-truck", "viewValue": "kontener", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 51, "value": "spacious", "viewValue": "przestrzenne", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 52, "value": "other", "viewValue": "inne", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 53, "value": "car-transporter", "viewValue": "laweta", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 54, "value": "double-trailer", "viewValue": "zestaw", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 55, "value": "van", "viewValue": "van/bus", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 56, "value": "mega", "viewValue": "mega", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 57, "value": "coilmulde", "viewValue": "colimulde", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 58, "value": "walking-floor", "viewValue": "ruchoma podłoga", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 59, "value": "low-suspension", "viewValue": "niskopodwoziowe", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 60, "value": "flatbed", "viewValue": "platforma", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 29, "value": "gas-tanker", "viewValue": "cysterna gazowa", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 30, "value": "petroleum-tanker", "viewValue": "cysterna paliwowa", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 31, "value": "food-tanker", "viewValue": "cysterna spożywcza", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 32, "value": "chemical-tanker", "viewValue": "cysterna chemiczna", "viewValueGroupNameId": 3 }, { "viewValueDictionaryId": 15, "value": "full-truck-standard", "viewValue": "całopojazdowy - firana Standard", "viewValueGroupNameId": 4 }, { "viewValueDictionaryId": 16, "value": "full-truck-mega", "viewValue": "całopojazdowy - firana Mega", "viewValueGroupNameId": 4 }, { "viewValueDictionaryId": 17, "value": "cubic", "viewValue": "objętościowy", "viewValueGroupNameId": 4 }, { "viewValueDictionaryId": 18, "value": "bag", "viewValue": "worek", "viewValueGroupNameId": 4 }, { "viewValueDictionaryId": 19, "value": "item", "viewValue": "sztuka towaru (bez specyfikacji)", "viewValueGroupNameId": 4 }, { "viewValueDictionaryId": 20, "value": "envelope", "viewValue": "koperta", "viewValueGroupNameId": 4 }, { "viewValueDictionaryId": 21, "value": "box", "viewValue": "skrzynia", "viewValueGroupNameId": 4 }, { "viewValueDictionaryId": 22, "value": "package", "viewValue": "paczka", "viewValueGroupNameId": 4 }, { "viewValueDictionaryId": 23, "value": "cardboard", "viewValue": "karton", "viewValueGroupNameId": 4 }, { "viewValueDictionaryId": 24, "value": "timber", "viewValue": "dłużyca", "viewValueGroupNameId": 4 }, { "viewValueDictionaryId": 25, "value": "roll", "viewValue": "rolka", "viewValueGroupNameId": 4 }, { "viewValueDictionaryId": 26, "value": "roll2", "viewValue": "rulon", "viewValueGroupNameId": 4 }, { "viewValueDictionaryId": 27, "value": "barrel", "viewValue": "beczka", "viewValueGroupNameId": 4 }, { "viewValueDictionaryId": 28, "value": "other", "viewValue": "inne", "viewValueGroupNameId": 4 }, { "viewValueDictionaryId": 62, "value": "other", "viewValue": "Inne", "viewValueGroupNameId": 5 }, { "viewValueDictionaryId": 46, "value": "euro", "viewValue": "EURO", "viewValueGroupNameId": 5 }];
   }
@@ -97,64 +96,62 @@ export class CommonFunctionsService {
 
   httpResponseErrorHandler(resErrors: HttpErrorResponse): IErrorObj[] {
     let res: IErrorObj[] = [];
-    let err=resErrors["error"];
-    
+    let err = resErrors["error"];
+
     console.log(resErrors);
-    if(err["type"]!="error"){
-    for (let key in err) {
-      let errGroupName = err[key];
-        let e=<IErrorObj>{
+    if (err["type"] != "error") {
+      for (let key in err) {
+        let errGroupName = err[key];
+        let e = <IErrorObj>{
           errorDescription: key,
-          errors:[]
+          errors: []
         }
         errGroupName.forEach(el => {
-           e.errors.push(el);
+          e.errors.push(el);
         });
         res.push(e);
       };
     } else {
       // no errors object
-      let e=<IErrorObj>{
+      let e = <IErrorObj>{
         errorDescription: "Error",
         errors: []
-        }
-        e.errors.push("Inny błąd serwera");
-        res.push(e);
+      }
+      e.errors.push("Inny błąd serwera");
+      res.push(e);
     }
     return res;
   }
 
-    //console.log(error);
-    //res.errorDescription = resErrors.message;
-    //if (resErrors.error == null) return res;
-    //if (typeof (resErrors.error) == "object") { res.errors.push("Błąd serwera"); return res }
-    // let errors = JSON.parse(resErrors["error"]);
+  //console.log(error);
+  //res.errorDescription = resErrors.message;
+  //if (resErrors.error == null) return res;
+  //if (typeof (resErrors.error) == "object") { res.errors.push("Błąd serwera"); return res }
+  // let errors = JSON.parse(resErrors["error"]);
 
-    // for (let key in errors) {
-    //   let errGroupName = errors[key];
-    //   errGroupName.forEach(err => {
-    //     res.errors.push(`${key} | ${err}`);
-    //   });
-    // }
-    // console.log('res', res);
-
-
+  // for (let key in errors) {
+  //   let errGroupName = errors[key];
+  //   errGroupName.forEach(err => {
+  //     res.errors.push(`${key} | ${err}`);
+  //   });
+  // }
+  // console.log('res', res);
 
 
 
-  dateRangeActiveMonth():IDateRange
-  {
+
+
+  dateRangeActiveMonth(): IDateRange {
     return <IDateRange>{
-      dateStart:moment( ).date(1),
-      dateEnd:moment()
+      dateStart: moment().date(1),
+      dateEnd: moment()
     }
   }
 
-  dateRangeLastQuarter():IDateRange
-  {
+  dateRangeLastQuarter(): IDateRange {
     return <IDateRange>{
-      dateStart:moment().subtract(3, "month").date(1),
-      dateEnd:moment()
+      dateStart: moment().subtract(3, "month").date(1),
+      dateEnd: moment()
     }
   }
 
@@ -204,7 +201,7 @@ export class CommonFunctionsService {
 
   formCompanyGroup(fb: FormBuilder) {
 
-    var res=fb.group({
+    var res = fb.group({
       'addressList': fb.array([]),
       "bankAccountList": fb.array([]),
       'companyId': [null],
@@ -219,17 +216,17 @@ export class CommonFunctionsService {
       "trans_id": [null],
     });
 
-    let email=res.get('email');
-    let tel= res.get('telephone');
+    let email = res.get('email');
+    let tel = res.get('telephone');
 
     email
-    .valueChanges
+      .valueChanges
       .distinctUntilChanged()
-      .subscribe(s=>{
-        if(s){
+      .subscribe(s => {
+        if (s) {
           email.setValidators(Validators.email)
           email.updateValueAndValidity();
-        } else{
+        } else {
           email.clearValidators();
           email.updateValueAndValidity();
         }
@@ -247,8 +244,7 @@ export class CommonFunctionsService {
     });
   }
 
-  formCreationInfo(fb:FormBuilder)
-  {
+  formCreationInfo(fb: FormBuilder) {
     return fb.group({
       "createdBy": [null],
       "createdDateTime": [null],
@@ -298,13 +294,12 @@ export class CommonFunctionsService {
 
 
 
-  formExtraInfoCheckedGroup(fb:FormBuilder)
-  {
+  formExtraInfoCheckedGroup(fb: FormBuilder) {
     return fb.group({
-      'invoiceExtraInfoCheckedId':[],
+      'invoiceExtraInfoCheckedId': [],
       'checked': [false],
       'date': [this.momentService.getTodayConstTimeMoment()],
-      'info':[]
+      'info': []
     });
   }
 
@@ -405,14 +400,14 @@ export class CommonFunctionsService {
       "company": this.formCompanyGroup(fb),
       "date": [this.momentService.getTodayConstTimeMoment(), Validators.required],
       "price": this.currService.getCurrencyNbpGroup(fb, isDestroyed$),
-      "paymentTerms": this.pTermsService.getPaymentTermsGroup(fb,isDestroyed$),
+      "paymentTerms": this.pTermsService.getPaymentTermsGroup(fb, isDestroyed$),
     });
 
     res.get("date").valueChanges
       .takeUntil(isDestroyed$)
-      .subscribe((s:Moment) => {
-        let _day0= <FormControl>res.get('paymentTerms.day0');
-        _day0.setValue(s, {emitEvent: true});
+      .subscribe((s: Moment) => {
+        let _day0 = <FormControl>res.get('paymentTerms.day0');
+        _day0.setValue(s, { emitEvent: true });
       });
     return res;
   }
@@ -431,50 +426,48 @@ export class CommonFunctionsService {
     pallet.get('type').valueChanges
       .takeUntil(isDestroyed$)
       .subscribe(
-      (s) => {
-        let dimmensions = pallet.get('dimmension');
-        let amount = pallet.get('amount');
-        switch (s) {
-          case palletsTypes[1].value:
-            //EURO
-            dimmensions.clearValidators();
-            break;
-          case palletsTypes[0].value:
-            //Inne
-            dimmensions.setValidators(Validators.required);
-            break;
-        }
-        dimmensions.updateValueAndValidity();
-      });
+        (s) => {
+          let dimmensions = pallet.get('dimmension');
+          let amount = pallet.get('amount');
+          switch (s) {
+            case palletsTypes[1].value:
+              //EURO
+              dimmensions.clearValidators();
+              break;
+            case palletsTypes[0].value:
+              //Inne
+              dimmensions.setValidators(Validators.required);
+              break;
+          }
+          dimmensions.updateValueAndValidity();
+        });
 
     return pallet;
   }
 
-formTransportGroup(fb:FormBuilder, isDestroyed$: Subject<boolean>)
-{
-  return fb.group({
-    'transportOfferId': [null],
-    "creationInfo": this.formCreationInfo(fb),
-    'info': [null],
-    'invoiceInPLN': [true],
-    'invoiceSellId': [null],
-    'invoiceSellNo':[null],
-    'offerNo': [null, Validators.required],
-    'tradeInfo': this.formTradeInfoGroup(fb, isDestroyed$),
-    'load': this.formTransportAddressShortGroup(fb),
-    'unload': this.formTransportAddressShortGroup(fb)
-  })
-}
+  formTransportGroup(fb: FormBuilder, isDestroyed$: Subject<boolean>) {
+    return fb.group({
+      'transportOfferId': [null],
+      "creationInfo": this.formCreationInfo(fb),
+      'info': [null],
+      'invoiceInPLN': [true],
+      'invoiceSellId': [null],
+      'invoiceSellNo': [null],
+      'offerNo': [null, Validators.required],
+      'tradeInfo': this.formTradeInfoGroup(fb, isDestroyed$),
+      'load': this.formTransportAddressShortGroup(fb),
+      'unload': this.formTransportAddressShortGroup(fb)
+    })
+  }
 
-formTransportAddressShortGroup(fb:FormBuilder)
-{
-  return fb.group({
-    'transportOfferAddressId': [],
-    'date': [null, Validators.required],
-    'locality': [null, Validators.required],
-    'postalCode': [null, Validators.required]
-  });
-}
+  formTransportAddressShortGroup(fb: FormBuilder) {
+    return fb.group({
+      'transportOfferAddressId': [],
+      'date': [null, Validators.required],
+      'locality': [null, Validators.required],
+      'postalCode': [null, Validators.required]
+    });
+  }
 
 
 
@@ -507,7 +500,7 @@ formTransportAddressShortGroup(fb:FormBuilder)
         wynik = "zero";
       if (liczba < 0) {
         znak = "minus";
-        liczba = liczba*-1;
+        liczba = liczba * -1;
       }
 
       var g = 0;
@@ -540,20 +533,20 @@ formTransportAddressShortGroup(fb:FormBuilder)
     return wynik;
   }
 
-  paginatorLimitOption(length:number): number[] {
-    let res: number[]=[];
+  paginatorLimitOption(length: number): number[] {
+    let res: number[] = [];
 
-    if (length > 5) {res.push(5);}
-    if (length > 10) {res.push(10);}
-    if (length > 25) {res.push(25);}
-    if (length > 50) {res.push(50);}
-    if (length > 100) {res.push(100);}
-    if(res.length==0 || (res.length>0 && res[res.length-1]!=length)) {res.push(length);}
+    if (length > 5) { res.push(5); }
+    if (length > 10) { res.push(10); }
+    if (length > 25) { res.push(25); }
+    if (length > 50) { res.push(50); }
+    if (length > 100) { res.push(100); }
+    if (res.length == 0 || (res.length > 0 && res[res.length - 1] != length)) { res.push(length); }
     return res;
   }
 
-  paginatorPageSize(length:number):number{
-    return length>10 ? 10: length;
+  paginatorPageSize(length: number): number {
+    return length > 10 ? 10 : length;
   }
 
   paymentTerms(): IPaymentTerm[] {
@@ -596,12 +589,12 @@ formTransportAddressShortGroup(fb:FormBuilder)
     bankAccountList.controls = [];
 
     companyData.addressList.forEach(adress => {
-      let address= <FormGroup>this.formAddressGroup(fb);
+      let address = <FormGroup>this.formAddressGroup(fb);
       address.markAsDirty();
       addressList.push(address);
     });
 
-    
+
 
     companyData.bankAccountList.forEach(acc => {
       bankAccountList.push(this.formCompanyBankAccountGroup(fb));
@@ -610,21 +603,20 @@ formTransportAddressShortGroup(fb:FormBuilder)
     companyData.employeeList.forEach(emp => {
       employeeList.push(this.formEmployeeGroup(fb));
     })
-    rForm.patchValue(companyData, { emitEvent: emit });
-    
+    rForm.patchValue(companyData, { emitEvent: false});
+
   }
 
-  patchCreationInfo(info: ICreationInfo, rForm: FormGroup)
-  {
-    info.createdDateTime=this.setFormatedDateTime(info.createdDateTime);
-    info.modifyDateTime=this.setFormatedDateTime(info.modifyDateTime);
-    rForm.patchValue(info, {emitEvent: false});
+  patchCreationInfo(info: ICreationInfo, rForm: FormGroup) {
+    info.createdDateTime = this.setFormatedDateTime(info.createdDateTime);
+    info.modifyDateTime = this.setFormatedDateTime(info.modifyDateTime);
+    rForm.patchValue(info, { emitEvent: false });
   }
 
 
   patchInvoiceExtraInfoChecked(info: IInvoiceExtraInfoChecked, rForm: FormGroup) {
-    if(info==null) {return;}
-    info.date=this.momentService.convertToConstTime(info.date);
+    if (info == null) { return; }
+    info.date = this.momentService.convertToConstTime(info.date);
     rForm.patchValue(info, { emitEvent: false });
   }
 
@@ -632,7 +624,10 @@ formTransportAddressShortGroup(fb:FormBuilder)
     this.patchInvoiceExtraInfoChecked(info.cmr, <FormGroup>rForm.get('cmr'));
     this.patchInvoiceExtraInfoChecked(info.recived, <FormGroup>rForm.get('recived'));
     this.patchInvoiceExtraInfoChecked(info.sent, <FormGroup>rForm.get('sent'));
-    rForm.patchValue(info, { emitEvent: false});
+    if (info.currencyNbp.currency) {
+      this.currService.patchCurrencyNbp(info.currencyNbp, <FormGroup>rForm.get('currencyNbp'));
+    }
+    //rForm.patchValue(info, { emitEvent: false, onlySelf: true});
   }
 
 
@@ -643,14 +638,14 @@ formTransportAddressShortGroup(fb:FormBuilder)
     //rForm.patchValue(s, {emitEvent:false, onlySelf: true});
     //rForm=this.formLoadGroup(fb, isDestroyed$);
     //load
-  //  s.invoiceSellNo = s.invoiceSellNo ? s.invoiceSellNo : "brak fv";
-//    s.loadExtraInfo = s.loadExtraInfo ? s.loadExtraInfo : <ILoadExtraInfo>{};
+    //  s.invoiceSellNo = s.invoiceSellNo ? s.invoiceSellNo : "brak fv";
+    //    s.loadExtraInfo = s.loadExtraInfo ? s.loadExtraInfo : <ILoadExtraInfo>{};
 
     // rForm.get('loadId').setValue(s.loadId);
     // rForm.get('loadNo').setValue(s.loadNo);
     // rForm.get('invoiceSellNo').setValue(s.invoiceSellNo);
 
-    let creationInfo=<FormGroup>rForm.get('creationInfo');
+    let creationInfo = <FormGroup>rForm.get('creationInfo');
 
     this.patchCreationInfo(s.creationInfo, creationInfo);
 
@@ -663,7 +658,7 @@ formTransportAddressShortGroup(fb:FormBuilder)
     s.buy.routes.forEach(r => {
       //pointing formRoute
       //adding pallets to formRoute
-      r.loading_date=this.setFormatedDateTime(r.loading_date);
+      r.loading_date = this.setFormatedDateTime(r.loading_date);
       routes.push(this.formLoadRouteGroupe(fb));
       let formRoute = <FormArray>routes.at(idx);
       let pallets = <FormArray>formRoute.get('pallets');
@@ -716,22 +711,22 @@ formTransportAddressShortGroup(fb:FormBuilder)
     }
 
     //rForm.patchValue(s, { onlySelf: false, emitEvent: true });
-    rForm.get('loadNo').patchValue(s.loadNo, {emitEvent: false});
-    rForm.get('loadId').patchValue(s.loadId, {emitEvent: false});
-    rForm.get('info').patchValue(s.info, {emitEvent: true});
+    rForm.get('loadNo').patchValue(s.loadNo, { emitEvent: false });
+    rForm.get('loadId').patchValue(s.loadId, { emitEvent: false });
+    rForm.get('info').patchValue(s.info, { emitEvent: false });
 
 
   }
 
   patchLoadInfo(info: ILoadInfo, rForm: FormGroup) {
     //rForm formLoadInfo
-    rForm.patchValue(info, { onlySelf: true, emitEvent: false });
+    rForm.patchValue(info, {emitEvent: false,  onlySelf: true });
     this.patchLoadInfoExtra(info.extraInfo, <FormGroup>rForm.get('extraInfo'));
   }
 
   patchLoadInfoExtra(infoExtra: ILoadInfoExtra, rForm: FormGroup) {
     //rForm formLoadInfoExtra
-    rForm.patchValue(infoExtra, { onlySelf: true, emitEvent: false });
+    rForm.patchValue(infoExtra, {emitEvent: false,  onlySelf: true });
   }
 
 
@@ -744,60 +739,59 @@ formTransportAddressShortGroup(fb:FormBuilder)
     this.patchCompanyData(info.company, <FormGroup>rForm.get('company'), fb);
     //this.patchCurrencyNbpData(info.price, <FormGroup>rForm.get('price'));
     this.currService.patchCurrencyNbp(<ICurrencyNbp>info.price, <FormGroup>rForm.get('price'));
-    this.pTermsService.patchPaymentTerms(info.paymentTerms,  <FormGroup>rForm.get('paymentTerms'));
-    rForm.patchValue(info, { onlySelf: true, emitEvent: false });
+    this.pTermsService.patchPaymentTerms(info.paymentTerms, <FormGroup>rForm.get('paymentTerms'));
+    rForm.patchValue(info, {emitEvent: false, onlySelf: true});
   }
 
-  patchTransport(tr: ITransportOffer, rForm:FormGroup, fb: FormBuilder, isDestroyed$:Subject<boolean>)
-  {
-    let creationInfo=<FormGroup>rForm.get('creationInfo');
+  patchTransport(tr: ITransportOffer, rForm: FormGroup, fb: FormBuilder, isDestroyed$: Subject<boolean>) {
+    let creationInfo = <FormGroup>rForm.get('creationInfo');
 
     this.patchCreationInfo(tr.creationInfo, creationInfo);
 
-    tr.load.date=this.setFormatedDateTime(tr.load.date);
-    tr.unload.date=this.setFormatedDateTime(tr.unload.date);
-    
-    this.patchCompanyData(tr.tradeInfo.company, <FormGroup>rForm.get('tradeInfo.company'), fb,false);
+    tr.load.date = this.setFormatedDateTime(tr.load.date);
+    tr.unload.date = this.setFormatedDateTime(tr.unload.date);
+
+    this.patchCompanyData(tr.tradeInfo.company, <FormGroup>rForm.get('tradeInfo.company'), fb, false);
     this.patchTradeInfo(tr.tradeInfo, <FormGroup>rForm.get('tradeInfo'), fb);
-   
-    rForm.patchValue(tr, {onlySelf: true, emitEvent: false});
+
+    rForm.patchValue(tr, {emitEvent: false, onlySelf: true});
   }
 
 
-  roundToCurrency(v:number):number{
-    if(isNaN(v) || v==0) {return 0;}
-    return (Math.round(v*100)/100);
+  roundToCurrency(v: number): number {
+    if (isNaN(v) || v == 0) { return 0; }
+    return (Math.round(v * 100) / 100);
   }
 
 
-  
+
   setMomentDate(date: any): moment.Moment {
     if (date == null || !moment(date).isValid) { return null; }
     return moment(date);
   }
 
-  setFormatedDateTime(date: any):string {
+  setFormatedDateTime(date: any): string {
     if (date == null || !moment(date).isValid) { return null; }
     return moment(date).format(this.dateTimeLocaleFormat());
   }
 
-  toastMake(message:string, action:string, actRoute:ActivatedRoute ){
-    this.snackBar.open(message,null, {
-      duration:3000, 
+  toastMake(message: string, action: string, actRoute: ActivatedRoute) {
+    this.snackBar.open(message, null, {
+      duration: 3000,
       horizontalPosition: "end"
     });
-    
-    
-    let dataToPush=<ILogItem>{
-      action:action,
+
+
+    let dataToPush = <ILogItem>{
+      action: action,
       message: message,
-      routeName: actRoute.snapshot.url.map(m=>m.path).join("/")
+      routeName: actRoute.snapshot.url.map(m => m.path).join("/")
     }
     //this.logArr.unshift(dataToPush);
-    
+
   };
 
-  
+
   today(): moment.Moment {
     return moment()
   }
@@ -805,9 +799,8 @@ formTransportAddressShortGroup(fb:FormBuilder)
 
 
 
-export interface ILogItem
-{
+export interface ILogItem {
   routeName: string,
   message: string,
-  action: string  
+  action: string
 }
