@@ -749,12 +749,12 @@ export class CommonFunctionsService {
 
     this.patchCreationInfo(tr.creationInfo, creationInfo);
 
-    // tr.load.date = this.setFormatedDateTime(tr.load.date);
-    // tr.unload.date = this.setFormatedDateTime(tr.unload.date);
+    tr.load.date = this.setFormatedDateTime(tr.load.date);
+    tr.unload.date = this.setFormatedDateTime(tr.unload.date);
 
 
-    tr.load.date = moment(tr.load.date).utc(false).format(this.dateTimeLocaleFormat());
-    tr.unload.date = moment(tr.unload.date).utc(false).format(this.dateTimeLocaleFormat());
+    // tr.load.date = moment(tr.load.date).utc(false).format(this.dateTimeLocaleFormat());
+    // tr.unload.date = moment(tr.unload.date).utc(false).format(this.dateTimeLocaleFormat());
 
 
     this.patchCompanyData(tr.tradeInfo.company, <FormGroup>rForm.get('tradeInfo.company'), fb, false);
@@ -778,7 +778,7 @@ export class CommonFunctionsService {
 
   setFormatedDateTime(date: any): string {
     if (date == null || !moment(date).isValid) { return null; }
-    return moment(date).format(this.dateTimeLocaleFormat());
+    return moment(date).utc(false).format(this.dateTimeLocaleFormat());
   }
 
   toastMake(message: string, action: string, actRoute: ActivatedRoute) {
