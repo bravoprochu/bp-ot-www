@@ -302,7 +302,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
 
     this.extraInfoIsTaxNbpExchanged.valueChanges.pipe(
       takeUntil(this.isDestroyed$),
-      tap(()=>this.currencyNbp.disable({emitEvent:false})),
+      tap(() => this.currencyNbp.disable({ emitEvent: false })),
       switchMap((_isChecked: boolean) => {
         let _currNbp = <ICurrencyNbp>{
           currency: <ICurrency>this.currency.value,
@@ -310,12 +310,12 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
           rateDate: this.sellingDate.value
         }
 
-        if (_isChecked && (<ICurrencyNbp>this.currencyNbp.value).rate==0) {
+        if (_isChecked && (<ICurrencyNbp>this.currencyNbp.value).rate == 0) {
           //this.currencyNbp.patchValue(_currNbp, { emitEvent: true });
           console.log('check i rate: ', this.currencyNbp.value);
           return this.currService.getCurrencyNbp$(_currNbp)
         } else {
-          this.currencyNbp.enable({emitEvent: false});
+          this.currencyNbp.enable({ emitEvent: false });
           console.log('extraInfoIsTaxNbpExchanged !checked');
           return empty();
         }
@@ -323,13 +323,30 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
     )
       .subscribe(
         (_currNbp: ICurrencyNbp) => {
-          this.currencyNbp.enable({emitEvent: false});
-          this.currencyNbp.setValue(_currNbp, {emitEvent: false});
+          this.currencyNbp.enable({ emitEvent: false });
+          this.currencyNbp.setValue(_currNbp, { emitEvent: false });
           let info = `Średni kurs z dnia ${this.momentService.getFormatedDate(_currNbp.rateDate)} (${_currNbp.rate}), Podatek VAT (${this.cf.roundToCurrency(this.totalTax.value)}) wartość: ${this.cf.roundToCurrency(this.totalTax.value * _currNbp.rate)} PLN`;
-           
+
           this.extraInfoTaxExchangedInfo.setValue(info)
         },
-      );
+    );
+
+
+    this.currency.valueChanges.pipe(
+      takeUntil(this.isDestroyed$)
+    )
+      .subscribe(
+        (_curr: ICurrency) => {
+          console.log('currencyChange', _curr);
+          if (_curr.name == "PLN") {
+            this.extraInfoIsTaxNbpExchanged.setValue(false, { emitEvent: false });
+              let currNbpCurrency = this.currencyNbp.get('currency');
+              (<FormControl>currNbpCurrency).setValue(_curr, { emitEvent: this.extraInfoIsTaxNbpExchanged.value });
+          }
+        },
+        (err) => console.log('currencyChange error', err),
+        () => console.log('currencyChange finish..')
+      )
 
 
     this.currencyNbp.valueChanges.pipe(
