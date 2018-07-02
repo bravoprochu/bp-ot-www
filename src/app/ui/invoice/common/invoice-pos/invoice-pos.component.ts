@@ -1,12 +1,10 @@
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Component, Input, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
-import 'rxjs/add/operator/last';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/distinctUntilKeyChanged';
 import { InvoiceBuyService } from '../../invoice-buy/services/invoice-buy.service';
 import { CommonFunctionsService } from 'app/services/common-functions.service';
 import { IInvoicePos } from '@bpUI/invoice/interfaces/iinvoice-pos';
+import { merge, takeUntil, debounceTime } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 
 @Component({
@@ -15,12 +13,15 @@ import { IInvoicePos } from '@bpUI/invoice/interfaces/iinvoice-pos';
   styleUrls: ['./invoice-pos.component.css']
 })
 export class InvoicePosComponent implements OnInit, OnDestroy {
-  ngOnDestroy(): void {
-    this.isAlive = false;
-  }
   @Input() rForm: FormGroup;
   @Input() isCorrection: FormControl;
   @Output() remove = new EventEmitter();
+
+
+  ngOnDestroy(): void {
+    this.isDestroyed$.next(true); this.isDestroyed$.unsubscribe();
+  }
+
 
   constructor(
     private cf: CommonFunctionsService,
@@ -28,16 +29,43 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
 
   ) { }
 
+  ngOnInit() {
+    //this.nettoValueUpdate(this.currentGroup.value, this.currentGroup);
+    //this.currentGroup.valueChanges
+
+
+    this.isDestroyed$ = new Subject<boolean>();
+
+    this.currentQuantity
+      .valueChanges.pipe(
+        takeUntil(this.isDestroyed$),
+        merge(this.currentUnitPrice.valueChanges, this.currentVatRate.valueChanges),
+        debounceTime(150)
+      )
+      .subscribe((s: any) => {
+        if (this.currentGroup.valid) {
+          this.nettoValueUpdate(<IInvoicePos>this.currentGroup.value, this.currentGroup);
+          if (this.isCorrection.value) {
+            //if original has netto value - its a correction.. 
+            this.positionListCheckChanges();
+          }
+        }
+      });
+  }
+
+
+  isDestroyed$: Subject<boolean>;
+  changesInfo: string;
+  fontSize: number = 20;
+
   //#region getters
 
   get correctionsGroup(): FormGroup {
     return <FormGroup>this.rForm.get('corrections');
   }
-
   get correctionsBruttoValue(): FormControl {
     return <FormControl>this.rForm.get('corrections.brutto_value');
   }
-
   get correctionsNettoValue(): FormControl {
     return <FormControl>this.rForm.get('corrections.netto_value');
   }
@@ -94,8 +122,6 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
 
 
 
-
-
   get originalGroup(): FormGroup {
     return <FormGroup>this.rForm.get('original');
   }
@@ -124,52 +150,7 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
 
 
 
-
-
-  // get bruttoValue() {
-  //   return this.rForm.get('current.brutto_value');
-  // }
-
-  // get nettoValue() {
-  //   return this.rForm.get('current.netto_value');
-  // }
-  // get vatValue() {
-  //   return this.rForm.get('current.vat_value');
-  // }
-  // get vatUnitValue() {
-  //   return this.rForm.get('current.vat_unit_value');
-  // }
-  // get vatRate() {
-  //   return this.rForm.get('current.vat_rate');
-  // }
-
   //#endregion
-
-
-  ngOnInit() {
-    //this.nettoValueUpdate(this.currentGroup.value, this.currentGroup);
-    //this.currentGroup.valueChanges
-    this.currentQuantity
-    .valueChanges
-    .merge(this.currentUnitPrice.valueChanges, this.currentVatRate.valueChanges)
-      .debounceTime(150)
-      //.distinctUntilChanged()
-      .takeWhile(() => this.isAlive)
-      .subscribe((s: any) => {
-        if(this.currentGroup.valid){
-        this.nettoValueUpdate(<IInvoicePos>this.currentGroup.value, this.currentGroup);
-        if (this.isCorrection.value) {
-          //if original has netto value - its a correction.. 
-          console.log('merge - changeg', this.rForm.value);
-          this.positionListCheckChanges();
-        }
-      }
-      });
-  }
-
-  isAlive: boolean = true;
-  changesInfo: string;
-  fontSize: number = 20;
 
 
   nettoValueUpdate(s: IInvoicePos, form: FormGroup) {

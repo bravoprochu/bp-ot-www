@@ -254,17 +254,18 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
     this.rForm = this.icf.formInvoiceSellGroup(this.fb, this.isDestroyed$);
 
     this.invoiceLines
-      .valueChanges
-      .takeUntil(this.isDestroyed$)
-      .debounceTime(2000)
-      .switchMap(sw => {
+      .valueChanges.pipe(
+        takeUntil(this.isDestroyed$),
+        debounceTime(2000),
+        switchMap(sw => {
+          console.log('switchMap', sw)
         if (this.invoiceLines.valid) {
           return this.df.calcRates(this.rForm.value)
         } else {
           return Observable.empty();
         }
-      })
-      .map((s: any) => {
+      }),
+      map((s: any) => {
         if (s == "error") {
         } else {
           let data = <IInvoiceSell>s;
@@ -276,7 +277,15 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
           this.icf.getInvoiceLinesCorrections(data.invoiceLines, this.invoiceLines);
         }
       })
-      .subscribe();
+    )
+     .subscribe(
+        (_data:any)=>{
+        console.log('invoiceLines',_data);
+         
+        },
+        (err)=>console.log('invoiceLines error', err),
+        ()=>console.log('invoiceLines finish..')
+      );
 
     this.paymentIsDone
       .valueChanges

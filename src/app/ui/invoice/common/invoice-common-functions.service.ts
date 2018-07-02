@@ -268,7 +268,7 @@ export class InvoiceCommonFunctionsService {
     this.cf.patchCreationInfo(<ICreationInfo>inv, creationInfo);
 
     inv.invoiceReceivedDate = this.momentService.convertToConstTime(inv.invoiceReceivedDate);
-    this.patchInvoiceLine(inv.invoiceLines, invoicePosList, fb);
+    this.patchInvoiceLines(inv.invoiceLines, invoicePosList, fb);
     this.patchInvoiceRates(inv.rates, ratesValueList, fb);
     this.pTermsService.patchPaymentTerms(inv.paymentTerms, paymentTerms);
 
@@ -284,19 +284,14 @@ export class InvoiceCommonFunctionsService {
 
     let creationInfo = <FormGroup>rForm.get('creationInfo');
     let currency = <FormGroup>rForm.get('currency');
-
     let invLines = <FormArray>rForm.get('invoiceLines');
-
     let invTotal = <FormGroup>rForm.get('invoiceTotal');
-
     let rates = <FormArray>rForm.get('rates');
-
 
     this.cf.patchCreationInfo(<ICreationInfo>inv, creationInfo);
 
-
     //invoiceLines
-    this.patchInvoiceLine(inv.invoiceLines, <FormArray>invLines, fb);
+    this.patchInvoiceLines(inv.invoiceLines, <FormArray>invLines, fb);
 
     //rates
     this.patchInvoiceRates(inv.rates, rates, fb);
@@ -319,16 +314,19 @@ export class InvoiceCommonFunctionsService {
 
 
 
-  patchInvoiceLine(data: IInvoiceLineGroup[], rForm: FormArray, fb: FormBuilder) {
+  patchInvoiceLines(data: IInvoiceLineGroup[], rForm: FormArray, fb: FormBuilder) {
     if (data == undefined || data == null || data.length == 0) { return; }
     rForm.controls = [];
+    let c = [];
     data.forEach(group => {
       let invLineGroup = this.formInvoiceLineGroupGroup(fb);
-      invLineGroup.get('corrections').patchValue(group.corrections, { emitEvent: false });
-      invLineGroup.get('current').patchValue(group.current, { emitEvent: false });
-      invLineGroup.get('original').patchValue(group.original, { emitEvent: false });
+      // invLineGroup.get('corrections').patchValue(group.corrections, { emitEvent: false });
+      // invLineGroup.get('current').patchValue(group.current, { emitEvent: false });
+      // invLineGroup.get('original').patchValue(group.original, { emitEvent: false });
+
       //invLineGroup.patchValue(group, {emitEvent:false});
-      rForm.push(invLineGroup);
+      c.push(invLineGroup);
+      rForm.controls= c;
     });
   }
 
