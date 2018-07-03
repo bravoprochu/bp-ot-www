@@ -215,7 +215,6 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
   }
   navSave(){
     let id=this.rForm.get('companyId').value !=null ? +this.rForm.get('companyId').value : 0;
-      console.log(this.rForm.value);
       this.df.update(id, this.rForm.value)
       .take(1)
       .switchMap(s=>{

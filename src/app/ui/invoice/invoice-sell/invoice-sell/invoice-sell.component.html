@@ -257,22 +257,15 @@
                             <mat-checkbox formControlName="is_tax_nbp_exchanged" *ngIf="currency.value.name!='PLN'">Przelicznik podatku (średni kurs NBP)</mat-checkbox>
 
                             <div *ngIf="extraInfoIsTaxNbpExchanged.value" fxLayout="column">
-                                <div fxLayout="row wrap" fxLayoutGap="10px">
-                                    
-                                    
-                                    <app-currency-nbp [rForm]="currencyNbp" [placeholder]="'Wartość podatku w walucie obcej'"></app-currency-nbp>
-
-
-                                    <!-- <button flex mat-mini-fab (click)="prepTaxExchangedInfo()" matTooltip="przelicz wartość nbp">
+                                <app-currency-nbp [rForm]="currencyNbp" [placeholder]="'Wartość podatku w walucie obcej'"></app-currency-nbp>
+                                <div fxLayout="row">
+                                    <mat-form-field fxFlex>
+                                      <input type="text" matInput formControlName="tax_exchanged_info">
+                                    </mat-form-field>
+                                    <button mat-icon-button color="accent" matTooltip="Generuj treść średniego kursu..." (click)="refreshExtraInfoNbp()">
                                         <mat-icon>refresh</mat-icon>
-                                    </button> -->
+                                    </button>
                                 </div>
-
-
-                                <mat-form-field fxFill>
-                                    <input type="text" matInput formControlName="tax_exchanged_info">
-                                </mat-form-field>
-
                             </div>
 
                             <mat-checkbox formControlName="is_in_words">Słownie</mat-checkbox>

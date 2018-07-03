@@ -50,7 +50,6 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   ngOnInit() {
     this.isDestroyed$ = new Subject<boolean>();
     this.isPending = true;
-    //this.extraInfoNbp = this.currService.getCurrencyNbpGroup(this.fb, this.isDestroyed$, 'pln')
     this.initForm();
     this.initRouteId();
     //this.initData();
@@ -239,7 +238,6 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   isDestroyed$: Subject<boolean>;
   correctionTotalInfoValueStyle: string;
   public dataObj: any;
-  extraInfoNbp: FormGroup;
   isPending: boolean;
 
 
@@ -281,9 +279,6 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
           price: this.cf.roundToCurrency(this.totalTax.value),
           rateDate: this.sellingDate.value
         }
-
-
-
         if (_isChecked && (<ICurrencyNbp>this.currencyNbp.value).rate == 0) {
           this.currencyNbp.patchValue(_currNbp, { emitEvent: false });
           return this.currService.getCurrencyNbp$(_currNbp)
@@ -295,11 +290,10 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
     )
       .subscribe(
         (_currNbp: ICurrencyNbp) => {
+          console.log('extraInfoIsTaxNbpExchanged')
           //this.currencyNbp.enable({ emitEvent: false });
           this.currencyNbp.setValue(_currNbp, { emitEvent: false });
-          let info = `Średni kurs z dnia ${this.momentService.getFormatedDate(_currNbp.rateDate)} (${_currNbp.rate}), Podatek VAT (${this.cf.roundToCurrency(this.totalTax.value)}) wartość: ${this.cf.roundToCurrency(this.totalTax.value * _currNbp.rate)} PLN`;
-
-          this.extraInfoTaxExchangedInfo.setValue(info)
+          this.prepExtraInfoTaxExchangedNbp(_currNbp);
         },
     );
 
@@ -318,15 +312,16 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
       )
 
 
-    this.currencyNbp.valueChanges.pipe(
-      takeUntil(this.isDestroyed$),
-    )
-      .subscribe(
-        (_currNbp: ICurrencyNbp) => {
-          let info = `Średni kurs z dnia ${this.momentService.getFormatedDate(_currNbp.rateDate)} (${_currNbp.rate}), Podatek VAT (${this.cf.roundToCurrency(this.totalTax.value)}) wartość: ${this.cf.roundToCurrency(this.totalTax.value * _currNbp.rate)} PLN`;
-          this.extraInfoTaxExchangedInfo.setValue(info)
-        },
-    );
+    // this.currencyNbp.get('plnValue').valueChanges.pipe(
+    //   takeUntil(this.isDestroyed$),
+    // )
+    //   .subscribe(
+    //     (_currNbp: ICurrencyNbp) => {
+    //       console.log("currNBP changed");
+    //       let info = `Średni kurs z dnia ${this.momentService.getFormatedDate(_currNbp.rateDate)} (${_currNbp.rate}), Podatek VAT (${this.cf.roundToCurrency(_currNbp.price)}) wartość: ${this.cf.roundToCurrency(_currNbp.plnValue)} PLN`;
+    //       this.extraInfoTaxExchangedInfo.setValue(info)
+    //     },
+    // );
 
 
     //total brutto in words - checkbox change
@@ -487,9 +482,6 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
 
-  prepTaxExchangedInfo() {
-    this.extraInfoNbp.patchValue(this.getCurrencyNbpExchange(), { emitEvent: true });
-  }
 
   prepTotalInWord(): string {
     let totalBrutto: number = 0;
@@ -514,6 +506,11 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
     return `${this.cf.inWords(totalBrutto)} ${rest}/100 ${this.currency.value.name}`
   }
 
+
+  prepExtraInfoTaxExchangedNbp(_currNbp: ICurrencyNbp){
+    let info = `Średni kurs dla ${_currNbp.currency.name} z dnia ${this.momentService.getFormatedDate(_currNbp.rateDate)} (${_currNbp.rate}), Podatek VAT (${this.cf.roundToCurrency(_currNbp.price)}) wartość: ${this.cf.roundToCurrency(_currNbp.plnValue)} PLN`;
+    this.extraInfoTaxExchangedInfo.setValue(info)
+  }
 
 
   prepCorrectionOriginalData() {
@@ -552,6 +549,10 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
 
   }
 
+
+  refreshExtraInfoNbp(){
+    this.prepExtraInfoTaxExchangedNbp(this.currencyNbp.value);
+  }
 
   //#endregion
 
