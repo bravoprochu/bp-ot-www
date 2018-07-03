@@ -1,14 +1,9 @@
-import { Headers, ResponseType } from '@angular/http';
 import { TokenService } from './token.service';
 import { Injectable } from '@angular/core';
 import { Observable } from "rxjs/Observable";
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/delayWhen';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/retry';
-import 'rxjs/add/observable/throw';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { IDateRange } from 'app/shared/interfaces/i-date-range';
+import { catchError, take } from 'rxjs/operators';
 
 
 
@@ -39,52 +34,62 @@ export class DataFactoryService {
       return this.http.get(this.url+`/GetAll/${dateRange.dateStart.toISOString()}/${dateRange.dateEnd.toISOString()}`, 
       {headers: this.bearerHeader()}
     )
-    .take(1)
-    //.retryWhen(errors=>errors.delay(2500).take(3))
-    .catch(this.errorHandler);
+    .pipe(
+      take(1),
+      catchError(this.errorHandler)
+    )
 
     } else {
     return this.http.get(this.url+"/GetAll", 
       {headers: this.bearerHeader()}
     )
     //.retryWhen(errors=>errors.delay(2500).take(3))
-    .catch(this.errorHandler);
+    .pipe(
+      take(1),
+      catchError(this.errorHandler)
+    )
   }
   }
 
   getById(id:number):Observable<any>{
       return this.http.get(this.url+"/GetById/"+id, 
       {headers: this.bearerHeader()}
-    ).take(1)
-    // .retryWhen(errors=>errors.delay(2500).take(3))
-    //.onErrorResumeNext()
-    .catch(this.errorHandler);
+    )
+    .pipe(
+      take(1),
+      catchError(this.errorHandler)
+    )
   }
 
   create(item:any):Observable<any>{
     console.log(item);
     return this.http.post(this.url+"/Post", item,
       {headers: this.bearerHeader()}
-    ).take(1)
-    //.retryWhen(errors=>errors.delay(2500).take(3))
-    .catch(this.errorHandler);
+    )
+    .pipe(
+      take(1),
+      catchError(this.errorHandler)
+    )
   }
 
   delete(id: number):Observable<any>{
     return this.http.delete(this.url+"/Delete/"+id, 
       {headers: this.bearerHeader()}
-  ).take(1)
-//    .retryWhen(errors=>errors.delay(2500).take(3))
-    .onErrorResumeNext()
-    //.catch(this.errorHandler);
+  )
+  .pipe(
+    take(1),
+    catchError(this.errorHandler)
+  )
   }
 
   update(id: number, item: any):Observable<any>{
     return this.http.put(this.url+"/Put/"+id, JSON.stringify(item), 
     {headers: this.bearerHeader()}
-  ).take(1)
-    // .retryWhen(errors=>errors.delay(2500).take(3))
-    .catch(this.errorHandler);
+  )
+  .pipe(
+    take(1),
+    catchError(this.errorHandler)
+  )
   }
 
 
