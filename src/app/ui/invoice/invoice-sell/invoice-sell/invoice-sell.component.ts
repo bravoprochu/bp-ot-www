@@ -252,6 +252,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
 
   public initForm(): void {
     this.rForm = this.icf.formInvoiceSellGroup(this.fb, this.isDestroyed$);
+    this.invoicePosAdd();
 
     this.invoiceLines
       .valueChanges.pipe(
@@ -295,7 +296,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
         this.paymentDate.updateValueAndValidity();
       });
 
-    this.paymentIsTermsPaymentDays.setValue(9, { emitEvent: false });
+    //this.paymentIsTermsPaymentDays.setValue(9, { emitEvent: false });
 
     this.sellingDate
       .valueChanges

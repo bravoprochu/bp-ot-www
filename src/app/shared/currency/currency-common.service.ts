@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { ICurrency } from './interfaces/i-currency';
 import { ICurrencyNbp } from './interfaces/i-currency-nbp';
 import { ICurrencyNbpResult } from './interfaces/i-currency-nbp-result';
-import { FormGroup, FormBuilder, FormControlDirective, FormControl, Validators } from '@angular/forms';
-import { Subject, empty, of, observable, Observable, throwError } from 'rxjs';
+import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { Subject, empty, of, Observable, throwError } from 'rxjs';
 import * as moment from 'moment';
 import { map, merge, takeUntil, tap, take, switchMap, debounceTime, distinctUntilChanged, catchError, repeat, retry, delay, distinctUntilKeyChanged } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
@@ -151,9 +151,7 @@ export class CurrencyCommonService {
     // if nbp service returns not found (weekend day/ holiday etc.. ) 
     // request rateDate (a day before) (retry 5 times..)
     //
-    console.log('nbpService$', nbp);
     let dayBefore: number = 0
-
     let nbpService$ = (_dayBefore) => this.httpClient.get(`//api.nbp.pl/api/exchangerates/rates/a/${nbp.currency.name.toLowerCase()}/${this.mC.getFormatedDate(nbp.rateDate.subtract(_dayBefore, "days"))}`)
       .pipe(
         map(_res => <ICurrencyNbpResult>_res),
@@ -162,7 +160,6 @@ export class CurrencyCommonService {
 
     return nbpService$(0)
       .pipe(
-        tap(()=>console.log('nbpService, dayBefore [try]', dayBefore)),
         catchError(error => {
           if (error instanceof HttpErrorResponse) {
             if (error.status == 404) {

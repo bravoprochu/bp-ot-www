@@ -104,8 +104,8 @@
                 </button>
                 <div>&nbsp;</div>
                 <div fxLayout="column" fxLayoutGap="10px">
-                    <app-invoice-sell-pos *ngFor="let p of invoiceLines.controls; index as idx" fxFlex="100" [rForm]="p" [isCorrection]="isCorrection"
-                        (remove)="invoicePosRemove($event, idx)"></app-invoice-sell-pos>
+                    <app-invoice-pos *ngFor="let p of invoiceLines.controls; index as idx" fxFlex="100" [rForm]="p" [isCorrection]="isCorrection"
+                        (remove)="invoicePosRemove($event, idx)"></app-invoice-pos>
                 </div>
             </mat-expansion-panel>
 
@@ -124,7 +124,7 @@
                     </mat-panel-title>
                 </mat-expansion-panel-header>
                 <div fxLayout="column" fxLayoutGap="10px">
-                    <app-invoice-sell-pos-resume [rForm]="invoiceTotal" [isCorrection]="isCorrection"></app-invoice-sell-pos-resume>
+                    <app-invoice-pos-resume [rForm]="invoiceTotal" [isCorrection]="isCorrection"></app-invoice-pos-resume>
 
                     <div class="mat-title">
                         {{getCorrectionPaymenntInfo.value}}
@@ -305,16 +305,7 @@
                     <button (click)="createCorrection()" [disabled]="correctionId.value" mat-raised-button matTooltip="Utwórz korektę">Utwórz korektę</button>
                 </div>
             </mat-expansion-panel>
-
-
-
             <!-- #endregion -->
-
-
-
         </mat-accordion>
-
-
-
     </div>
 </div>

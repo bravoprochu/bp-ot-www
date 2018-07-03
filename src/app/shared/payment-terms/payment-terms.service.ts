@@ -51,7 +51,7 @@ export class PaymentTermsService {
     let paymentDay = `przelew, 60 dni, termin płatności: ${this.mc.getFormatedDate(this.mc.getTodayConstTimeMoment())}`;
     let res = fb.group({
       "combined": [paymentDay],
-      "day0": [this.mc.getTodayConstTimeMoment()],
+      "day0": [this.mc.getToday()],
       "description": [null],
       "paymentTerm": fb.control({
         "paymentTermId": 3,
@@ -59,7 +59,7 @@ export class PaymentTermsService {
         "isDescription": false,
         "isPaymentDate": true
       }),
-      "paymentDate": [this.mc.getTodayConstTimeMoment().add(60, "day"), Validators.required],
+      "paymentDate": [this.mc.getToday().add(60, "day"), Validators.required],
       "paymentDays": [60, Validators.required],
 
     });

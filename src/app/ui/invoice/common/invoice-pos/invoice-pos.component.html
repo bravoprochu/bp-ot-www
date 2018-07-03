@@ -66,11 +66,6 @@
             </div>
 
 
-
-
-
-
-
             <div fxLayout="row wrap">
                 <div fxFlex="100" fxLayout fxLayoutGap="20px" *ngIf="currentVatUnitValue.value">
                     <div>jedn. vat:</div>
@@ -145,18 +140,9 @@
                     <div [style.color]="'red'">
                         <strong>{{correctionsUnitPrice?.value | number: '1.2-2'}}</strong>
                     </div>
-    
                 </div>
-    
             </div>
         </mat-expansion-panel>
-
-
-
-
-        
-
-
 
     </mat-card-content>
     <mat-card-actions fxLayoutAlign="end" *ngIf="!isCorrection.value">

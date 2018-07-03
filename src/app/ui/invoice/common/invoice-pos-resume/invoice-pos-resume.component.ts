@@ -4,7 +4,7 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 
 
 @Component({
-  selector: 'app-invoice-sell-pos-resume',
+  selector: 'app-invoice-pos-resume',
   templateUrl: './invoice-pos-resume.component.html',
   styleUrls: ['./invoice-pos-resume.component.css']
 })

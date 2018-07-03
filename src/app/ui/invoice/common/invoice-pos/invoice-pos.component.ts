@@ -8,7 +8,7 @@ import { Subject } from 'rxjs';
 
 
 @Component({
-  selector: 'app-invoice-sell-pos',
+  selector: 'app-invoice-pos',
   templateUrl: './invoice-pos.component.html',
   styleUrls: ['./invoice-pos.component.css']
 })
@@ -33,7 +33,6 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
     //this.nettoValueUpdate(this.currentGroup.value, this.currentGroup);
     //this.currentGroup.valueChanges
 
-
     this.isDestroyed$ = new Subject<boolean>();
 
     this.currentQuantity
@@ -51,17 +50,17 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
               this.positionListCheckChanges();
             }
           }
-
         },
         (err) => console.log('pos error', err),
         () => console.log('pos finish..')
       );
   }
 
-
   isDestroyed$: Subject<boolean>;
   changesInfo: string;
   fontSize: number = 20;
+  posName: FormControl;
+  posPKWIU: FormControl;
 
   //#region getters
 
