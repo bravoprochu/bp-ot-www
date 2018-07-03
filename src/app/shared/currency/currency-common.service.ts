@@ -125,12 +125,8 @@ export class CurrencyCommonService {
   }
 
   getCurrencyNbp$(_currNBP: ICurrencyNbp):Observable<ICurrencyNbp> {
-    console.log('getCurrencyNBP$', _currNBP);
-   
     return this.getNbpService$(_currNBP).pipe(
-//      tap(()=>console.log('getCurrencyNbp$ from _currNBP', _currNBP)),
       switchMap((_nbpResult: ICurrencyNbpResult)=>{
-        console.log('switchMap');
         let rate: ICurrencyNbpResultRate = _nbpResult.rates[0];
         return of(<ICurrencyNbp>{
           currency: _currNBP.currency,
@@ -138,9 +134,7 @@ export class CurrencyCommonService {
           price: _currNBP.price,
           rate: _nbpResult.rates[0].mid,
           rateDate: this.mC.convertToMoment(rate.effectiveDate)
-        }).pipe(
-          tap(()=>console.log('getCurrencyNbp$ Icurrncy from _currNBP', _nbpResult)),
-        );
+        })
       }
     ));
   }

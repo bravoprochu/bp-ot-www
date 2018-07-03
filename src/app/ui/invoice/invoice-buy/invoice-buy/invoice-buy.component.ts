@@ -15,6 +15,7 @@ import { Subject } from 'rxjs';
 import { CurrencyCommonService } from '@bpShared/currency/currency-common.service';
 import { ICurrencyNbp } from '@bpShared/currency/interfaces/i-currency-nbp';
 import { IPaymentTerms } from '@bpShared/payment-terms/i-payment-terms';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-invoice-sell-buy',
@@ -216,26 +217,26 @@ export class InvoiceBuyComponent implements OnInit, OnDestroy, IDetailObj {
     this.paymentTermsPaymentDays.setValue(14, { emitEvent: true });
     this.invoicePosAdd();
 
-    this.invoiceLines.valueChanges
-      .takeUntil(this.isDestroyed$)
-      .debounceTime(2000)
-      .switchMap(sw => {
-        if (this.invoiceLines.valid) {
-          return this.df.calcRates(this.rForm.value)
-        } else {
-          return Observable.empty();
-        }
-      })
-      .map((s:any)=>{
-        if (s == "error") {
-          console.log('error');
-        } else {
-          let data = <IInvoiceBuy>s;
-          this.icf.patchInvoiceRates(data.rates, this.rates, this.fb);
-          this.icf.patchInvoiceTotal(data.invoiceTotal, this.invoiceTotal, this.fb);
-        }
-      })
-      .subscribe();
+    // this.invoiceLines.valueChanges
+    //   .takeUntil(this.isDestroyed$)
+    //   .debounceTime(2000)
+    //   .switchMap(sw => {
+    //     if (this.invoiceLines.valid) {
+    //       return this.df.calcRates(this.rForm.value)
+    //     } else {
+    //       return Observable.empty();
+    //     }
+    //   })
+    //   .map((s:any)=>{
+    //     if (s == "error") {
+    //       console.log('error');
+    //     } else {
+    //       let data = <IInvoiceBuy>s;
+    //       this.icf.patchInvoiceRates(data.rates, this.rates, this.fb);
+    //       this.icf.patchInvoiceTotal(data.invoiceTotal, this.invoiceTotal, this.fb);
+    //     }
+    //   })
+    //   .subscribe();
 
 
     this.dateOfIssue
@@ -270,6 +271,20 @@ export class InvoiceBuyComponent implements OnInit, OnDestroy, IDetailObj {
         }
         this.invoiceReceivedDate.updateValueAndValidity();
       })
+  }
+
+
+  invoiceLineUpdated(){
+    this.df.calcRates(this.rForm.value).pipe(
+      takeUntil(this.isDestroyed$)
+    )
+    .subscribe(
+      (_data:any)=>{
+          this.icf.patchInvoiceRates(_data.rates, this.rates, this.fb);
+          this.icf.patchInvoiceTotal(_data.invoiceTotal, this.invoiceTotal, this.fb);
+      },
+    )
+    
   }
 
   invoicePosAdd() {

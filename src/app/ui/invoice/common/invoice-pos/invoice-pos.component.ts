@@ -1,10 +1,10 @@
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Component, Input, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { InvoiceBuyService } from '../../invoice-buy/services/invoice-buy.service';
 import { CommonFunctionsService } from 'app/services/common-functions.service';
 import { IInvoicePos } from '@bpUI/invoice/interfaces/iinvoice-pos';
-import { merge, takeUntil, debounceTime } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { merge, takeUntil, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Subject, empty } from 'rxjs';
+import { InvoiceSellService } from '@bpUI/invoice/invoice-sell/services/invoice-sell.service';
 
 
 @Component({
@@ -16,51 +16,132 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
   @Input() rForm: FormGroup;
   @Input() isCorrection: FormControl;
   @Output() remove = new EventEmitter();
-
+  @Output() updated = new EventEmitter();
 
   ngOnDestroy(): void {
     this.isDestroyed$.next(true); this.isDestroyed$.complete(); this.isDestroyed$.unsubscribe();
   }
 
-
   constructor(
     private cf: CommonFunctionsService,
-    private df: InvoiceBuyService
-
+    private df: InvoiceSellService
   ) { }
 
   ngOnInit() {
     //this.nettoValueUpdate(this.currentGroup.value, this.currentGroup);
     //this.currentGroup.valueChanges
-
     this.isDestroyed$ = new Subject<boolean>();
+
+    this.posName = new FormControl(this.rForm.get('current.name').value);
+    this.posPkwiu = new FormControl(this.rForm.get('current.pkwiu').value);
+
+
+
+    // this.rForm.valueChanges.pipe(
+
+    // )
+    // .subscribe(
+    //   (_data:any)=>{
+    //   console.log('invoicePos rFormChanged',_data);
+
+    //   },
+    //   (err)=>console.log('invoicePos rFormChanged error', err),
+    //   ()=>console.log('invoicePos rFormChanged finish..')
+    // )
+
+
 
     this.currentQuantity
       .valueChanges.pipe(
         takeUntil(this.isDestroyed$),
         merge(this.currentUnitPrice.valueChanges, this.currentVatRate.valueChanges),
-        debounceTime(150)
+        debounceTime(1000),
+        switchMap(sw => {
+          if (this.rForm.valid) {
+            return this.df.calcLineGroup(this.rForm.value).pipe(
+              takeUntil(this.isDestroyed$)
+            )
+          } else {
+            return empty();
+          }
+        })
       )
       .subscribe(
         (_data: any) => {
-          if (this.currentGroup.valid) {
-            this.nettoValueUpdate(<IInvoicePos>this.currentGroup.value, this.currentGroup);
-            if (this.isCorrection.value) {
-              //if original has netto value - its a correction.. 
-              this.positionListCheckChanges();
-            }
-          }
+          this.rForm.setValue(_data, {emitEvent: false});
+          this.updated.emit();
         },
-        (err) => console.log('pos error', err),
-        () => console.log('pos finish..')
-      );
+        (err) => console.log('posCalcGroup error', err),
+        () => console.log('posCalcGroup finish..')
+
+      )
+
+
+    this.posName.valueChanges.pipe(
+      takeUntil(this.isDestroyed$),
+      debounceTime(1000),
+      distinctUntilChanged()
+    )
+      .subscribe(
+        (_data: any) => {
+          this.currentGroup.get('name').setValue(_data, { emitEvent: false });
+          this.rForm.markAsDirty();
+        },
+      )
+
+    this.posPkwiu.valueChanges.pipe(
+      takeUntil(this.isDestroyed$),
+      debounceTime(1000),
+      distinctUntilChanged()
+    )
+      .subscribe(
+        (_data: any) => {
+          this.currentGroup.get('pkwiu').setValue(_data, { emitEvent: false });
+          this.rForm.markAsDirty();
+        },
+    )
+
+
+
+    // this.rForm.valueChanges.pipe(
+
+    // ).subscribe(
+    //   (_data:any)=>{
+    //   console.log('INSIDE invoicePos change',_data);
+    //   },
+    //   (err)=>console.log('INSIDE invoicePos change error', err),
+    //   ()=>console.log('INSIDE invoicePos change finish..')
+    // )
+
+
+    // this.currentQuantity
+    //   .valueChanges.pipe(
+    //     takeUntil(this.isDestroyed$),
+    //     merge(this.currentUnitPrice.valueChanges, this.currentVatRate.valueChanges),
+    //     //debounceTime(150)
+    //   )
+    //   .subscribe(
+    //     (_data: any) => {
+    //       console.log('invPos change', _data);
+    //       this.rForm.markAsDirty();
+    //       if (this.currentGroup.valid) {
+    //         this.nettoValueUpdate(<IInvoicePos>this.currentGroup.value, this.currentGroup);
+    //         if (this.isCorrection.value) {
+    //           //if original has netto value - its a correction.. 
+    //           this.positionListCheckChanges();
+    //         }
+    //       }
+    //     },
+    //     (err) => console.log('pos error', err),
+    //     () => console.log('pos finish..')
+    //   );
   }
 
   isDestroyed$: Subject<boolean>;
   changesInfo: string;
   fontSize: number = 20;
   posName: FormControl;
-  posPKWIU: FormControl;
+  posPkwiu: FormControl;
 
   //#region getters
 
@@ -218,3 +299,5 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
     this.remove.emit(this.rForm);
   }
 }
+
+

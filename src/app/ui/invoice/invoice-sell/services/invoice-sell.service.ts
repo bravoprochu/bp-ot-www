@@ -1,5 +1,5 @@
 import { TokenService } from '../../../../services/token.service';
-import { IInvoiceSell } from '../../interfaces/iinvoice-sell';
+import { IInvoiceSell, IInvoiceLineGroup } from '../../interfaces/iinvoice-sell';
 import { DataFactoryService } from '../../../../services/data-factory.service';
 import { environment } from '../../../../../environments/environment';
 import { Observable } from 'rxjs/Rx';
@@ -18,6 +18,18 @@ export class InvoiceSellService extends DataFactoryService {
  }
 
 
+
+ calcLineGroup(invoice:IInvoiceLineGroup):Observable<any>{
+  return this.http.post(environment.apiInvoiceSellCalcLineGroup, invoice, {
+    headers: this.bearerHeader()
+  })
+  .take(1)
+  .catch(err=> {
+   return Observable.of("error");
+ })    
+}
+
+
  calcRates(invoice:IInvoiceSell):Observable<any>{
    return this.http.post(environment.apiInvoiceSellCalcRates, invoice, {
      headers: this.bearerHeader()
@@ -26,8 +38,7 @@ export class InvoiceSellService extends DataFactoryService {
    .catch(err=> {
     return Observable.of("error");
   })    
-   //.catch(this.errorHandler);
- }
+  }
 
 
  printInvoice(invoice: IInvoiceSell):Observable<any>{

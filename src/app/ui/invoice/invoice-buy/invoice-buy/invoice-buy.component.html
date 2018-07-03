@@ -97,7 +97,7 @@
         <div>&nbsp;</div>
             <div fxLayout="column" fxLayoutGap="10px">
                 <app-invoice-pos *ngFor="let p of invoiceLines.controls; index as idx" fxFlex="100" [rForm]="p" [isCorrection]="isCorrection"
-                    (remove)="invoicePosRemove(idx)"></app-invoice-pos>
+                    (remove)="invoicePosRemove(idx)" (updated)="invoiceLineUpdated()"></app-invoice-pos>
                 <button mat-mini-fab (click)="invoicePosAdd()" *ngIf="invoiceLines.length>1" [disabled]="invoiceLines.invalid || isCorrection.value" [matTooltipPosition]="'right'"
                     matTooltip="Dodaj pozycje faktury">
                     <mat-icon>add</mat-icon>

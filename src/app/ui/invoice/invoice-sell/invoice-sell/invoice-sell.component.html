@@ -104,8 +104,8 @@
                 </button>
                 <div>&nbsp;</div>
                 <div fxLayout="column" fxLayoutGap="10px">
-                    <app-invoice-pos *ngFor="let p of invoiceLines.controls; index as idx" fxFlex="100" [rForm]="p" [isCorrection]="isCorrection"
-                        (remove)="invoicePosRemove($event, idx)"></app-invoice-pos>
+                    <app-invoice-pos *ngFor="let p of invoiceLines.controls index as idx" fxFlex="100" [rForm]="p" [isCorrection]="isCorrection"
+                        (remove)="invoicePosRemove(idx)" (updated)="invoiceLineUpdated()" ></app-invoice-pos>
                 </div>
             </mat-expansion-panel>
 

@@ -11,10 +11,12 @@ export const environment = {
     apiUrlNbpSredniZDnia: '//api.nbp.pl/api/exchangerates/rates/a/',
   
     apiInvoiceBuy: server+'api/invoiceBuy',
+    apiInvoiceBuyCalcLineGroup: server+'api/invoiceBuy/PostCalcLineGroup',
     apiInvoiceBuyCalcRates: server+'api/invoiceBuy/PostCalcRates',
     apiInvoiceBuyPaymentConfirmation: server + 'api/invoiceBuy/SetPaymentConfirmation',
     apiInvoiceBuyPaymentRemind: server+'api/invoiceBuy/GetPaymentRemindList',
     apiInvoiceSell: server+'api/invoiceSell',
+    apiInvoiceSellCalcLineGroup: server+'api/invoiceSell/PostCalcLineGroup',
     apiInvoiceSellCalcRates: server+'api/invoiceSell/PostCalcRates',
     apiInvoiceSellGenInvoicePdf: server+'api/invoiceSell/GenInvoicePdf',
     apiInvoiceSellPaymentConfirmation: server +'api/invoiceSell/SetPaymentConfirmation',

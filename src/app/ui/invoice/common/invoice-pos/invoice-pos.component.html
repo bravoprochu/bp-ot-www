@@ -3,12 +3,13 @@
         <div [formGroup]="currentGroup">
             <div fxLayout="row wrap" fxLayoutGap="20px">
                 <mat-form-field fxFlex="40" fxFlex.xs="100">
-                    <textarea matTextareaAutosize matAutosizeMinRows="5" matInput formControlName="name" placeholder="Nazwa towaru/usługi"></textarea>
+                    <!-- <textarea matTextareaAutosize matAutosizeMinRows="5" matInput formControlName="name" placeholder="Nazwa towaru/usługi"></textarea> -->
+                    <textarea matTextareaAutosize matAutosizeMinRows="5" matInput [formControl]="posName" placeholder="Nazwa towaru/usługi"></textarea>
                     <!-- <input type="text" matInput formControlName="name" placeholder="Nazwa towaru/usługi"> -->
                 </mat-form-field>
                 <div fxLayout="row wrap" fxFlex="55" fxFlex.xs="100">
                     <mat-form-field fxFlex="50" fxFlex.xs="25">
-                        <input type="text" matInput formControlName="pkwiu" placeholder="PKWiU">
+                        <input type="text" matInput [formControl]="posPkwiu" placeholder="PKWiU">
                     </mat-form-field>
                     <mat-form-field fxFlex="25" fxFlex.xs="15">
                         <input type="number" matInput formControlName="quantity" placeholder="Ilość">

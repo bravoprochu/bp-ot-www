@@ -146,17 +146,17 @@ export class InvoiceCommonFunctionsService {
     return fb.group({
       "invoice_pos_id": [0],
       "baseInvoiceLineId": [0],
-      "brutto_value": [null],
+      "brutto_value": [0],
       "isCorrected": [false],
       "correctionInfo": [null],
       "name": [null, Validators.required],
       "measurement_unit": ["szt.", Validators.required],
-      "netto_value": [null],
+      "netto_value": [0],
       "pkwiu": [null],
       "quantity": [1],
       "unit_price": [null, Validators.required],
-      "vat_unit_value": [null],
-      "vat_value": [null],
+      "vat_unit_value": [0],
+      "vat_value": [0],
       "vat_rate": [null, Validators.required],
     });
   }
@@ -241,7 +241,6 @@ export class InvoiceCommonFunctionsService {
     newLineFg.get('corrections').patchValue(this.getIInvoiceLine(null));
 
     invoiceLines.push(newLineFg);
-
   }
 
 
@@ -325,9 +324,16 @@ export class InvoiceCommonFunctionsService {
       // invLineGroup.get('original').patchValue(group.original, { emitEvent: false });
 
       //invLineGroup.patchValue(group, {emitEvent:false});
-      c.push(invLineGroup);
-      rForm.controls= c;
+      rForm.push(invLineGroup);
+      //rForm.controls= c;
     });
+  }
+
+  patchInvoiceLinesUpdate(data: IInvoiceLineGroup[], rForm: FormArray){
+    for (let i = 0; i < data.length; i++) {
+      const idx = data[i];
+      rForm.at(i).setValue(idx, {emitEvent: false});
+    }    
   }
 
   patchInvoiceRates(data: IInvoiceRateGroup[], rForm: FormArray, fb: FormBuilder): void {
