@@ -47,7 +47,7 @@ export class CurrencyCommonService {
     let res = fb.group({
       "price": [0, Validators.compose([Validators.required, Validators.min(0)])],
       "currency": this.getCurrencyListGroup(fb, isDestroyed$, _initCurrencyName),
-      "plnValue": [null],
+      "plnValue": [0],
       "rate": [0],
       "rateDate": [this.mC.isCurrencyNbpValidDate(this.mC.getTodayConstTimeMoment())]
     });
