@@ -118,6 +118,9 @@ export class CurrencyCommonService {
       .subscribe(
         (_nbpRes: ICurrencyNbpResult) => {
           this.patchCurrencyNbpResult(_nbpRes, res);
+          //
+          // if currency is PLN patch required rateDate for today...
+          //
           res.markAsDirty();
         },
     );
@@ -199,7 +202,7 @@ export class CurrencyCommonService {
     let _rFormRateDate = <FormControl>rForm.get("rateDate");
 
     let _plnValue = isNbpResRates ? Math.round((_rate * _rFormPrice.value) * 100) / 100 : _rFormPrice.value;
-    let _rateDate = isNbpResRates ? moment(_nbpRes.rates[0].effectiveDate) : null;
+    let _rateDate = isNbpResRates ? moment(_nbpRes.rates[0].effectiveDate) : this.mC.getToday();
 
     _rFormPlnValue.setValue(_plnValue, { emitEvent: false });
     _rFormRate.setValue(_rate, { emitEvent: false });

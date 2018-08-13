@@ -127,6 +127,7 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
   initForm(): void {
     this.rForm = this.cf.formTransportGroup(this.fb, this.isDestroyed$);
   }
+  
   initRouteId(): void {
     this.actRoute.paramMap
       .takeUntil(this.isDestroyed$)

@@ -18,11 +18,8 @@ import { CurrencyCommonService } from '@bpShared/currency/currency-common.servic
 import { ICurrencyNbp } from '@bpShared/currency/interfaces/i-currency-nbp';
 import { Moment } from 'moment';
 import { IPaymentTerm } from '@bpShared/payment-terms/i-payment-term';
-import { IPaymentTerms } from '@bpShared/payment-terms/i-payment-terms';
 import { MomentCommonService } from '@bpShared/moment-common/moment-common.service';
-import { InvoiceCommonFunctionsService } from '@bpUI/invoice/common/invoice-common-functions.service';
 import { IInvoiceExtraInfoChecked, IInvoiceExtraInfo } from '@bpUI/invoice/interfaces/iinvoice-sell';
-import { DEFAULT_APP_VALUES } from 'environments/environment';
 
 
 @Injectable()
