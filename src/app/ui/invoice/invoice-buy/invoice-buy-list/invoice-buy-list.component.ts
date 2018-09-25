@@ -11,7 +11,7 @@ import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
 import { Subject } from 'rxjs';
 import { Moment } from 'moment';
 import { DEFAULT_APP_VALUES } from 'environments/environment.prod';
-
+import {takeUntil, map} from 'rxjs/operators';
 
 
 @Component({
@@ -67,7 +67,13 @@ export class InvoiceBuyListComponent implements OnInit,OnDestroy, IListObj {
     public initData(dateRange:IDateRange): void 
     {
       this.df.getAll(dateRange)
-      .takeUntil(this.isDestroyed$)
+      .pipe(
+        takeUntil(this.isDestroyed$),
+        map(m=>{
+          
+          return m
+        })
+      )
       .subscribe(s=>{
         this.dataSource=new MatTableDataSource(s);
         this.cf.toastMake(`Pobrano dane dla zakresu od ${(<Moment>dateRange.dateStart).format(DEFAULT_APP_VALUES.dateLocalFormat)} do ${(<Moment>dateRange.dateEnd).format(DEFAULT_APP_VALUES.dateLocalFormat)}, razem: ${s.length}`, "initData", this.actRoute);

@@ -70,6 +70,7 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
         (_data: any) => {
           this.rForm.setValue(_data, {emitEvent: false});
           this.updated.emit();
+          this.rForm.markAsDirty();
         },
         (err) => console.log('posCalcGroup error', err),
         () => console.log('posCalcGroup finish..')
@@ -268,6 +269,7 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
       form.get('vat_value').setValue(null, { emitEvent: false });
       form.get('vat_unit_value').setValue(null, { emitEvent: false });
     }
+    this.rForm.markAsDirty();
   }
 
   positionListCheckChanges(): void {

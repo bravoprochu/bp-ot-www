@@ -181,7 +181,8 @@ export class PaymentTermsService {
 
   patchPaymentTerms(data: IPaymentTerms, rForm: FormGroup) {
     data.day0 = this.mc.convertToConstTime(data.day0);
-    data.paymentDate = data.paymentDate ? moment(data.paymentDate) : null;
+    data.paymentDate = data.paymentDate!=null ? moment(data.paymentDate) : data.day0;
+    data.paymentDays = data.paymentDays!=null ? data.paymentDays: 0;
     rForm.patchValue(data, { emitEvent: false });
     rForm.markAsPristine();
   }

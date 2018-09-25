@@ -15,7 +15,7 @@ import { Subject } from 'rxjs';
 import { CurrencyCommonService } from '@bpShared/currency/currency-common.service';
 import { ICurrencyNbp } from '@bpShared/currency/interfaces/i-currency-nbp';
 import { IPaymentTerms } from '@bpShared/payment-terms/i-payment-terms';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-invoice-sell-buy',
@@ -276,7 +276,8 @@ export class InvoiceBuyComponent implements OnInit, OnDestroy, IDetailObj {
 
   invoiceLineUpdated(){
     this.df.calcRates(this.rForm.value).pipe(
-      takeUntil(this.isDestroyed$)
+      takeUntil(this.isDestroyed$),
+      tap(()=>this.rForm.markAsDirty())
     )
     .subscribe(
       (_data:any)=>{
