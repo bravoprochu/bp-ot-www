@@ -6,6 +6,7 @@ import { IAddressShort } from "app/ui/transport/interfaces/iaddress-short";
 export interface ITransportOffer {
     transportOfferId?: number,
     creationInfo: ICreationInfo,
+    driver:string,
     info:string,
     invoiceSellId?: number,
     invoiceSellNo: string,

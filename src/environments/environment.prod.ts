@@ -1,5 +1,5 @@
-const server='https://bp-kpir-api.azurewebsites.net/'
-//const server='https://offertrans-sped-api.azurewebsites.net/'
+//const server='https://bp-kpir-api.azurewebsites.net/'
+const server='https://offertrans-sped-api.azurewebsites.net/'
 
 export const environment = {
   production: true,

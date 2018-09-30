@@ -35,9 +35,14 @@
                 <mat-cell *matCellDef="let row"> {{row.fracht | currency: row.currency}}</mat-cell>
             </ng-container>
 
-            <ng-container matColumnDef="companySeller">
+            <ng-container matColumnDef="seller">
                 <mat-header-cell *matHeaderCellDef mat-sort-header>Kontrahent</mat-header-cell>
-                <mat-cell *matCellDef="let row"> {{row.companySeller}}</mat-cell>
+                <mat-cell *matCellDef="let row"> {{row.seller}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="driver">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Kierowca</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.driver}}</mat-cell>
             </ng-container>
 
             <ng-container matColumnDef="loadDate">

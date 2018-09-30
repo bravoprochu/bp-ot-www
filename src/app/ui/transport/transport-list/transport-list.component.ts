@@ -41,7 +41,7 @@ export class TransportListComponent implements OnInit, IListObj, OnDestroy {
 
   dateRange: IDateRange;
   dataSource: any;
-  displayedColumns = ['transportOfferId', 'statusCode', 'documentNo', 'fracht', 'companySeller', 'loadDate', 'loadPlace', 'loadPostalCode','unloadDate', 'unloadPlace', 'unloadPostalCode' ];
+  displayedColumns = ['transportOfferId', 'statusCode', 'documentNo', 'fracht', 'seller', 'driver', 'loadDate', 'loadPlace', 'loadPostalCode','unloadDate', 'unloadPlace', 'unloadPostalCode' ];
   isDestroyed$: Subject<boolean>;
   isPending: boolean;
 

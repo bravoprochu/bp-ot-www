@@ -42,6 +42,11 @@
 
                 <app-currency-nbp [rForm]="price" [placeholder]="'Fracht netto'"></app-currency-nbp>
                 <app-payment-terms [rForm]="paymentTerms"></app-payment-terms>
+                <div>
+                    <mat-form-field fxFlex="100">
+                        <input type="text" matInput formControlName="driver" placeholder="Kierowca">
+                    </mat-form-field>
+                </div>
 
                 <app-company-card [rForm]="company" [fb]="fb" [placeholder]="'Zleceniodawca'"></app-company-card>
 

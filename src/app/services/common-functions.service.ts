@@ -447,6 +447,7 @@ export class CommonFunctionsService {
     return fb.group({
       'transportOfferId': [null],
       "creationInfo": this.formCreationInfo(fb),
+      'driver': [null],
       'info': [null],
       'invoiceInPLN': [true],
       'invoiceSellId': [null],
