@@ -87,6 +87,10 @@ export class MomentCommonService {
     return date;
   }
 
+  isDate(val: any):boolean {
+    return moment.isDate(new Date(val));
+  }
+
   setConstTimeMoment(date: moment.Moment, hour?: number): void {
     //date = date ? moment(date) : moment();
     hour = hour ? hour : DEFAULT_APP_VALUES.defaultConstHour;

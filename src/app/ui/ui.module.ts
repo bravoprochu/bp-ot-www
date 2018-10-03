@@ -56,7 +56,7 @@ import { CurrencyModule } from '@bpShared/currency/currency.module';
     UiRoutingModule,
     HttpClientModule,
     PaymentTermsModule,
-    CurrencyModule
+    CurrencyModule,
   ],
   declarations: [
     AddressComponent,

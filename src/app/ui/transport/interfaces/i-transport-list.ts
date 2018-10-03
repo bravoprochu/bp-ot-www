@@ -5,7 +5,7 @@ export interface ITransportList{
     currency:string,
     creationInfo: ICreationInfo,
     documentNo: string,
-    frach:number,
+    frach:string,
     loadDate:string,
     loadPlace: string,
     loadPostalCode:string,

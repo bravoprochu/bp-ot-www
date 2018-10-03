@@ -20,6 +20,7 @@ import { Moment } from 'moment';
 import { IPaymentTerm } from '@bpShared/payment-terms/i-payment-term';
 import { MomentCommonService } from '@bpShared/moment-common/moment-common.service';
 import { IInvoiceExtraInfoChecked, IInvoiceExtraInfo } from '@bpUI/invoice/interfaces/iinvoice-sell';
+import { isArray } from 'util';
 
 
 @Injectable()
@@ -33,6 +34,74 @@ export class CommonFunctionsService {
   ) {
     this.logArr = [];
   }
+
+
+
+  csvConverter(data: any[]): string {
+    if (isArray(data) && data.length > 1) {
+
+      let firstLine: string = "";
+      let end = ";";
+      let lineEnd = "\r\n";
+      let result: string = "";
+
+      //
+      // header
+      //
+      for (let key in data[0]) {
+        firstLine += key + end;
+      }
+      firstLine += lineEnd;
+
+      //
+      // loop
+      //
+      for (let index = 0; index < data.length; index++) {
+        const element = data[index];
+
+        for (let key in element) {
+          let v = element[key];
+          //
+          // check if number.. parse..
+          //
+
+          if (v != null) {
+
+            // if (this.momentService.isDate(v)) {
+            //   result += moment(v).format(this.dateTimeLocaleFormat()) + end;
+            // } else  {
+              
+            // }
+          result += v +end;
+
+          } else {
+            result += "" + end;
+          }
+
+
+
+          // if(v!=null){
+          //   if(isNaN(parseFloat(v))){
+          //     result += parseFloat(v) + end;
+          //   } else {
+
+          //     result += v + end;
+          //   }
+          // } else {
+          //   result + "" + end;
+          // }
+
+          //result += (v == null ? "": v) + end;
+        }
+        result += lineEnd;
+      }
+
+      return firstLine + result;
+    }
+    return
+  }
+
+
 
   logArr: ILogItem[];
   compareWithValueViewValue(obj1: IValueViewValue, obj2: IValueViewValue): boolean {
@@ -602,7 +671,7 @@ export class CommonFunctionsService {
     companyData.employeeList.forEach(emp => {
       employeeList.push(this.formEmployeeGroup(fb));
     })
-    rForm.patchValue(companyData, { emitEvent: false});
+    rForm.patchValue(companyData, { emitEvent: false });
 
   }
 
@@ -719,13 +788,13 @@ export class CommonFunctionsService {
 
   patchLoadInfo(info: ILoadInfo, rForm: FormGroup) {
     //rForm formLoadInfo
-    rForm.patchValue(info, {emitEvent: false,  onlySelf: true });
+    rForm.patchValue(info, { emitEvent: false, onlySelf: true });
     this.patchLoadInfoExtra(info.extraInfo, <FormGroup>rForm.get('extraInfo'));
   }
 
   patchLoadInfoExtra(infoExtra: ILoadInfoExtra, rForm: FormGroup) {
     //rForm formLoadInfoExtra
-    rForm.patchValue(infoExtra, {emitEvent: false,  onlySelf: true });
+    rForm.patchValue(infoExtra, { emitEvent: false, onlySelf: true });
   }
 
 
@@ -739,7 +808,7 @@ export class CommonFunctionsService {
     //this.patchCurrencyNbpData(info.price, <FormGroup>rForm.get('price'));
     this.currService.patchCurrencyNbp(<ICurrencyNbp>info.price, <FormGroup>rForm.get('price'));
     this.pTermsService.patchPaymentTerms(info.paymentTerms, <FormGroup>rForm.get('paymentTerms'));
-    rForm.patchValue(info, {emitEvent: false, onlySelf: true});
+    rForm.patchValue(info, { emitEvent: false, onlySelf: true });
   }
 
   patchTransport(tr: ITransportOffer, rForm: FormGroup, fb: FormBuilder, isDestroyed$: Subject<boolean>) {
@@ -758,7 +827,7 @@ export class CommonFunctionsService {
     this.patchCompanyData(tr.tradeInfo.company, <FormGroup>rForm.get('tradeInfo.company'), fb, false);
     this.patchTradeInfo(tr.tradeInfo, <FormGroup>rForm.get('tradeInfo'), fb);
 
-    rForm.patchValue(tr, {emitEvent: false, onlySelf: true});
+    rForm.patchValue(tr, { emitEvent: false, onlySelf: true });
   }
 
 

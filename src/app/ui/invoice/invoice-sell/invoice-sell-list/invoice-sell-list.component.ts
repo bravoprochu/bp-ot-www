@@ -12,6 +12,8 @@ import { InvoiceSellService } from '../services/invoice-sell.service';
 import { Subject } from 'rxjs';
 import { Moment } from 'moment';
 import { DEFAULT_APP_VALUES } from 'environments/environment';
+import {saveAs } from 'file-saver';
+import { IInvoiceSell } from '@bpUI/invoice/interfaces/iinvoice-sell';
 
 @Component({
   selector: 'app-invoice-sell-list',
@@ -40,6 +42,7 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, AfterViewIni
 
   ngAfterViewInit(): void {}
   
+  data: IInvoiceSell[];
   dateRange:IDateRange=<IDateRange>{};
   dataSource:any;
   displayedColumns: string[];
@@ -62,6 +65,7 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, AfterViewIni
       this.df.getAll(dateRange)
       .takeUntil(this.isDestroyed$)
       .subscribe(s=>{
+        this.data=s;
         this.dataSource=new MatTableDataSource(s);
         this.cf.toastMake(`Pobrano dane dla zakresu od ${(<Moment>dateRange.dateStart).format(DEFAULT_APP_VALUES.dateLocalFormat)} do ${(<Moment>dateRange.dateEnd).format(DEFAULT_APP_VALUES.dateLocalFormat)}, razem: ${s.length}`, "initData", this.actRoute);
         this.isPending=false;
@@ -89,5 +93,10 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, AfterViewIni
   getDataByRange(range:any)
   {
     this.initData(range);
+  }
+
+  genCsv(){
+    let b= new Blob([this.cf.csvConverter(this.data)], {type: 'text/csv;charset=utf-8;'});
+    saveAs(b, `Lista faktur sprzedaży ${this.dateRange.dateStart.format(this.cf.dateLocaleFormat())} - ${this.dateRange.dateEnd.format(this.cf.dateLocaleFormat())}.csv`);
   }
 }

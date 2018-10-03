@@ -9,6 +9,8 @@
 (onDateRange)="getDataByRange($event)" ></app-nav-list>
 
 
+<button mat-button (click)="genCsv()">Generuj raport (CSV)</button>
+
 <div>
     <mat-table #table [dataSource]="dataSource" matSort>
             <ng-container matColumnDef="transportOfferId">
@@ -32,7 +34,7 @@
             <ng-container matColumnDef="fracht">
 
                 <mat-header-cell *matHeaderCellDef mat-sort-header>Fracht</mat-header-cell>
-                <mat-cell *matCellDef="let row"> {{row.fracht | currency: row.currency}}</mat-cell>
+                <mat-cell *matCellDef="let row"> {{row.fracht}} {{row.currency}}</mat-cell>
             </ng-container>
 
             <ng-container matColumnDef="seller">

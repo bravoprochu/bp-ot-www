@@ -44,16 +44,16 @@
     
         <ng-container matColumnDef="netto">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Netto</mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.netto | number: "1.2-2"}}</mat-cell>
+            <mat-cell *matCellDef="let row"> {{row.netto}}</mat-cell>
         </ng-container>
     
         <ng-container matColumnDef="podatek">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Podatek</mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.podatek | number: "1.2-2"}}</mat-cell>
+            <mat-cell *matCellDef="let row"> {{row.podatek}}</mat-cell>
         </ng-container>    
         <ng-container matColumnDef="brutto">
                 <mat-header-cell *matHeaderCellDef mat-sort-header>Brutto</mat-header-cell>
-                <mat-cell *matCellDef="let row"> {{row.brutto | number: "1.2-2"}}</mat-cell>
+                <mat-cell *matCellDef="let row"> {{row.brutto}}</mat-cell>
         </ng-container>   
     
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

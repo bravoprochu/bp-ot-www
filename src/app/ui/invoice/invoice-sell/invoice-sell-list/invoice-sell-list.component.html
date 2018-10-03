@@ -9,7 +9,7 @@
 (onDateRange)="getDataByRange($event)" ></app-nav-list>
 
 
-
+<button mat-button (click)="genCsv()">Generuj raport (CSV)</button>
 
 <mat-table #table [dataSource]="dataSource" matSort>
     <ng-container matColumnDef="id">
@@ -30,7 +30,7 @@
 
     <ng-container matColumnDef="dataSprzedazy">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Data sprzedaży</mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.dataSprzedazy | date: 'yyyy-MM-dd'}}</mat-cell>
+            <mat-cell *matCellDef="let row"> {{row.dataSprzedazy}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="nabywca">
@@ -45,16 +45,16 @@
 
     <ng-container matColumnDef="netto">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Netto</mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.netto | number: "1.2-2"}}</mat-cell>
+        <mat-cell *matCellDef="let row"> {{row.netto}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="podatek">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Podatek</mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.podatek | number: "1.2-2"}}</mat-cell>
+        <mat-cell *matCellDef="let row"> {{row.podatek}}</mat-cell>
     </ng-container>    
     <ng-container matColumnDef="brutto">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Brutto</mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.brutto | number: "1.2-2"}}</mat-cell>
+            <mat-cell *matCellDef="let row"> {{row.brutto}}</mat-cell>
     </ng-container>   
     <!-- <ng-container matColumnDef="paymentTerms">
             <mat-header-cell *matHeaderCellDef>Warunki płatności</mat-header-cell>
