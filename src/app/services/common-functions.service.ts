@@ -36,8 +36,19 @@ export class CommonFunctionsService {
   }
 
 
+  dataTablePrepColumn(data: any[]): string[]{
+    let result: string[] = [];
+    if (data ==null) {return;}
+    if (data.length==0) {return;}
+    let first = data[0];
+    for (let prop in first) {
+      result.push(prop)
+    };
+    return result;
+  }
 
-  csvConverter(data: any[]): string {
+
+  csvConverter(data: any[], tableHeaders: string[]): string {
     if (isArray(data) && data.length > 1) {
 
       let firstLine: string = "";
@@ -48,53 +59,56 @@ export class CommonFunctionsService {
       //
       // header
       //
-      for (let key in data[0]) {
-        firstLine += key + end;
-      }
-      firstLine += lineEnd;
+
+      firstLine = tableHeaders.join(end) + lineEnd;
+
+      // for (let key in data[0]) {
+      //   firstLine += key + end;
+      // }
+      // firstLine += lineEnd;
 
       //
       // loop
       //
-      for (let index = 0; index < data.length; index++) {
-        const element = data[index];
 
-        for (let key in element) {
-          let v = element[key];
-          //
-          // check if number.. parse..
-          //
-
-          if (v != null) {
-
-            // if (this.momentService.isDate(v)) {
-            //   result += moment(v).format(this.dateTimeLocaleFormat()) + end;
-            // } else  {
-              
-            // }
-          result += v +end;
-
+      data.forEach(row=>{
+        tableHeaders.forEach(header=>{
+          let v:string;
+          if(row[header]==null) {
+            v="";
           } else {
-            result += "" + end;
+            v=row[header];
           }
+          result+=v+end
+        });
+        result+=lineEnd;
+      });
 
+      // for (let index = 0; index < data.length; index++) {
+      //   const element = data[index];
 
+      //   for (let key in element) {
+      //     let v = element[key];
+      //     //
+      //     // check if number.. parse..
+      //     //
 
-          // if(v!=null){
-          //   if(isNaN(parseFloat(v))){
-          //     result += parseFloat(v) + end;
-          //   } else {
+      //     if (v != null) {
 
-          //     result += v + end;
-          //   }
-          // } else {
-          //   result + "" + end;
-          // }
+      //       // if (this.momentService.isDate(v)) {
+      //       //   result += moment(v).format(this.dateTimeLocaleFormat()) + end;
+      //       // } else  {
+              
+      //       // }
+      //     result += v +end;
 
-          //result += (v == null ? "": v) + end;
-        }
-        result += lineEnd;
-      }
+      //     } else {
+      //       result += "" + end;
+      //     }
+      //   }
+
+      //   result += lineEnd;
+      // }
 
       return firstLine + result;
     }

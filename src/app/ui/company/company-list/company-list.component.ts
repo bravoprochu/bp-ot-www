@@ -3,21 +3,21 @@ import { DialogDataTypes } from '../../../shared/enums/dialog-data-types.enum';
 import { IDialogData } from '../../../shared/interfaces/i-dialog-data';
 import { CommonFunctionsService } from '../../../services/common-functions.service';
 import { CompanyComponent } from '../company/company.component';
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import 'rxjs/add/operator/take';
-import { Observable } from "rxjs/Observable";
-import { IPhotos } from "app/services/data/iphotos";
-import { FormBuilder, FormGroup } from "@angular/forms";
+import { FormBuilder } from "@angular/forms";
 import { Subject } from "rxjs/Subject";
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/switchMap';
-import { Router, ActivatedRoute } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { IListObj } from "app/shared/ilist-obj";
 import { ITitle } from "app/shared/ititle";
 import { MatDialog, MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
 import { CompanyService } from 'app/ui/company/services/company.service';
 import { ViewChild } from '@angular/core';
-
+import { take } from 'rxjs/operators';
+import {saveAs} from 'file-saver';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 
 @Component({
@@ -37,8 +37,6 @@ export class CompanyListComponent implements OnInit, OnDestroy, IListObj
     private actRoute: ActivatedRoute,
     private cf: CommonFunctionsService,
     private df: CompanyService,
-    private fB: FormBuilder,
-    private router: Router,
     private dialog: MatDialog
   ) { }
 
@@ -54,7 +52,7 @@ export class CompanyListComponent implements OnInit, OnDestroy, IListObj
   searchFor$=new Subject();
   searchForCtrl:any;
   dataSource: any;
-  tableHeaders: string[]=['companyId', 'vat_id', 'short_name', 'addressList[0]addresCombined', 'telephone']
+  displayedColumns = ['id', 'skrot', 'nip', 'adres', 'telefon'];
 
   navTitle: ITitle={
     subtitle:'Baza zapisanych firm',
@@ -79,6 +77,30 @@ export class CompanyListComponent implements OnInit, OnDestroy, IListObj
   createNew(){
     return this.dialog.open(CompanyComponent, {height: "80%", width: "80%"})
       .afterClosed();
+  }
+
+
+  genCsv(){
+    let data: any;
+    let data$= this.dataSource.connect().pipe(
+      take(1),
+    )
+    .subscribe(
+      (_data:any)=>{
+      data=_data;
+      
+      },
+      (err)=>console.log(' error', err),
+      ()=>console.log(' finish..')
+    )
+    data$.unsubscribe();
+    let b = new Blob([this.cf.csvConverter(data, this.displayedColumns)], {type: 'text/csv;charset=utf-8;'});
+    saveAs(b, `Lista kontrahentów.csv`);
+  }
+
+  drop(ev: CdkDragDrop<string[]>):void {
+    if(ev.currentIndex==ev.previousIndex) {return;}
+    moveItemInArray(this.displayedColumns, ev.previousIndex, ev.currentIndex);
   }
 
   edit(idx: number){

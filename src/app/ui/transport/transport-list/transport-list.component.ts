@@ -13,6 +13,8 @@ import { Subject } from 'rxjs';
 import { ITransportList } from '@bpUI/transport/interfaces/i-transport-list';
 import {saveAs} from 'file-saver';
 import { Jsonp } from '@angular/http';
+import { take } from 'rxjs/operators';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 
 @Component({
@@ -45,7 +47,7 @@ export class TransportListComponent implements OnInit, IListObj, OnDestroy {
   data: ITransportList[];
   dateRange: IDateRange;
   dataSource: any;
-  displayedColumns = ['transportOfferId', 'statusCode', 'documentNo', 'fracht', 'seller', 'driver', 'loadDate', 'loadPlace', 'loadPostalCode','unloadDate', 'unloadPlace', 'unloadPostalCode' ];
+  displayedColumns = ['id', 'statusCode', 'documentNo', 'fracht', 'seller', 'driver', 'loadDate', 'loadPlace', 'loadPostalCode','unloadDate', 'unloadPlace', 'unloadPostalCode' ];
   isDestroyed$: Subject<boolean>;
   isPending: boolean;
 
@@ -84,6 +86,13 @@ export class TransportListComponent implements OnInit, IListObj, OnDestroy {
     title: "Zlecenia transportowe"
   };
 
+  
+  drop(ev: CdkDragDrop<string[]>):void {
+    if(ev.currentIndex==ev.previousIndex) {return;}
+    moveItemInArray(this.displayedColumns, ev.previousIndex, ev.currentIndex);
+  }
+
+
   getDataByRange(dateRange:IDateRange)
   {
     this.initData(dateRange);
@@ -91,7 +100,21 @@ export class TransportListComponent implements OnInit, IListObj, OnDestroy {
 
 
   genCsv(){
-    let b= new Blob([this.cf.csvConverter(this.data)], {type: 'text/csv;charset=utf-8;'});
+    let data: ITransportList[];
+    let data$= this.dataSource.connect().pipe(
+      take(1),
+    )
+    .subscribe(
+      (_data:any)=>{
+      console.log('',_data);
+      data=_data;
+      
+      },
+      (err)=>console.log(' error', err),
+      ()=>console.log(' finish..')
+    )
+    data$.unsubscribe();
+    let b = new Blob([this.cf.csvConverter(data, this.displayedColumns)], {type: 'text/csv;charset=utf-8;'});
     saveAs(b, `Lista transportów ${this.dateRange.dateStart.format(this.cf.dateLocaleFormat())} - ${this.dateRange.dateEnd.format(this.cf.dateLocaleFormat())}.csv`);
   }
 }

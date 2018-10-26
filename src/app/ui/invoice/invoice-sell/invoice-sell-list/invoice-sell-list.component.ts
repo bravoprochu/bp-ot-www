@@ -1,9 +1,8 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IDateRange } from 'app/shared/interfaces/i-date-range';
-import { selector } from 'rxjs/operator/publish';
 
 import { CommonFunctionsService } from '../../../../services/common-functions.service';
 import { IListObj } from '../../../../shared/ilist-obj';
@@ -13,7 +12,10 @@ import { Subject } from 'rxjs';
 import { Moment } from 'moment';
 import { DEFAULT_APP_VALUES } from 'environments/environment';
 import {saveAs } from 'file-saver';
-import { IInvoiceSell } from '@bpUI/invoice/interfaces/iinvoice-sell';
+import { take } from 'rxjs/operators';
+import { IInvoiceSellList } from '@bpUI/invoice/interfaces/iinvoice-sell-list';
+import * as moment from 'moment';
+import { moveItemInArray, CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-invoice-sell-list',
@@ -31,7 +33,7 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, AfterViewIni
     private df: InvoiceSellService,
     private router: Router,
     private actRoute: ActivatedRoute,
-    private cf: CommonFunctionsService
+    private cf: CommonFunctionsService,
   ) { }
 
   ngOnInit() {
@@ -42,9 +44,8 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, AfterViewIni
 
   ngAfterViewInit(): void {}
   
-  data: IInvoiceSell[];
   dateRange:IDateRange=<IDateRange>{};
-  dataSource:any;
+  dataSource: any;
   displayedColumns: string[];
   isDestroyed$: Subject<boolean>;
   search$:FormControl;
@@ -61,11 +62,17 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, AfterViewIni
 
   public initData(dateRange?:IDateRange): void {
       this.isPending=true;
+      
       this.displayedColumns=['id','type','documentNo', 'dataSprzedazy', 'nabywca', 'waluta', 'netto', 'podatek', 'brutto'];
       this.df.getAll(dateRange)
       .takeUntil(this.isDestroyed$)
-      .subscribe(s=>{
-        this.data=s;
+      .subscribe((s:any)=>{
+
+
+        //this.displayedColumns=this.cf.dataTablePrepColumn(s);
+        //this.tableData.id = this.cf.dataTablePrepColumn(s);
+        //this.tableData.id=[];
+
         this.dataSource=new MatTableDataSource(s);
         this.cf.toastMake(`Pobrano dane dla zakresu od ${(<Moment>dateRange.dateStart).format(DEFAULT_APP_VALUES.dateLocalFormat)} do ${(<Moment>dateRange.dateEnd).format(DEFAULT_APP_VALUES.dateLocalFormat)}, razem: ${s.length}`, "initData", this.actRoute);
         this.isPending=false;
@@ -83,6 +90,11 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, AfterViewIni
     this.dataSource.filter=filterValue;
   }
 
+  drop(ev: CdkDragDrop<string[]>):void {
+    if(ev.currentIndex==ev.previousIndex) {return;}
+    moveItemInArray(this.displayedColumns, ev.previousIndex, ev.currentIndex);
+  }
+
 
   edit(id:number)
   {
@@ -96,7 +108,22 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, AfterViewIni
   }
 
   genCsv(){
-    let b= new Blob([this.cf.csvConverter(this.data)], {type: 'text/csv;charset=utf-8;'});
+    let data: IInvoiceSellList[];
+    let data$= this.dataSource.connect().pipe(
+      take(1),
+    )
+    .subscribe(
+      (_data:any)=>{
+      console.log('',_data);
+      data=_data;
+      
+      },
+      (err)=>console.log(' error', err),
+      ()=>console.log(' finish..')
+    )
+    //data$.unsubscribe();
+    let b = new Blob([this.cf.csvConverter(data, this.displayedColumns)], {type: 'text/csv;charset=utf-8;'});
     saveAs(b, `Lista faktur sprzedaży ${this.dateRange.dateStart.format(this.cf.dateLocaleFormat())} - ${this.dateRange.dateEnd.format(this.cf.dateLocaleFormat())}.csv`);
   }
 }
+ 

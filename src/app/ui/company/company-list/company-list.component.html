@@ -17,42 +17,48 @@
 
 
 
-<div>
-
-  <table mat-table [dataSource]="dataSource" matSort>
-
-    <ng-container matColumnDef="companyId">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>>
-      <td mat-cell *matCellDef="let row">
-          <button mat-mini-fab (click)="edit(row.companyId)"><mat-icon>edit</mat-icon> </button>
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="vat_id">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>NIP</th>>
-      <td mat-cell *matCellDef="let row">{{row.vat_id}}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="short_name">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Skrot</th>>
-      <td mat-cell *matCellDef="let row">{{row.short_name}}</td>
-    </ng-container>
-    
-    <ng-container matColumnDef="addressList[0]addresCombined">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Adres</th>>
-      <td mat-cell *matCellDef="let row">{{row.addressList[0].addressCombined}}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="telephone">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Telefon</th>>
-      <td mat-cell *matCellDef="let row">{{row.telephone}}</td>
-    </ng-container>
-
-    
-    <tr mat-header-row *matHeaderRowDef="tableHeaders"></tr>
-    <tr mat-row *matRowDef="let row; columns: tableHeaders;"></tr>
-
-  </table>
-  <mat-paginator #paginator></mat-paginator>
+<div fxLayout="column" fxLayoutGap="15px">
+    <div fxLayout="row">
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>Opcje zaawansowane</mat-panel-title>
+            </mat-expansion-panel-header>
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+                <div fxLayout="column" fxLayoutAlign="space-around start">
+                    <div>
+                        <button mat-raised-button (click)="genCsv()">Generuj raport (CSV)</button>
+                    </div>
+                </div>
+                <div fxLayout="column" fxLayoutAlign="space-around start">
+                    <div>
+                        zmień kolejność kolumn (chwyć, przenieś)
+                    </div>
+                    <div cdkDropList (cdkDropListDropped)="drop($event)" fxLayout="column" fxLayoutAlign="space-between start">
+                        <div *ngFor="let column of displayedColumns" cdkDrag>
+                            <div>
+                                <mat-icon>drag_indicator</mat-icon>
+                                {{column}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-expansion-panel>
+    </div>
+    <table mat-table matSort [dataSource]="dataSource" fxFill class="mat-elevation-z8">
+        <ng-container *ngFor="let c of displayedColumns; first as isFirst" [matColumnDef]="c">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{c}}</th>
+            <td mat-cell *matCellDef="let element">
+                <span *ngIf="c!='id'">{{element[c]}}</span>
+                <button *ngIf="c=='id'" mat-mini-fab (click)="edit(element.id)" matTooltip="Edytuj ID: {{element.id}} "
+                    [matTooltipPosition]="'right'">
+                    <mat-icon>edit</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-paginator #paginator showFirstLastButtons></mat-paginator>
 </div>
 

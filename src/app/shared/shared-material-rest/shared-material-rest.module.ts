@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {MAT_MOMENT_DATE_FORMATS, MatMomentDateModule, MomentDateAdapter} from '@angular/material-moment-adapter';
+import {
+  DragDropModule
+} from '@angular/cdk/drag-drop';
 import {MAT_DATE_LOCALE, MAT_DATE_FORMATS, DateAdapter} from '@angular/material/core';
 import {
   MatAutocompleteModule,
@@ -16,6 +19,7 @@ import {
   MatSliderModule,
   MatSlideToggleModule,
   MatStepperModule,
+  MatSortModule,
   MatTableModule,
   MatTabsModule,
   MatTooltipModule,
@@ -27,6 +31,7 @@ import {
 @NgModule({
   imports: [
     CommonModule,
+    DragDropModule,
     MatAutocompleteModule,
     MatCheckboxModule,
     MatChipsModule,
@@ -42,6 +47,7 @@ import {
     MatStepperModule,
     MatSlideToggleModule,
     MatSnackBarModule,
+    MatSortModule,
     MatTableModule,
     MatTabsModule,
     MatTooltipModule,
@@ -51,6 +57,7 @@ import {
   ],
   exports: [
     CommonModule,
+    DragDropModule,
     MatAutocompleteModule,
     MatCheckboxModule,
     MatChipsModule,
@@ -66,6 +73,7 @@ import {
     MatStepperModule,
     MatSlideToggleModule,
     MatSnackBarModule,
+    MatSortModule,
     MatTableModule,
     MatTabsModule,
     MatTooltipModule,

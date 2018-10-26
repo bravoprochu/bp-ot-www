@@ -1,70 +1,51 @@
 <app-pending *ngIf="isPending"></app-pending>
-<app-nav-list 
-[title]="navTitle?.title" 
-[subtitle]="navTitle?.subtitle" 
-[dateRange]="dateRange" 
-(onCreate)="createNew()"
-(onRefresh)="initData(dateRange)"
-(onSearch)="searchFilter($event)"
-(onDateRange)="getDataByRange($event)" ></app-nav-list>
+<app-nav-list [title]="navTitle?.title" [subtitle]="navTitle?.subtitle" [dateRange]="dateRange" (onCreate)="createNew()"
+    (onRefresh)="initData(dateRange)" (onSearch)="searchFilter($event)" (onDateRange)="getDataByRange($event)"></app-nav-list>
 
 
-<button mat-button (click)="genCsv()">Generuj raport (CSV)</button>
-
-<table mat-table matSort [dataSource]="dataSource" fxFill>
-    <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>>
-        <td mat-cell *matCellDef="let row">
-            <button mat-mini-fab (click)="edit(row.id)" matTooltip="Edytuj ID: {{row.id}} " [matTooltipPosition]="'right'">
-                <mat-icon >edit</mat-icon></button>
-        </td>
-    </ng-container>
-    <ng-container matColumnDef="type">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Typ</th>>
-            <td mat-cell *matCellDef="let row">{{row.type}}</td>
-        </ng-container>    
-    
-    <ng-container matColumnDef="documentNo">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Dok</th>
-        <td mat-cell *matCellDef="let row"> {{row.documentNo}}</td>
-    </ng-container>     
-
-    <ng-container matColumnDef="dataSprzedazy">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Data sprzedaży</th>>
-            <td mat-cell *matCellDef="let row"> {{row.dataSprzedazy}}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="nabywca">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Nabywca</th>>
-        <td mat-cell *matCellDef="let row"> {{row.nabywca}}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="waluta">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Waluta</th>>
-            <td mat-cell *matCellDef="let row"> {{row.waluta}}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="netto">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Netto</th>>
-        <td mat-cell *matCellDef="let row"> {{row.netto}}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="podatek">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Podatek</th>>
-        <td mat-cell *matCellDef="let row"> {{row.podatek}}</td>
-    </ng-container>    
-    <ng-container matColumnDef="brutto">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Brutto</th>>
-            <td mat-cell *matCellDef="let row"> {{row.brutto}}</td>
-    </ng-container>   
-    <!-- <ng-container matColumnDef="paymentTerms">
-            <th mat-header-cell *matHeaderCellDef>Warunki płatności</th>>
-            <td mat-cell *matCellDef="let row"> {{row.paymentTerms.paymentTermsCombined}}</td>
-    </ng-container>  -->
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
-<mat-paginator #paginator showFirstLastButtons></mat-paginator>
+<div fxLayout="column" fxLayoutGap="15px">
+    <div fxLayout="row">
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>Opcje zaawansowane</mat-panel-title>
+            </mat-expansion-panel-header>
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+                <div fxLayout="column" fxLayoutAlign="space-around start">
+                    <div>
+                        <button mat-raised-button (click)="genCsv()">Generuj raport (CSV)</button>
+                    </div>
+                </div>
+                <div fxLayout="column" fxLayoutAlign="space-around start">
+                    <div>
+                        zmień kolejność kolumn (chwyć, przenieś)
+                    </div>
+                    <div cdkDropList (cdkDropListDropped)="drop($event)" fxLayout="column" fxLayoutAlign="space-between start">
+                        <div *ngFor="let column of displayedColumns" cdkDrag>
+                            <div>
+                                <mat-icon>drag_indicator</mat-icon>
+                                {{column}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-expansion-panel>
+    </div>
+    <table mat-table matSort [dataSource]="dataSource" fxFill class="mat-elevation-z8">
+        <ng-container *ngFor="let c of displayedColumns; first as isFirst" [matColumnDef]="c">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{c}}</th>
+            <td mat-cell *matCellDef="let element">
+                <span *ngIf="c!='id'">{{element[c]}}</span>
+                <button *ngIf="c=='id'" mat-mini-fab (click)="edit(element.id)" matTooltip="Edytuj ID: {{element.id}} "
+                    [matTooltipPosition]="'right'">
+                    <mat-icon>edit</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-paginator #paginator showFirstLastButtons></mat-paginator>
+</div>
 
 <!-- <app-invoice-sell-payment-remind></app-invoice-sell-payment-remind> -->
