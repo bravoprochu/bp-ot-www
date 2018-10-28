@@ -12,7 +12,7 @@ import { Subject } from 'rxjs';
 import { Moment } from 'moment';
 import { DEFAULT_APP_VALUES } from 'environments/environment.prod';
 import {takeUntil, map, take} from 'rxjs/operators';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import {saveAs} from 'file-saver';
 
 
 @Component({
@@ -70,10 +70,6 @@ export class InvoiceBuyListComponent implements OnInit,OnDestroy, IListObj {
       this.df.getAll(dateRange)
       .pipe(
         takeUntil(this.isDestroyed$),
-        map(m=>{
-          
-          return m
-        })
       )
       .subscribe(s=>{
         this.dataSource=new MatTableDataSource(s);
@@ -88,32 +84,17 @@ export class InvoiceBuyListComponent implements OnInit,OnDestroy, IListObj {
     }
 
 
-
-    drop(ev: CdkDragDrop<string[]>):void {
-      if(ev.currentIndex==ev.previousIndex) {console.log(ev.previousIndex, ev.currentIndex); return;}
-      moveItemInArray(this.displayedColumns, ev.previousIndex, ev.currentIndex);
-    }
-
     genCsv(){
-      return
-      // let data: IInvoicebuyList[];
-      // let data$= this.dataSource.connect().pipe(
-      //   take(1),
-      // )
-      // .subscribe(
-      //   (_data:any)=>{
-      //   console.log('',_data);
-      //   data=_data;
-        
-      //   },
-      //   (err)=>console.log(' error', err),
-      //   ()=>console.log(' finish..')
-      // )
-      // //data$.unsubscribe();
-      // let b = new Blob([this.cf.csvConverter(data, this.displayedColumns)], {type: 'text/csv;charset=utf-8;'});
-      // saveAs(b, `Lista faktur sprzedaży ${this.dateRange.dateStart.format(this.cf.dateLocaleFormat())} - ${this.dateRange.dateEnd.format(this.cf.dateLocaleFormat())}.csv`);
+      this.dataSource.connect().pipe(
+        take(1),
+      )
+      .subscribe(
+        (_data:any)=>{
+          let b = new Blob([this.cf.csvConverter(_data, this.displayedColumns)], {type: 'text/csv;charset=utf-8;'});
+          saveAs(b, `Lista faktur zakupowych ${this.dateRange.dateStart.format(this.cf.dateLocaleFormat())} - ${this.dateRange.dateEnd.format(this.cf.dateLocaleFormat())}.csv`);
+        },
+      )
     }
-
 
 
     searchFilter(filterValue)

@@ -7,6 +7,7 @@ import { ICurrencyNbp } from '@bpShared/currency/interfaces/i-currency-nbp';
 
 export interface IInvoiceSell extends IInvoiceCommon {
     invoiceSellId:number,
+    isToRepeat: boolean,
     extraInfo:IInvoiceExtraInfo,
     getCorrectionPaymenntInfo: string,
     getInvoiceValue:number,

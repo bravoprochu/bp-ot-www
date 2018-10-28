@@ -1,11 +1,6 @@
 <app-pending *ngIf="isPending"></app-pending>
-<app-nav-list 
-[title]="navTitle?.title" 
-[subtitle]="navTitle?.subtitle" 
-(onCreate)="createNew()"
-(onRefresh)="initData()"
-(onSearch)="searchFilter($event)"
-></app-nav-list>
+<app-nav-list [title]="navTitle?.title" [subtitle]="navTitle?.subtitle" (onCreate)="createNew()" (onRefresh)="initData()"
+    (onSearch)="searchFilter($event)"></app-nav-list>
 
 
 <!-- <div form [formGroup]="rForm">
@@ -19,31 +14,7 @@
 
 <div fxLayout="column" fxLayoutGap="15px">
     <div fxLayout="row">
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title>Opcje zaawansowane</mat-panel-title>
-            </mat-expansion-panel-header>
-            <div fxLayout="row" fxLayoutAlign="space-between center">
-                <div fxLayout="column" fxLayoutAlign="space-around start">
-                    <div>
-                        <button mat-raised-button (click)="genCsv()">Generuj raport (CSV)</button>
-                    </div>
-                </div>
-                <div fxLayout="column" fxLayoutAlign="space-around start">
-                    <div>
-                        zmień kolejność kolumn (chwyć, przenieś)
-                    </div>
-                    <div cdkDropList (cdkDropListDropped)="drop($event)" fxLayout="column" fxLayoutAlign="space-between start">
-                        <div *ngFor="let column of displayedColumns" cdkDrag>
-                            <div>
-                                <mat-icon>drag_indicator</mat-icon>
-                                {{column}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </mat-expansion-panel>
+        <app-table-drag-drop-options (genCsv)="genCsv()" [displayedColumns]="displayedColumns"></app-table-drag-drop-options>
     </div>
     <table mat-table matSort [dataSource]="dataSource" fxFill class="mat-elevation-z8">
         <ng-container *ngFor="let c of displayedColumns; first as isFirst" [matColumnDef]="c">
@@ -61,4 +32,3 @@
     </table>
     <mat-paginator #paginator showFirstLastButtons></mat-paginator>
 </div>
-
