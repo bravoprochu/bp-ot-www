@@ -7,8 +7,8 @@
                     płatności zostaje zaktualizowany) Kolejność (od góry do dołu) determinuje przypisanie kolejnego
                     numeru faktury.</p>
                 <p>Jeżeli w formularzu <strong>wprowadzono</strong> nazwę towaru/usługi, zostanie utworzony dokument z
-                    <strong>tylko jedną pozycję faktury.</strong> Nazwa zostanie zaktualizowana natomiast pozostałe
-                    wartości pozycji faktury pozostają bez zmian. <i>Nazwę można skopiować klikając na nazwie oryginalnej pozycji</i>
+                    <strong>tylko jedną pozycją faktury.</strong> Nazwa zostanie zaktualizowana natomiast pozostałe
+                    wartości pozycji faktury pozostają bez zmian. (stawki vat, cena jednostkowa itp.) <i>Nazwę można skopiować klikając na nazwie oryginalnej pozycji</i>
                 </p>
                 <p>Jeżeli w formularzu <strong>nie wprowadzimy</strong> nazwy towaru, wszystkie pozycje faktury
                     pozostaną skopiowane do nowej fv.</p>
@@ -39,6 +39,7 @@
     </mat-card>
 
 
+    <mat-progress-bar aria-label="wczytywanie zapisywanie danych clonning group" *ngIf="isPending" mode="query"></mat-progress-bar>
 
 
     <mat-card fxFlex="100" [fxFlex.gt-sm]="50+ gapIfEmpty()" [fxFlex.gt-lg]="30 + gapIfEmpty()">
@@ -84,7 +85,7 @@
                 <div *ngFor="let inv of invoiceListRest" cdkDrag>
                     <div fxLayout="row" fxLayoutAlign="start center">
                         <mat-icon>drag_indicator</mat-icon>
-                        <div>{{inv.documentNo}} | <strong>{{inv.nabywca}}</strong> | <i (click)="copyToProductName(inv.pozycjaFaktury)">{{inv.pozycjaFaktury}}</i>
+                        <div>{{inv.documentNo}} | <strong>{{inv.nabywca}}</strong> | <i matTooltip="kliknij by skopiować nazwę towaru/usługi" (click)="copyToProductName(inv.pozycjaFaktury)">{{inv.pozycjaFaktury}}</i>
                             | {{inv.brutto}}</div>
                     </div>
                     <hr>

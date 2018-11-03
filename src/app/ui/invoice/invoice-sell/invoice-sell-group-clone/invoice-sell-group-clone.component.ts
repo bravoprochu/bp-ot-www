@@ -83,7 +83,7 @@ export class InvoiceSellGroupCloneComponent implements OnInit {
       })
       .take(1)
       .subscribe(s => {
-        this.cf.toastMake(`Utworzono clony dokumentów..`, "save", this.actRoute);
+        this.cf.toastMake(`Utworzono clony dokumentów.. UWAGA: Lista faktur w tabeli nie aktualizuje się automatycznie`, "save", this.actRoute);
         this.isPending=false;
       });
   }

@@ -4,9 +4,7 @@
 
 
 <div fxLayout="column" fxLayoutGap="15px">
-    <div fxLayout="row">
-        <app-table-drag-drop-options (genCsv)="genCsv($event)" [displayedColumns]="displayedColumns"></app-table-drag-drop-options>
-    </div>
+    <app-table-drag-drop-options (genCsv)="genCsv()" [displayedColumns]="displayedColumns"></app-table-drag-drop-options>
     <table mat-table matSort [dataSource]="dataSource" fxFill class="mat-elevation-z8">
         <ng-container *ngFor="let c of displayedColumns; first as isFirst" [matColumnDef]="c">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>{{c}}</th>

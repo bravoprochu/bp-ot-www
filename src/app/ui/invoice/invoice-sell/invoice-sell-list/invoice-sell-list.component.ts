@@ -13,9 +13,6 @@ import { Moment } from 'moment';
 import { DEFAULT_APP_VALUES } from 'environments/environment';
 import {saveAs } from 'file-saver';
 import { take } from 'rxjs/operators';
-import { IInvoiceSellList } from '@bpUI/invoice/interfaces/iinvoice-sell-list';
-import * as moment from 'moment';
-import { moveItemInArray, CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-invoice-sell-list',
@@ -48,6 +45,7 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, AfterViewIni
   dataSource: any;
   displayedColumns: string[];
   isDestroyed$: Subject<boolean>;
+  isGroupClone: boolean;
   search$:FormControl;
 
   public navTitle: ITitle = <ITitle>{
