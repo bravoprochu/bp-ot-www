@@ -44,6 +44,7 @@ import { SharedMaterialRestModule } from '@bpShared/shared-material-rest/shared-
 import { SharedModule } from '@bpShared/shared.module';
 import { CurrencyModule } from '@bpShared/currency/currency.module';
 import { TableDragDropOptionsComponent } from './shared/table-drag-drop-options/table-drag-drop-options.component';
+import { InvoiceSellGroupCloneComponent } from './invoice/invoice-sell/invoice-sell-group-clone/invoice-sell-group-clone.component';
 
 
 
@@ -87,6 +88,7 @@ import { TableDragDropOptionsComponent } from './shared/table-drag-drop-options/
     PaymentRemindDialogComponent,
     InvoiceBuyPaymentRemindComponent,
     TableDragDropOptionsComponent,
+    InvoiceSellGroupCloneComponent,
   ],
   providers:[
     HttpClientModule,

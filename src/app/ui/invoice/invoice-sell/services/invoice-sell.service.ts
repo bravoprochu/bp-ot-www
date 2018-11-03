@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Rx';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
+import { IInvoiceSellGroupClone } from '@bpUI/invoice/interfaces/i-invoice-sell-group-clone';
 
 @Injectable()
 export class InvoiceSellService extends DataFactoryService {
@@ -40,6 +41,14 @@ export class InvoiceSellService extends DataFactoryService {
   })    
   }
 
+  getLastMonthInvoices() {
+    return this.http.get(environment.apiInvoiceSellGetLastMonthInvoices, {
+      headers: this.bearerHeader()
+    })
+    .take(1)
+    .catch(this.errorHandler);
+  }
+
 
  printInvoice(invoice: IInvoiceSell):Observable<any>{
   return this.http.post(environment.apiInvoiceSellGenInvoicePdf, invoice, {
@@ -67,6 +76,14 @@ export class InvoiceSellService extends DataFactoryService {
   .catch(this.errorHandler);
  }
 
+ postInvoiceListToClone(payload: IInvoiceSellGroupClone){
+   return this.http.post(environment.apiinvoicesellPostCloneGroup, payload, {
+     headers: this.bearerHeader()
+   })
+   .take(1)
+   .catch(this.errorHandler);
+
+ }
 
  
 

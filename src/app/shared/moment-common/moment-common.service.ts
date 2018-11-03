@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { DEFAULT_APP_VALUES } from 'environments/environment';
+import { IDateRange } from '@bpCommonInterfaces/i-date-range';
 
 
 @Injectable()
@@ -41,6 +42,13 @@ export class MomentCommonService {
 
   getTodayFormated(): string{
     return this.getFormatedDate();
+  }
+
+  getPreviousMonth():IDateRange{
+    return {
+      dateStart: this.getToday().subtract(1, 'month').date(1).hour(0).minute(0).millisecond(0),
+      dateEnd: moment(moment().date(1)).subtract(1, 'day').hour(23).minute(59).millisecond(999)
+    } as IDateRange
   }
 
   getNow():moment.Moment{

@@ -1,5 +1,4 @@
 import { ICreationInfo } from '../../../shared/interfaces/i-creation-info';
-import { Moment } from 'moment';
 export interface IInvoiceSellList {
     id: number,
     brutto: string,
