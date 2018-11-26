@@ -41,8 +41,8 @@ export class InvoiceSellService extends DataFactoryService {
   })    
   }
 
-  getLastMonthInvoices() {
-    return this.http.get(environment.apiInvoiceSellGetLastMonthInvoices, {
+  getLastMonthInvoices(monthsAgo:number) {
+    return this.http.get(`${environment.apiInvoiceSellGetLastMonthInvoices}/${monthsAgo}`, {
       headers: this.bearerHeader()
     })
     .take(1)

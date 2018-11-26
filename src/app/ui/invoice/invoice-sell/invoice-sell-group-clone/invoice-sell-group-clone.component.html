@@ -1,5 +1,4 @@
 <div fxLayout="column" fxLayout.gt-sm="row wrap">
-
     <mat-card fxFlex="100" fxFlex.gt-lg="30">
         <mat-card-content>
             <div class="mat-body-1">
@@ -16,6 +15,19 @@
                     pozycja z każdej faktury.</p>
                 <p>Faktury można dowolnie sortować (chwyć/przenieś) w panelu (1,2) lub utworzyć nową listę w panelu (2).</p>
             </div>
+            <div fxLayout="row">
+                <mat-form-field>
+                    <input matInput type="number" placeholder="Lista faktur sprzed miesięcy" [formControl]="monthsAgo">
+                </mat-form-field>
+                <div class="mat-body-2">
+                    Pobrana lista dostępnych faktur dotyczy miesiąca: {{getMonthAgo()}}
+                </div>
+            </div>
+            <mat-divider></mat-divider>
+            <br/>
+            <mat-divider></mat-divider>
+            <mat-divider></mat-divider>
+            <br/>
             <div fxLayout="row">
                 <mat-form-field>
                     <input matInput placeholder="Data sprzedaży" [matDatepicker]="dpSell" [formControl]="dateOfSell">
