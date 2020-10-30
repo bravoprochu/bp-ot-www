@@ -5,8 +5,9 @@
 
 //const port=44315;
 //const port=5000;
-//const server='http://localhost:5000/';
-const server='https://localhost:44315/';
+// const server='http://localhost:5005/';
+ const server='https://offertrans-sped-api.azurewebsites.net/'
+// const server='https://localhost:44315/';
 
 
 export const environment = {

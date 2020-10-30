@@ -1,10 +1,12 @@
 //const server='https://bp-kpir-api.azurewebsites.net/'
-const server='https://offertrans-sped-api.azurewebsites.net/'
+// const server='https://offertrans-sped-api.azurewebsites.net/'
+// const server='https://localhost:5010/'
+const server='http://localhost:5005/'
 
 export const environment = {
   production: true,
-  //appName: "bp-KPIR-test",
-  appName: "OfferTrans",
+  appName: "bp-KPIR-test",
+  //appName: "OfferTrans",
   
   apiUrlCompanyCard:server+'kontrahent',
   
