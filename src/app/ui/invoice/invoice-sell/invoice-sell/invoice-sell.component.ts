@@ -211,9 +211,12 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
 
 
 
-
   get totalBrutto(): FormControl {
     return <FormControl>this.rForm.get('invoiceTotal.current.total_brutto');
+  }
+
+  get totalNetto(): FormControl {
+    return <FormControl>this.rForm.get('invoiceTotal.current.total_netto');
   }
 
   get totalTax(): FormControl {
@@ -508,7 +511,12 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
 
 
   prepExtraInfoTaxExchangedNbp(_currNbp: ICurrencyNbp){
-    let info = `Średni kurs dla ${_currNbp.currency.name} z dnia ${this.momentService.getFormatedDate(_currNbp.rateDate)} (${_currNbp.rate}), Podatek VAT (${this.cf.roundToCurrency(_currNbp.price)}) wartość: ${this.cf.roundToCurrency(_currNbp.plnValue)} PLN`;
+    const netto = this.totalNetto.value;
+    const nettoPLN = this.cf.roundToCurrency(netto * _currNbp.rate);
+    const brutto = this.totalBrutto.value;
+    const bruttoPLN = this.cf.roundToCurrency(brutto * _currNbp.rate);
+
+    let info = `Średni kurs dla ${_currNbp.currency.name} z dnia ${this.momentService.getFormatedDate(_currNbp.rateDate)} (${_currNbp.rate}) ||| Netto (${netto}) wartość: ${nettoPLN} PLN ||| Podatek VAT (${this.cf.roundToCurrency(_currNbp.price)}) wartość: ${this.cf.roundToCurrency(_currNbp.plnValue)} PLN ||| Brutto (${brutto}) wartość: ${bruttoPLN} PLN `;
     this.extraInfoTaxExchangedInfo.setValue(info)
   }
 
