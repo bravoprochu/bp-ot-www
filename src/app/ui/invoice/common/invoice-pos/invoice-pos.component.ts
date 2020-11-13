@@ -2,9 +2,10 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Component, Input, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { CommonFunctionsService } from 'app/services/common-functions.service';
 import { IInvoicePos } from '@bpUI/invoice/interfaces/iinvoice-pos';
-import { merge, takeUntil, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { merge, takeUntil, debounceTime, distinctUntilChanged, switchMap, filter } from 'rxjs/operators';
 import { Subject, empty } from 'rxjs';
 import { InvoiceSellService } from '@bpUI/invoice/invoice-sell/services/invoice-sell.service';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -24,31 +25,16 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
 
   constructor(
     private cf: CommonFunctionsService,
-    private df: InvoiceSellService
+    private df: InvoiceSellService,
+    private actRoute: ActivatedRoute
   ) { }
 
   ngOnInit() {
-    //this.nettoValueUpdate(this.currentGroup.value, this.currentGroup);
-    //this.currentGroup.valueChanges
     this.isDestroyed$ = new Subject<boolean>();
 
     this.posName = new FormControl(this.rForm.get('current.name').value);
     this.posPkwiu = new FormControl(this.rForm.get('current.pkwiu').value);
-
-
-
-    // this.rForm.valueChanges.pipe(
-
-    // )
-    // .subscribe(
-    //   (_data:any)=>{
-    //   console.log('invoicePos rFormChanged',_data);
-
-    //   },
-    //   (err)=>console.log('invoicePos rFormChanged error', err),
-    //   ()=>console.log('invoicePos rFormChanged finish..')
-    // )
-
+    this.initVatValueWatch()
 
 
     this.currentQuantity
@@ -102,40 +88,6 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
         },
     )
 
-
-
-    // this.rForm.valueChanges.pipe(
-
-    // ).subscribe(
-    //   (_data:any)=>{
-    //   console.log('INSIDE invoicePos change',_data);
-    //   },
-    //   (err)=>console.log('INSIDE invoicePos change error', err),
-    //   ()=>console.log('INSIDE invoicePos change finish..')
-    // )
-
-
-    // this.currentQuantity
-    //   .valueChanges.pipe(
-    //     takeUntil(this.isDestroyed$),
-    //     merge(this.currentUnitPrice.valueChanges, this.currentVatRate.valueChanges),
-    //     //debounceTime(150)
-    //   )
-    //   .subscribe(
-    //     (_data: any) => {
-    //       console.log('invPos change', _data);
-    //       this.rForm.markAsDirty();
-    //       if (this.currentGroup.valid) {
-    //         this.nettoValueUpdate(<IInvoicePos>this.currentGroup.value, this.currentGroup);
-    //         if (this.isCorrection.value) {
-    //           //if original has netto value - its a correction.. 
-    //           this.positionListCheckChanges();
-    //         }
-    //       }
-    //     },
-    //     (err) => console.log('pos error', err),
-    //     () => console.log('pos finish..')
-    //   );
   }
 
   isDestroyed$: Subject<boolean>;
@@ -238,6 +190,29 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
 
   //#endregion
 
+
+  initVatValueWatch() {
+    this.currentVatRate.valueChanges.pipe(
+      takeUntil(this.isDestroyed$),
+      debounceTime(200),
+      distinctUntilChanged(),
+      filter(f=>f=="-" || f=="0")
+    )
+    .subscribe(
+         (_vatValue:any)=>{
+              const _posName: string = this.posName.value;
+              let fixedName: string;
+              
+              if(_posName && _posName.toLocaleLowerCase().includes('usługa transportowa')){
+                fixedName = _posName.replace('Usługa transportowa', "Transport service");
+                
+                this.cf.toastMake(`Wartość pola "nazwa towaru" w pozycji ${this.posName.value} została poprawiona na: "${fixedName}"`, 'Faktura Sprzedaży', this.actRoute);
+                this.posName.setValue(fixedName, {emitEvent: false});
+              }
+         },
+         (error)=>console.log('_vatValue error', error),
+    );
+  }
 
   nettoValueUpdate(s: IInvoicePos, form: FormGroup) {
     if (s.vat_rate != null && s.unit_price != null && s.quantity != null) {

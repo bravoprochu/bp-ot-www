@@ -17,10 +17,10 @@ import { InvoiceCommonFunctionsService } from '../../common/invoice-common-funct
 import { CurrencyCommonService } from '@bpShared/currency/currency-common.service';
 import { ICurrencyNbp } from '@bpShared/currency/interfaces/i-currency-nbp';
 import { MomentCommonService } from '@bpShared/moment-common/moment-common.service';
-import { IInvoiceSell } from '../../interfaces/iinvoice-sell';
-import { map, takeUntil, debounceTime, switchMap, delay, take, tap, skip } from 'rxjs/operators';
+import { IInvoiceLineGroup, IInvoiceSell } from '../../interfaces/iinvoice-sell';
+import { map, takeUntil, debounceTime, switchMap, delay, take, tap, skip, filter, startWith, concatAll } from 'rxjs/operators';
 import { ICurrency } from '@bpShared/currency/interfaces/i-currency';
-
+import { IInvoicePos } from '@bpUI/invoice/interfaces/iinvoice-pos';
 
 
 @Component({
@@ -52,7 +52,8 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
     this.isPending = true;
     this.initForm();
     this.initRouteId();
-    //this.initData();
+    this.invoiceVatValueWatch();
+    this.initData();
   }
 
 
@@ -114,6 +115,10 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
 
   get getInvoiceValue(): FormControl {
     return <FormControl>this.rForm.get('getInvoiceValue')
+  }
+
+  get info(): FormControl {
+    return <FormControl>this.rForm.get("info");
   }
 
   get invoiceSellId(): FormControl {
@@ -377,6 +382,8 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
 
+  
+
 
 
   public navCancel(): void {
@@ -459,6 +466,25 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
         }
       })
   }
+
+
+  invoiceVatValueWatch() {
+    this.invoiceLines.valueChanges.pipe(
+      debounceTime(2000),
+      map((m:IInvoiceLineGroup[])=>m.map(m=>m.current).filter(f=>f.vat_rate == "-" || f.vat_rate=="0"))
+    )
+    .subscribe(
+         (_invoicePos:IInvoicePos[])=> {
+
+          if(_invoicePos.length>0){
+            this.info.setValue('Reverse charge', {emitEvent: false})
+            this.cf.toastMake('Wartość pola "UWAGI" zmieniona na: "Reverse charge"', 'asdf', this.actRoute);
+          }
+         },
+         (error)=>console.log('invoiceLines error', error),
+    );
+  }
+
 
   printInvoice() {
     this.isPending = true;
@@ -563,6 +589,8 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
   //#endregion
+
+
 
 
 
