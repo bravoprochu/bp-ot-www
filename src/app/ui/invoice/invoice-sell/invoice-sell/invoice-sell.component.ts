@@ -471,7 +471,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   invoiceVatValueWatch() {
     this.invoiceLines.valueChanges.pipe(
       debounceTime(2000),
-      map((m:IInvoiceLineGroup[])=>m.map(m=>m.current).filter(f=>f.vat_rate == "-" || f.vat_rate=="0"))
+      map((m:IInvoiceLineGroup[])=>m.map(m=>m.current).filter(f=>f.vat_rate == "-"))
     )
     .subscribe(
          (_invoicePos:IInvoicePos[])=> {
