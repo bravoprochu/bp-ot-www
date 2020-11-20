@@ -207,7 +207,7 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
                 fixedName = _posName.replace('Usługa transportowa ', "Usługa transportowa/Transport service ");
                 
                 this.cf.toastMake(`Wartość pola "nazwa towaru" w pozycji ${this.posName.value} została poprawiona na: "${fixedName}"`, 'Faktura Sprzedaży', this.actRoute);
-                this.posName.setValue(fixedName, {emitEvent: false});
+                this.posName.setValue(fixedName, {emitEvent: true});
               }
          },
          (error)=>console.log('_vatValue error', error),
