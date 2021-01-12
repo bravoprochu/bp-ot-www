@@ -114,24 +114,5 @@ export class MomentCommonService {
       milliseconds:0
     });
 
-    // console.log('date', date.toLocaleString());
-
-    // let res=moment();
-
-    // if(date){
-    //   res.year(date.year());
-    //   res.month(date.month());
-    //   res.day(date.day());
-    //   console.log('is date !', date.toLocaleString());
-    // }
-
-    // res.hour(hour);
-    // console.log('hour', res);
-    // res.minute(0);
-    // res.second(0);
-    // res.millisecond(0);
-    // console.log('hour', res.toLocaleString());
-    // console.log('res setConstTime',res.toLocaleString());
-    // return res;
   }
 }

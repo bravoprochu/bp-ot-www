@@ -156,7 +156,6 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
 
 
   invoiceSellGen() {
-    console.log(this.id.value);
     if (!this.id.value) { return; }
     let id = this.id.value;
     let actCurr: ICurrency= <ICurrency>this.currency.value;
@@ -170,7 +169,6 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
         .switchMap(czyPLN=>{
           if(czyPLN){
             if(actCurr.name=="PLN"){
-              console.log('waluta pln so OK !')
               return Observable.of(true);
             } else{
               return this.dialogTakNie.open(DialogTakNieComponent, {data: <IDialogTakNieInfo>{title: "Waluta faktury", question: `UWAGA, sprawdź regulamin zlecenia.  Zlecenie jest w ${actCurr.description}, czy faktura ma być przeliczona i wystawiona w walucie PLN ?`}}).afterClosed()
@@ -237,9 +235,6 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
     
     
     this.df.update(id, this.rForm.value)
-      .do(()=>{
-        console.log('date', d.format(this.cf.dateTimeLocaleFormat()));
-      })
       .takeUntil(this.isDestroyed$)
       .take(1)
       .switchMap(sw => {

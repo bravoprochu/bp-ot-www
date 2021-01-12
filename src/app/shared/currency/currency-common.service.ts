@@ -104,7 +104,6 @@ export class CurrencyCommonService {
           _nbp.currency == null ||
           _nbp.rateDate == null
         ) {
-          console.log('getNbpRate return empty');
           return empty();
         }
         if (_nbp.currency.name == this.findCurrencyByName("pln").name) {

@@ -62,7 +62,6 @@ export class DataFactoryService {
   }
 
   create(item:any):Observable<any>{
-    console.log(item);
     return this.http.post(this.url+"/Post", item,
       {headers: this.bearerHeader()}
     )

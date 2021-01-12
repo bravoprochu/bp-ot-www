@@ -179,7 +179,6 @@ export class LoadBuyComponent implements OnInit, OnDestroy, IDetailObj {
    {
     let pallets = load.get('pallets');
     (<FormArray>pallets).removeAt(id);
-    console.log('palletRemove');
     this.buy.markAsDirty();
 
   }

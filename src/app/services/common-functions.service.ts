@@ -179,7 +179,6 @@ export class CommonFunctionsService {
     let res: IErrorObj[] = [];
     let err = resErrors["error"];
 
-    console.log(resErrors);
     if (err["type"] != "error") {
       for (let key in err) {
         let errGroupName = err[key];
@@ -203,22 +202,6 @@ export class CommonFunctionsService {
     }
     return res;
   }
-
-  //console.log(error);
-  //res.errorDescription = resErrors.message;
-  //if (resErrors.error == null) return res;
-  //if (typeof (resErrors.error) == "object") { res.errors.push("Błąd serwera"); return res }
-  // let errors = JSON.parse(resErrors["error"]);
-
-  // for (let key in errors) {
-  //   let errGroupName = errors[key];
-  //   errGroupName.forEach(err => {
-  //     res.errors.push(`${key} | ${err}`);
-  //   });
-  // }
-  // console.log('res', res);
-
-
 
 
 

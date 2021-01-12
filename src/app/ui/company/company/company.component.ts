@@ -150,8 +150,7 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
       this.employeeList.removeAt(0);
     }
     this.rForm.markAsDirty();
-    console.log(this.rForm);
-    
+
   }
 
   // employeeTrackBy(index, employee:IEmployee){
@@ -202,9 +201,6 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
 
   navCancel(){
     this.companyDialogRef.close();
-    // this.rForm.reset();
-    // this.rForm.updateValueAndValidity();
-    // return;
   }
   navDownload(){
     this.initData();

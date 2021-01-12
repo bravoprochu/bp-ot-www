@@ -291,15 +291,13 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
           this.currencyNbp.patchValue(_currNbp, { emitEvent: false });
           return this.currService.getCurrencyNbp$(_currNbp)
         } else {
-          //this.currencyNbp.enable({ emitEvent: false });
           return empty();
         }
       })
     )
       .subscribe(
         (_currNbp: ICurrencyNbp) => {
-          console.log('extraInfoIsTaxNbpExchanged')
-          //this.currencyNbp.enable({ emitEvent: false });
+
           this.currencyNbp.setValue(_currNbp, { emitEvent: false });
           this.prepExtraInfoTaxExchangedNbp(_currNbp);
         },
@@ -319,17 +317,6 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
         },
       )
 
-
-    // this.currencyNbp.get('plnValue').valueChanges.pipe(
-    //   takeUntil(this.isDestroyed$),
-    // )
-    //   .subscribe(
-    //     (_currNbp: ICurrencyNbp) => {
-    //       console.log("currNBP changed");
-    //       let info = `Średni kurs z dnia ${this.momentService.getFormatedDate(_currNbp.rateDate)} (${_currNbp.rate}), Podatek VAT (${this.cf.roundToCurrency(_currNbp.price)}) wartość: ${this.cf.roundToCurrency(_currNbp.plnValue)} PLN`;
-    //       this.extraInfoTaxExchangedInfo.setValue(info)
-    //     },
-    // );
 
 
     //total brutto in words - checkbox change

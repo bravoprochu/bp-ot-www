@@ -61,16 +61,7 @@ export class CurrencyNbpComponent implements OnInit, OnDestroy {
   }
   //#endregion
 
-  // dateInputChange(ev: MatDatepickerInputEvent<Moment>){
-  //   if(ev.value){
-  //   console.log('input change...',ev.value.toLocaleString());
-  //   }    
-  // }
 
-  // dateChange(ev: MatDatepickerInputEvent<Date>){
-  //   console.log('date changed', ev.value);
-  //   this.rateDate.setValue(ev.value, {emitEvent: true});
-  // }
 
   refresh() {
     this.cf.getNbpService$(this.rForm.value).pipe(

@@ -92,7 +92,6 @@ initForm(){
   .selectionChange
   .takeUntil(this.isDestroyed$)
   .subscribe((s)=>{
-    console.log('selectChanged', s);
     this.contactPersonsList.controls=[];
     s.value.forEach(emp=>{
       this.contactPersonsList.push(this.cf.formEmployeeGroup(this.fb));
