@@ -9,7 +9,7 @@ const server='http://localhost:5000/';
 
 export const environment = {
   production: false,
-  appName: "bp-KPIR-bridge - dev",
+  appName: "bp-bridge - dev",
   apiUrlCompanyCard:server+'kontrahent',
 
   apiUrlNbpSredniZDnia: '//api.nbp.pl/api/exchangerates/rates/a/',
