@@ -32,7 +32,6 @@ export class CurrencyCommonService {
   }
 
   getCurrencyListGroup(fb: FormBuilder, isDestroyed$: Subject<boolean>, initCurrencyName?: string): FormControl {
-    //    initCurrencyName = initCurrencyName ? initCurrencyName : "PLN";
     let res = fb.control({});
     let initCurr = CURRENCY_LIST.find(f => f.name == initCurrencyName) ? CURRENCY_LIST.find(f => f.name == initCurrencyName) : CURRENCY_LIST.find(f => f.name == "PLN")
     res.setValue(initCurr, { emitEvent: false });
@@ -59,18 +58,10 @@ export class CurrencyCommonService {
     let price = res.get('price');
     let currency = res.get('currency');
 
-    // plnValue.disable();
-    // rate.disable();
 
     let rateDate$ = rateDate
       .valueChanges.pipe(
       takeUntil(isDestroyed$),
-      // map((_date: moment.Moment) => {
-      //   if (_date instanceof moment) {
-      //     rateDate.setValue(this.mC.isCurrencyNbpValidDate(_date), { emitEvent: false });
-      //   }
-      //   return _date;
-      // }),
     );
 
     let price$ = price.valueChanges.pipe(
@@ -183,7 +174,6 @@ export class CurrencyCommonService {
   patchCurrencyNbp(data: ICurrencyNbp, rForm: FormGroup) {
     let d= moment.isMoment(data.rateDate);
     data.rateDate = moment.isMoment(data.rateDate) ? data.rateDate : moment(data.rateDate);
-    // rForm.patchValue(data, {emitEvent: false});
     let currency = <FormControl>rForm.get('currency');
     this.patchCurrencyList(data.currency, currency);
     rForm.setValue(data, { emitEvent: false });

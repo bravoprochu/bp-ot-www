@@ -4,7 +4,6 @@ import { Observable, BehaviorSubject, Subject } from "rxjs";
 
 export interface IComponentData{
     data$: Subject<IPayloadDTO>,
-    //dataPassed: IPayloadDTO,
     dataPassed$: Observable<IPayloadDTO>,
     errorInfo: IComponentDataErrorInfo,
     isDestroyed$: Subject<boolean>,

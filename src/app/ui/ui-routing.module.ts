@@ -20,14 +20,6 @@ import { InvoiceSellPaymentRemindComponent } from 'app/ui/invoice/invoice-sell-p
 
 
 export const uiRoutes: Routes = [
-  // {
-  //   path: "",
-  //   component: InvoiceSellComponent,
-  //   children:[
-
-
-  //   ]
-  // },
   { path: 'kontrahent', component: CompanyListComponent, canActivate:[IdentGuard], data: {allowed: UserRolesEnum.Manager, name: "Kontrahenci", description: "Baza kontrahentów, tworzenie, modyfikacja danych"}},
   { path: 'kontrahent/:id', component: CompanyComponent, canActivate:[IdentGuard], data: {allowed: UserRolesEnum.Spedytor}},
   { path: 'ladunek', component: LoadListComponent, canActivate:[IdentGuard], data: {allowed: UserRolesEnum.Spedytor, name: "Spedycja", description: "Proces od zakupu, publikacji na giełdzie przez sprzedaż"}},
@@ -40,9 +32,6 @@ export const uiRoutes: Routes = [
   { path: 'transport', component: TransportListComponent, canActivate:[IdentGuard], data: {allowed: UserRolesEnum.Spedytor, name: "Transport", description: "Rejestr zakupionych transportów i ich statusy"}},
   { path: 'transport/:id', component: TransportComponent, canActivate:[IdentGuard], data: {allowed: UserRolesEnum.Spedytor} },
   { path: 'ZarzadzanieUzytkownikami', component: UsersManagementComponent, canActivate:[IdentGuard], data: {allowed: UserRolesEnum.Administrator, name: "Zarządzenie użytkownikami", description:"Przypisywanie uprawnień, modyfikacja danych, usuwanie użytkowników"}},
-  
-
-  // { path:'', redirectTo: '/company', pathMatch: 'full'},
 ];
 
 @NgModule({

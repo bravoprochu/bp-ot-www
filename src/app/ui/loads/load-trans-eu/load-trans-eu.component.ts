@@ -1,10 +1,7 @@
-import { first } from 'rxjs/operators';
-import { ICompany } from '../../../shared/interfaces/icompany';
 import { LoadService } from '../services/load.service';
 import { CommonFunctionsService } from '../../../services/common-functions.service';
-import { IIdValue, IPallet } from '../../../shared/interfaces/iload';
 import { IEmployee } from '../../../shared/interfaces/iemployee';
-import { Observable, Subject } from 'rxjs/Rx';
+import { Subject } from 'rxjs/Rx';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ILoadBuy, ILoad, ILoadRoute, ILoadRoutePallete } from 'app/shared/interfaces/iload';
@@ -96,7 +93,7 @@ export class LoadTransEuComponent implements OnInit, OnDestroy {
     .takeUntil(this.isDestroyed$)
     .subscribe((s)=>{
       this.contactPersonsList.controls=[];
-      s.value.forEach(emp=>{
+      s.value.forEach(()=>{
         this.contactPersonsList.push(this.cf.formEmployeeGroup(this.fb));
       });
       this.contactPersonsList.patchValue(s.value, {emitEvent:true});
@@ -122,7 +119,7 @@ export class LoadTransEuComponent implements OnInit, OnDestroy {
       transEu:f.transEu
     }
     this.df.updateTransEu(id, reqObj)
-    .switchMap(sw=>this.df.getById(id).take(1))
+    .switchMap(()=>this.df.getById(id).take(1))
     .take(1)
     .subscribe(s=>{
       this.cf.patchLoad(s, this.rForm, this.fb, this.isDestroyed$);
@@ -139,8 +136,6 @@ export class LoadTransEuComponent implements OnInit, OnDestroy {
 
       this.loadTransEu=<ILoadTransEu>{
         description: rform.buy.load_info.description!=null? rform.buy.load_info.description: "",
-        // price: rform.sell.selling_info.price.price,
-        // price_currency: rform.sell.selling_info.price.currency_name,
         price: rform.transEu.price.price,
         price_currency: rform.transEu.price.currency.name,
         is_for_clearence: rform.buy.load_info.extraInfo.is_for_clearence,
@@ -302,59 +297,6 @@ export class LoadTransEuComponent implements OnInit, OnDestroy {
     this.loadTransEu.description+=extraPalletsStr;
   }
 
-  private prepDescription(frm:ILoadBuy):void
-  {
-    let str:string="";
-    str=frm.load_info.description;
-
-    let loadings=<FormArray>this.rForm.get('buy.loading');
-    let unloadings=<FormArray>this.rForm.get('buy.unloading');
-    let pallets=<FormArray>this.rForm.get('buy.pallets');
-
-    if(loadings.length>1){
-      str+="\n---EXTRA ZAŁADUNEK---";
-      let idx:number=0;
-      loadings.controls.forEach((loadGroup) => {
-        if(idx>0){
-        let load=loadGroup.value;
-        str+="\n"+load.address.country+" "+load.address.postal_code+", "+load.address.locality;
-        }
-        idx++
-      });
-    }
-    if(unloadings.length>1){
-      str+="\n---EXTRA ROZŁADUNEK---";
-      let idx:number=0;
-      unloadings.controls.forEach((loadGroup) => {
-        if(idx<unloadings.length-1){
-        let load=loadGroup.value;
-        str+="\n"+load.address.country+" "+load.address.postal_code+", "+load.address.locality;
-        }
-        idx++
-      });
-    }
-
-    if(pallets.length>1){
-      str+="\n---EXTRA PALETY---";
-      let idx:number=0;
-      pallets.controls.forEach((palletGroup) => {
-        if(idx>0){
-          let pallet=palletGroup.value;
-          let dimmension = pallet.type=="INNE" ? pallet.dimmensions: "";
-          let is_exchangeable = pallet.is_exchangeable ? " paleta wymienialna": "";
-          let is_stackable= pallet.is_stackable ? " paleta wymnienialna": "";
-          let info= pallet.is_stackable || pallet.is_exchangeable ? `[${is_exchangeable}${is_stackable}]`: "";
-
-          str+=`\n ${pallet.type} ${pallet.amount} szt. ${dimmension} ${info}`;
-        }
-        idx++
-      });
-
-    }
-
-    
-    this.loadTransEu.description=str;
-  }
 
 
 }

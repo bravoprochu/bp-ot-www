@@ -1,5 +1,3 @@
-import { ILoadBuy } from '../../../shared/interfaces/iload';
-import * as http from 'http';
 import { TokenService } from '../../../services/token.service';
 import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs/Rx';
@@ -23,7 +21,6 @@ export class LoadService extends DataFactoryService {
       {headers: this.bearerHeader()}
     )
     .take(1)
-//    .retryWhen(errors=>errors.delay(2500).take(3))
     .catch(this.errorHandler);
   }
 

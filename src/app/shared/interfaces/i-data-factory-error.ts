@@ -14,8 +14,6 @@ export interface IDataFactoryError {
 
 export interface IDataFactoryErrorIssueTime {
     issue: moment.Moment
-    // start: string,
-    // last: string
 }
 
 

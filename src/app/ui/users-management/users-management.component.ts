@@ -1,20 +1,13 @@
 import { INavDetailInfo } from '../../shared/interfaces/inav-detail-info';
-import { IStatusCode } from '../../shared/interfaces/istatus-code';
-import { Iuser } from '../../shared/interfaces/iuser';
 import { IuserRole } from '../../shared/interfaces/iuser-role';
 import { IusersManagement } from '../../shared/interfaces/iusers-management';
-import { validate } from 'codelyzer/walkerFactory/walkerFn';
-import { CommonFunctionsService } from '../../services/common-functions.service';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IBasicActions } from '../../shared/ibasic-actions';
-import { ITitle } from '../../shared/ititle';
 import { IDetailObj } from '../../shared/idetail-obj';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UsersManagementService } from 'app/services/users-management/users-management.service';
 import { MatDialog } from '@angular/material';
 import { DialogTakNieComponent } from 'app/shared/dialog-tak-nie/dialog-tak-nie.component';
 import { IDialogTakNieInfo } from 'app/shared/interfaces/idialog-tak-nie-info';
-import { Observable } from 'rxjs/Observable';
 import { FormControl } from '@angular/forms/src/model';
 import { Subject } from 'rxjs';
 
@@ -30,20 +23,13 @@ export class UsersManagementComponent implements OnInit, OnDestroy, IDetailObj {
 
   constructor(private df:UsersManagementService, 
     private dialog: MatDialog,
-    private fb:FormBuilder,
-    private cf: CommonFunctionsService) { }
+    private fb:FormBuilder) { }
 
   ngOnInit() {
     this.isDestroyed$ = new Subject<boolean>();
     this.initForm();
     this.initData();
   }
-
-
-//   get users():FormArray
-//   {
-//       return <FormArray>this.rForm.get("users");
-//   }
 
   dataObj: any;
   public isDestroyed$:Subject<boolean>;
@@ -67,8 +53,7 @@ export class UsersManagementComponent implements OnInit, OnDestroy, IDetailObj {
 
   formDataInit(s:IusersManagement){
     this.rForm=this.fb.array([]);
-    let userLp=0;
-    s.users.forEach(user => {
+    s.users.forEach(() => {
         let userGroup= this.userFG();
         this.rForm.push(userGroup);
     });
@@ -130,7 +115,6 @@ export class UsersManagementComponent implements OnInit, OnDestroy, IDetailObj {
     private userFG():FormGroup{
         let user= this.fb.group({
             email: [null, Validators.compose([Validators.required, Validators.email])],
-            //roles: this.fb.array([]),
             roles:[null],
             status:[null],
             transId: [null],
@@ -142,12 +126,6 @@ export class UsersManagementComponent implements OnInit, OnDestroy, IDetailObj {
         return user;
     }
 
-    private userRoleFG(roleId?:string, name?: string):FormGroup{
-        return this.fb.group({
-            roleId: [roleId? roleId:null],
-            name: [name? name: null]
-        })
-    }
 
     userRolesDescription(user:any):string{
         let res:string[]=[];
@@ -167,7 +145,6 @@ export class UsersManagementComponent implements OnInit, OnDestroy, IDetailObj {
         .subscribe(s=>{
             if(s){
                 user.get("status").setValue(3, {emitEvent: false});
-                //status.setValue(3);
                 this.rForm.markAsDirty();
             }
         })

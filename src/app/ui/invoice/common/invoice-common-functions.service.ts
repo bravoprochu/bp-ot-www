@@ -86,7 +86,6 @@ export class InvoiceCommonFunctionsService {
       "paymentIsDone": [false],
       "paymentDate": [null],
       "paymentTerms": this.pTermsService.getPaymentTermsGroup(fb, isDestroyed$),
-      // "rates": fb.array([]),
       "rates": fb.array([])
     });
 
@@ -319,13 +318,7 @@ export class InvoiceCommonFunctionsService {
     let c = [];
     data.forEach(group => {
       let invLineGroup = this.formInvoiceLineGroupGroup(fb);
-      // invLineGroup.get('corrections').patchValue(group.corrections, { emitEvent: false });
-      // invLineGroup.get('current').patchValue(group.current, { emitEvent: false });
-      // invLineGroup.get('original').patchValue(group.original, { emitEvent: false });
-
-      //invLineGroup.patchValue(group, {emitEvent:false});
       rForm.push(invLineGroup);
-      //rForm.controls= c;
     });
   }
 

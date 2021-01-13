@@ -3,12 +3,9 @@ import { IDialogData } from '../../../shared/interfaces/i-dialog-data';
 import { CompanyComponent } from '../company/company.component';
 import { CommonFunctionsService } from '../../../services/common-functions.service';
 import { ICompany } from '../../../shared/interfaces/icompany';
-
-import { Data } from '@angular/router';
 import { Observable, Subject } from 'rxjs/Rx';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-
 import 'rxjs/add/operator/debounceTime';
 import { MatAutocomplete, MatDialog } from '@angular/material';
 import { CompanyService } from 'app/ui/company/services/company.service';
@@ -86,12 +83,10 @@ export class CompanyCardComponent implements OnInit, OnDestroy {
   }
 
   initData() {
-    //this.data$=this.df.getAll();
   }
 
   initForm() {
     (<FormArray>this.rForm.get('addressList'))
-    //.push(this.cf.formAddressGroup(this.fb));
 
     this.data$ = this.search$
       .valueChanges

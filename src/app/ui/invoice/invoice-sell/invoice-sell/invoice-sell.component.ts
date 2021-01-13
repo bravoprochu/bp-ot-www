@@ -396,7 +396,6 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
   public navSave(): void {
-    //this.isPending = true;
     let id = this.invoiceSellId.value;
 
     if (!this.isCorrection.value) {
@@ -502,7 +501,6 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   prepTotalInWord(): string {
     let totalBrutto: number = 0;
     if (this.isCorrection.value) {
-      //this.correctionTotalInfoUpdate();
       totalBrutto = this.getInvoiceValue.value;
     } else {
       totalBrutto = this.totalBrutto.value
@@ -539,18 +537,13 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
       let original = g.get('original');
       let current = g.get('current');
       let corr = g.get('corrections');
-
-      //corr.patchValue(this.icf.getIInvoiceLine("none"), { emitEvent: false });
       current.get('baseInvoiceLineId').setValue(current.get('invoice_pos_id').value, { emitEvent: false });
       current.get('isCorrected').setValue(false, { emitEvent: false });
-      //original.reset({}, {emitEvent: false});
       original.setValue(current.value, { emitEvent: false });
-      //corr.reset(null, {emitEvent: false});
     });
   }
 
   prepZeroValuesLinesForNonCorrectionInvoice() {
-    //this.getIInvoiceLine("none");
 
     this.invoiceLines.controls.forEach(line => {
       line.get('corrections').patchValue(this.icf.getIInvoiceLine("none"), { emitEvent: false });
@@ -562,7 +555,6 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
 
   createCorrection() {
     this.prepCorrectionOriginalData();
-    //this.router.navigate(['fakturaSprzedazyKorekta',0], {queryParams:  {invoiceSellId: this.invoiceSellId.value }});
     this.correctionTotalInfoFc.setValue(null);
     this.invoiceNo.setValue(null);
     this.invoiceOriginalPaid.setValue(this.paymentIsDone.value, { emitEvent: false });

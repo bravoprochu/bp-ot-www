@@ -63,7 +63,6 @@ export class NavDetailComponent implements OnInit, OnDestroy {
   }
 
   cancel(){
-//    this.openDialog();
     this.navCancel.emit();
   }
 

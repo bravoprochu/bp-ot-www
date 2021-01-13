@@ -45,7 +45,6 @@ export class TokenService {
   }
 
   isRouteAuthorized(routeData:any):boolean{
-//    return true;
     let res:boolean;
     let roles:string[]=this.getToken().rolesList;
     let allowed=routeData.allowed;

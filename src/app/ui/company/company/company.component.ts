@@ -1,18 +1,14 @@
 import { IEmployee } from '../../../shared/interfaces/iemployee';
-import { ITransEuPerson } from '../../../shared/interfaces/i-load-trans-eu';
 import { ICompany } from '../../../shared/interfaces/icompany';
 import { IDialogData } from '../../../shared/interfaces/i-dialog-data';
-import { DialogDataTypes } from '../../../shared/enums/dialog-data-types.enum';
 import { Observable, Subject } from 'rxjs/Rx';
 import { InputDialogComponent } from '../../../shared/input-dialog/input-dialog.component';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { CommonFunctionsService } from 'app/services/common-functions.service';
-import { IBasicActions } from 'app/shared/ibasic-actions';
 import { IDetailObj } from 'app/shared/idetail-obj';
-import { ITitle } from 'app/shared/ititle';
 
 import { TranseuService } from '../../../services/transeu/transeu.service';
 import { IDialogTakNieInfo } from '../../../shared/interfaces/idialog-tak-nie-info';
@@ -101,7 +97,7 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
     this.rForm.markAsDirty();
   }
 
-  dialogOk(ev:any){
+  dialogOk(){
     this.companyDialogRef.close(this.rForm.value);
   }
   dialogCancel(){
@@ -153,21 +149,10 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
 
   }
 
-  // employeeTrackBy(index, employee:IEmployee){
-  //   return employee? employee.id: undefined;
-  // }
-
-
   initForm(){
     this.rForm=this.cf.formCompanyGroup(this.fb);
     this.addressList.push(this.cf.formAddressGroup(this.fb));
     if(this.dialogData && this.dialogData.formData){
-        // (<ICompany>this.dialogData.formData).employeeList.forEach(emp=>{
-        //   (<FormArray>this.rForm.get('employeeList')).push(this.cf.formEmployeeGroup(this.fb));
-        // });
-        // (<ICompany>this.dialogData.formData).bankAccountList.forEach(acc=>{
-        //   (<FormArray>this.rForm.get('bankAccountList')).push(this.cf.formCompanyBankAccountGroup(this.fb));
-        // })
         this.cf.patchCompanyData(this.dialogData.formData, this.rForm, this.fb);
     }
 
@@ -241,17 +226,14 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
       .switchMap(dialogValue=>{
         if(dialogValue==undefined) {return Observable.empty()}
         return this.transEuService.kontrahentById(dialogValue)
-//          .retryWhen(err=>err.delay(2500).take(1))
       }       
     )
     .do(()=>this.isPending=false)
     .switchMap(s=>{
       let empUrl=s['_links']['employees']['href'];
-      //this.rForm.reset();
       this.employeeList.controls=[];
       this.rForm.patchValue(s);
       this.rForm.get('trans_id').patchValue(s['id']);
-      //this.rForm.get('companyId').patchValue(0);
       this.addressList.at(0).patchValue(s['address']);
       this.addressList.at(0).get('address_type').patchValue("główny");
 
@@ -262,7 +244,7 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
     })
     .takeUntil(this.isDestroyed$)
     .subscribe(s=>{
-      (<IEmployee[]>s).forEach(emp=>{
+      (<IEmployee[]>s).forEach(()=>{
         this.employeeList.push(this.cf.formEmployeeGroup(this.fb));
       });
       this.employeeList.patchValue(s, {emitEvent:false});

@@ -22,8 +22,6 @@ export class DataFactoryService {
       return new HttpHeaders()
       .set("Content-Type", "application/json")
       .set('Authorization', 'Bearer '+this.tokenService.getToken().token);
-
-    //return new HttpHeaders().set('Authorization', 'Bearer '+this.tokenService.getToken().token);
     } 
   }
 
@@ -43,7 +41,6 @@ export class DataFactoryService {
     return this.http.get(this.url+"/GetAll", 
       {headers: this.bearerHeader()}
     )
-    //.retryWhen(errors=>errors.delay(2500).take(3))
     .pipe(
       take(1),
       catchError(this.errorHandler)
@@ -95,15 +92,7 @@ export class DataFactoryService {
 
 
   protected errorHandler(error:Response)  {
-    //this.tokenService.monitToast(err);
     return Observable.throw(error);
-    // if(error.status==400){
-    //   return Observable.throw("Bad input..?");
-    // }
-    //  if(error.status==404){
-    //   return Observable.throw("Not found error !!");
-    // }
-    // return Observable.throw(error || 'server error');
   }
 
 }

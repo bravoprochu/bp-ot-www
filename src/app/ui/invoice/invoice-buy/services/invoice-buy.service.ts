@@ -25,7 +25,6 @@ export class InvoiceBuyService extends DataFactoryService {
   .catch(err=> {
    return Observable.of("error");
  })
-  //.catch(this.errorHandler);
 }
 
  paymentConfirmation(id:number, paymentDate:string): Observable<any>

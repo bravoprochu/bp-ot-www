@@ -62,11 +62,6 @@ export class CommonFunctionsService {
 
       firstLine = tableHeaders.join(end) + lineEnd;
 
-      // for (let key in data[0]) {
-      //   firstLine += key + end;
-      // }
-      // firstLine += lineEnd;
-
       //
       // loop
       //
@@ -84,31 +79,6 @@ export class CommonFunctionsService {
         result+=lineEnd;
       });
 
-      // for (let index = 0; index < data.length; index++) {
-      //   const element = data[index];
-
-      //   for (let key in element) {
-      //     let v = element[key];
-      //     //
-      //     // check if number.. parse..
-      //     //
-
-      //     if (v != null) {
-
-      //       // if (this.momentService.isDate(v)) {
-      //       //   result += moment(v).format(this.dateTimeLocaleFormat()) + end;
-      //       // } else  {
-              
-      //       // }
-      //     result += v +end;
-
-      //     } else {
-      //       result += "" + end;
-      //     }
-      //   }
-
-      //   result += lineEnd;
-      // }
 
       return firstLine + result;
     }
@@ -222,7 +192,6 @@ export class CommonFunctionsService {
 
 
   statusCheck(data: any, code: IStatusCode): IStatusCode {
-    //        if(data.status=="undefined" || data.status==null) return data;
     let res: IStatusCode = null;
     switch (code) {
       case IStatusCode.New:
@@ -339,23 +308,6 @@ export class CommonFunctionsService {
       "longitude": [null],
     });
   }
-
-
-
-
-
-
-  // formInvoiceSellCorrectionGroup(fb:FormBuilder, isDestroyed$: Subject<boolean>)
-  // {
-  //   return fb.group({
-  //     "invoiceSellCorrectionId": [null],
-  //     "baseInvoicesList": fb.array([]),
-  //     "invoiceCorrection": this.formInvoiceSellGroup(fb, isDestroyed$),
-  //     "invoiceSellCorrectionNo": [null],
-  //     "correctionsList": fb.array([])
-  //   });
-  // }
-
 
 
   formExtraInfoCheckedGroup(fb: FormBuilder) {
@@ -700,16 +652,6 @@ export class CommonFunctionsService {
 
 
   patchLoad(s: ILoad, rForm: FormGroup, fb: FormBuilder, isDestroyed$: Subject<boolean>) {
-    //rForm.patchValue(s, {emitEvent:false, onlySelf: true});
-    //rForm=this.formLoadGroup(fb, isDestroyed$);
-    //load
-    //  s.invoiceSellNo = s.invoiceSellNo ? s.invoiceSellNo : "brak fv";
-    //    s.loadExtraInfo = s.loadExtraInfo ? s.loadExtraInfo : <ILoadExtraInfo>{};
-
-    // rForm.get('loadId').setValue(s.loadId);
-    // rForm.get('loadNo').setValue(s.loadNo);
-    // rForm.get('invoiceSellNo').setValue(s.invoiceSellNo);
-
     let creationInfo = <FormGroup>rForm.get('creationInfo');
 
     this.patchCreationInfo(s.creationInfo, creationInfo);
@@ -721,8 +663,8 @@ export class CommonFunctionsService {
     routes.controls = [];
     let idx: number = 0; //temp incrementor
     s.buy.routes.forEach(r => {
-      //pointing formRoute
-      //adding pallets to formRoute
+      // pointing formRoute
+      // adding pallets to formRoute
       r.loading_date = this.setFormatedDateTime(r.loading_date);
       routes.push(this.formLoadRouteGroupe(fb));
       let formRoute = <FormArray>routes.at(idx);
@@ -734,7 +676,6 @@ export class CommonFunctionsService {
       idx++;
     });
     routes.patchValue(s.buy.routes, { emitEvent: false });
-    // buy.get('loadBuyId').setValue(s.buy.loadBuyId);
 
     this.patchTradeInfo(s.buy.buying_info, <FormGroup>buy.get('buying_info'), fb);
     this.patchLoadInfo(s.buy.load_info, <FormGroup>buy.get('load_info'));
@@ -755,7 +696,6 @@ export class CommonFunctionsService {
         contactPersonsList.push(this.formEmployeeGroup(fb));
       });
       contactPersonsList.patchValue(s.transEu.contactPersonsList, { emitEvent: false });
-      // this.patchCurrencyNbpData(s.transEu.price, <FormGroup>trans.get('price'));
 
       this.patchCompanyData(s.transEu.sellingCompany, <FormGroup>trans.get('sellingCompany'), fb, true);
     }
@@ -775,7 +715,6 @@ export class CommonFunctionsService {
       this.patchTradeInfo(s.sell.selling_info, <FormGroup>sell.get('selling_info'), fb);
     }
 
-    //rForm.patchValue(s, { onlySelf: false, emitEvent: true });
     rForm.get('loadNo').patchValue(s.loadNo, { emitEvent: false });
     rForm.get('loadId').patchValue(s.loadId, { emitEvent: false });
     rForm.get('info').patchValue(s.info, { emitEvent: false });
@@ -816,11 +755,6 @@ export class CommonFunctionsService {
     tr.load.date = this.setFormatedDateTime(tr.load.date);
     tr.unload.date = this.setFormatedDateTime(tr.unload.date);
 
-
-    // tr.load.date = moment(tr.load.date).utc(false).format(this.dateTimeLocaleFormat());
-    // tr.unload.date = moment(tr.unload.date).utc(false).format(this.dateTimeLocaleFormat());
-
-
     this.patchCompanyData(tr.tradeInfo.company, <FormGroup>rForm.get('tradeInfo.company'), fb, false);
     this.patchTradeInfo(tr.tradeInfo, <FormGroup>rForm.get('tradeInfo'), fb);
 
@@ -857,8 +791,6 @@ export class CommonFunctionsService {
       message: message,
       routeName: actRoute.snapshot.url.map(m => m.path).join("/")
     }
-    //this.logArr.unshift(dataToPush);
-
   };
 
 

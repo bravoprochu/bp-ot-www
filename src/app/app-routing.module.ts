@@ -6,15 +6,8 @@ import { NotFoundComponent } from "app/components/not-found/not-found.component"
 import { UiModule } from '@bpUI/ui.module';
 
 const routes: Routes = [
-  // {
-  //   path: 'ui',
-  //   loadChildren: "./ui/ui.module#UiModule"
-  // },
   { path: 'home', component: HomeComponent },
-  //{ path: '**', component: NotFoundComponent},
-  { path: '', redirectTo: '/home', pathMatch: 'full'},
-
-  
+  { path: '', redirectTo: '/home', pathMatch: 'full'},  
 ];
 
 @NgModule({

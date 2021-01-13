@@ -18,7 +18,6 @@ export class CreateComponent implements OnInit {
   }
 
   click(){
-    //this.create.emit();
   }
 
 }

@@ -1,11 +1,8 @@
 import { IErrorObj } from '../../shared/interfaces/ierror-object';
 import { Router, ActivatedRoute } from '@angular/router';
-import { timeout } from 'rxjs/operator/timeout';
 import { CommonFunctionsService } from '../../services/common-functions.service';
-import { HttpResponse } from '@angular/common/http/src/response';
 import { Observable } from 'rxjs/Rx';
-import { ILoginData } from './login.component';
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from "@angular/material";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { TokenService } from "app/services/token.service";
@@ -81,7 +78,7 @@ export class LoginComponent implements OnInit {
       return Observable.throw(e);
     })
     .take(1)
-    .do(d=>{this.errorObj=[]})
+    .do(()=>{this.errorObj=[]})
     .subscribe(s=>{
       this.tokenService.setToken(s);
       this.cf.toastMake(`Użytkownik ${this.tokenService.getToken().userName} został zalogowany.`, "Login", this.actRoute);
@@ -103,11 +100,10 @@ export class LoginComponent implements OnInit {
         return Observable.throw(e);
       })
       .take(1)
-      .do(d=>{this.errorObj=[]})
-      .subscribe(s=>{
+      .do(()=>{this.errorObj=[]})
+      .subscribe(()=>{
         this.cf.toastMake("Użytkownik został zarejestrowany ! Należy sprawdzić email by aktywować konto", "Register", this.actRoute);
-        //this.errorObj.errorDescription="Użytkownik został zarejestrowany ! Należy sprawdzić email by aktywować konto";
-        setTimeout(s=>{
+        setTimeout(()=>{
           this.isPending=false;
           this.close();
           this.router.navigateByUrl("home");

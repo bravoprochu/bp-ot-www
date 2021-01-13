@@ -218,8 +218,6 @@ export class LoadBuyComponent implements OnInit, OnDestroy, IDetailObj {
       loadExtraInfo: f.loadExtraInfo,
       loadId: f.loadId,
       loadNo:f.loadNo,
-      // sell:f.sell.loadSellId? f.sell: null,
-      // transEu: f.transEu.transEuId? f.transEu: null,
     }
     this.df.updateBuy(id, reqObj)
       .switchMap(sw => this.df.getById(sw["loadId"]).take(1))
