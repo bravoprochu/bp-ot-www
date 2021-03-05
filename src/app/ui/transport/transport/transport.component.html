@@ -2,7 +2,7 @@
 <app-nav-detail
   *ngIf="isFormReady"
   [navDetailInfo]="navDetailInfo"
-  [isDisabled]="isDisabled"
+  [isDisabled]="isPending"
   [rForm]="rForm"
   (navCancel)="navCancel()"
   (navDownload)="navDownload()"
