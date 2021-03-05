@@ -129,13 +129,13 @@
           <mat-panel-title fxLayout fxLayoutAlign="space-between">
             Nabywca
             <strong>
-              <span>{{ rForm.get("companyBuyer").value.short_name }}</span>
+              <span>{{ companyBuyer.value.short_name }}</span>
             </strong>
           </mat-panel-title>
         </mat-expansion-panel-header>
         <app-company-card
           fxFill
-          [rForm]="rForm.get('companyBuyer')"
+          [rForm]="companyBuyer"
           [fb]="fb"
           [placeholder]="'Nabywca'"
         ></app-company-card>

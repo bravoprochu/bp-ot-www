@@ -447,6 +447,14 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
     return <FormControl>this.rForm.get("baseInvoiceId");
   }
 
+  get companyBuyer(): FormGroup {
+    return <FormGroup>this.rForm.get("companyBuyer");
+  }
+
+  get companySeller(): FormGroup {
+    return <FormGroup>this.rForm.get("companySeller");
+  }
+
   get creationInfo(): FormGroup {
     return <FormGroup>this.rForm.get("creationInfo");
   }
@@ -586,10 +594,6 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
 
   get sellingDate(): FormControl {
     return <FormControl>this.rForm.get("dateOfSell");
-  }
-
-  get companySeller(): FormGroup {
-    return <FormGroup>this.rForm.get("companySeller");
   }
 
   get totalBrutto(): FormControl {
