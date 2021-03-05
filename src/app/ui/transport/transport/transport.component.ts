@@ -215,7 +215,6 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
         : this.rForm.value.transportOfferId;
     const d: moment.Moment = this.rForm.value.tradeInfo.date;
 
-    this.rForm.disable();
     this.df
       .update(id, this.rForm.value)
       .pipe(
@@ -226,7 +225,6 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
         }),
         finalize(() => {
           this.isPending = false;
-          this.rForm.enable();
         }),
         takeUntil(this.isDestroyed$)
       )
