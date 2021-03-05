@@ -38,8 +38,8 @@ import { IInvoicePos } from "@bpUI/invoice/interfaces/iinvoice-pos";
   styleUrls: ["./invoice-sell.component.css"],
 })
 export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
-  isDestroyed$: Subject<boolean>;
-  isDisabled = false;
+  isDestroyed$ = new Subject<boolean>() as Subject<boolean>;
+  isFormReady = false;
   isPending = false;
   correctionTotalInfoValueStyle: string;
   dataObj: any;
@@ -67,8 +67,6 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
   ngOnInit(): void {
-    this.isDestroyed$ = new Subject<boolean>();
-    this.isPending = true;
     this.initForm();
     this.initRouteId();
     this.invoiceVatValueWatch();
@@ -107,7 +105,6 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
 
     this.extraInfoIsTaxNbpExchanged.valueChanges
       .pipe(
-        takeUntil(this.isDestroyed$),
         switchMap((_isChecked: boolean) => {
           let _currNbp = <ICurrencyNbp>{
             currency: <ICurrency>this.currency.value,
@@ -120,7 +117,8 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
           } else {
             return empty();
           }
-        })
+        }),
+        takeUntil(this.isDestroyed$)
       )
       .subscribe((_currNbp: ICurrencyNbp) => {
         this.currencyNbp.setValue(_currNbp, { emitEvent: false });
@@ -157,12 +155,11 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   public initRouteId(): void {
     this.actRoute.paramMap.pipe(takeUntil(this.isDestroyed$)).subscribe((s) => {
       this.routeId = +s.get("id");
-      this.initData();
     });
   }
 
   public initData(): void {
-    this.isDisabled = true;
+    this.isPending = true;
     if (this.routeId > 0) {
       this.df
         .getById(this.routeId)
@@ -170,10 +167,10 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
           takeUntil(this.isDestroyed$),
           finalize(() => {
             this.isPending = false;
-            this.isDisabled = false;
           })
         )
         .subscribe((s: IInvoiceSell) => {
+          this.isFormReady = true;
           this.navDetailInfo.basicActions.canDelete = true;
           this.icf.patchInvoiceSell(s, this.rForm, this.fb);
           this.cf.toastMake(
@@ -184,8 +181,9 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
           this.rForm.markAsPristine();
         });
     } else {
+      this.isFormReady = true;
       this.isPending = false;
-      this.isDisabled = false;
+      console.log("init Data, invoiceposADd");
       this.invoicePosAdd();
       this.rForm.markAsPristine();
     }
@@ -227,7 +225,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
   public navSave(): void {
-    this.isDisabled = true;
+    this.isPending = true;
     let id = this.invoiceSellId.value;
 
     if (!this.isCorrection.value) {
@@ -241,7 +239,6 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
         takeUntil(this.isDestroyed$),
         finalize(() => {
           this.isPending = false;
-          this.isDisabled = false;
         })
       )
       .subscribe((s) => {
@@ -331,7 +328,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
   printInvoice(): void {
-    this.isDisabled = true;
+    this.isPending = true;
     this.df
       .printInvoice(this.rForm.value)
       .pipe(
@@ -341,7 +338,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
           });
         }),
         takeUntil(this.isDestroyed$),
-        finalize(() => (this.isDisabled = false))
+        finalize(() => (this.isPending = false))
       )
       .subscribe((s) => {
         saveAs(s, `Faktura.pdf`);
