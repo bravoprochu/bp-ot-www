@@ -5,24 +5,26 @@
   <button
     mat-mini-fab
     (click)="navAccept()"
-    [disabled]="rForm.invalid || companyId.value == null"
+    [disabled]="rForm.invalid || companyId.value == null || isPending"
   >
     <mat-icon>done</mat-icon>
   </button>
   <button
     mat-mini-fab
     (click)="navSave()"
-    [disabled]="rForm.invalid || rForm.pristine"
+    [disabled]="rForm.invalid || rForm.pristine || isPending"
   >
     <mat-icon>save</mat-icon>
   </button>
-  <button mat-mini-fab (click)="navDelete()">
+  <button mat-mini-fab (click)="navDelete()" [disabled]="isPending">
     <mat-icon>delete</mat-icon>
   </button>
-  <button mat-mini-fab (click)="navCancel()"><mat-icon>close</mat-icon></button>
+  <button mat-mini-fab (click)="navCancel()" [disabled]="isPending">
+    <mat-icon>close</mat-icon>
+  </button>
 </div>
 
-<div *ngIf="!isPending">
+<div *ngIf="isFormReady" fxLayout="column" fxLayoutGap="15px">
   <div>
     <button
       mat-raised-button
