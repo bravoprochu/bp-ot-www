@@ -1,7 +1,11 @@
-<app-pending *ngIf="isPending"></app-pending>
-<app-nav-list [title]="navTitle?.title" [subtitle]="navTitle?.subtitle" (onCreate)="createNew()" (onRefresh)="initData()"
-    (onSearch)="searchFilter($event)"></app-nav-list>
-
+<app-pending [isPending]="isPending"></app-pending>
+<app-nav-list
+  [title]="navTitle?.title"
+  [subtitle]="navTitle?.subtitle"
+  (onCreate)="createNew()"
+  (onRefresh)="initData()"
+  (onSearch)="searchFilter($event)"
+></app-nav-list>
 
 <!-- <div form [formGroup]="rForm">
   <mat-form-field mat-no-float>
@@ -10,25 +14,40 @@
   <div *ngIf="searchForCtrl.pending">duuuupa</div>
 </div> -->
 
-
-
 <div fxLayout="column" fxLayoutGap="15px">
-    <div fxLayout="row">
-        <app-table-drag-drop-options (genCsv)="genCsv()" [displayedColumns]="displayedColumns"></app-table-drag-drop-options>
-    </div>
-    <table mat-table matSort [dataSource]="dataSource" fxFill class="mat-elevation-z8">
-        <ng-container *ngFor="let c of displayedColumns; first as isFirst" [matColumnDef]="c">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{c}}</th>
-            <td mat-cell *matCellDef="let element">
-                <span *ngIf="c!='id'">{{element[c]}}</span>
-                <button *ngIf="c=='id'" mat-mini-fab (click)="edit(element.id)" matTooltip="Edytuj ID: {{element.id}} "
-                    [matTooltipPosition]="'right'">
-                    <mat-icon>edit</mat-icon>
-                </button>
-            </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-    <mat-paginator #paginator showFirstLastButtons></mat-paginator>
+  <div fxLayout="row">
+    <app-table-drag-drop-options
+      (genCsv)="genCsv()"
+      [displayedColumns]="displayedColumns"
+    ></app-table-drag-drop-options>
+  </div>
+  <table
+    mat-table
+    matSort
+    [dataSource]="dataSource"
+    fxFill
+    class="mat-elevation-z8"
+  >
+    <ng-container
+      *ngFor="let c of displayedColumns; first as isFirst"
+      [matColumnDef]="c"
+    >
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ c }}</th>
+      <td mat-cell *matCellDef="let element">
+        <span *ngIf="c != 'id'">{{ element[c] }}</span>
+        <button
+          *ngIf="c == 'id'"
+          mat-mini-fab
+          (click)="edit(element.id)"
+          matTooltip="Edytuj ID: {{ element.id }} "
+          [matTooltipPosition]="'right'"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+  <mat-paginator #paginator showFirstLastButtons></mat-paginator>
 </div>

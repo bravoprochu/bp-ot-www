@@ -1,143 +1,275 @@
 <!-- <app-nav-detail *ngIf="!isPending" [navDetailInfo]="navDetailInfo" [rForm]="rForm" (navCancel)="navCancel()" (navDownload)="navDownload()"
   (navDelete)="navDelete()" (navSave)="navSave()"></app-nav-detail> -->
-  <app-pending *ngIf="isPending"></app-pending>
+<app-pending [isPending]="isPending"></app-pending>
 <div fxLayout fxLayoutAlign="end" fxLayoutGap="0.5em">
-  <button mat-mini-fab (click)="navAccept()" [disabled]="rForm.invalid || companyId.value==null"><mat-icon>done</mat-icon></button>
-  <button mat-mini-fab (click)="navSave()" [disabled]="rForm.invalid || rForm.pristine"><mat-icon>save</mat-icon></button>
+  <button
+    mat-mini-fab
+    (click)="navAccept()"
+    [disabled]="rForm.invalid || companyId.value == null"
+  >
+    <mat-icon>done</mat-icon>
+  </button>
+  <button
+    mat-mini-fab
+    (click)="navSave()"
+    [disabled]="rForm.invalid || rForm.pristine"
+  >
+    <mat-icon>save</mat-icon>
+  </button>
+  <button mat-mini-fab (click)="navDelete()">
+    <mat-icon>delete</mat-icon>
+  </button>
   <button mat-mini-fab (click)="navCancel()"><mat-icon>close</mat-icon></button>
 </div>
 
-
-
-
 <div *ngIf="!isPending">
   <div>
-    <button mat-raised-button (click)="transCompanyById()" matTooltip="Wyszukaj dane firmy w bazie TransEU" [matTooltipPosition]="'right'">Kontrahent TransEU</button>
+    <button
+      mat-raised-button
+      (click)="transCompanyById()"
+      matTooltip="Wyszukaj dane firmy w bazie TransEU"
+      [matTooltipPosition]="'right'"
+    >
+      Kontrahent TransEU
+    </button>
   </div>
   <div [formGroup]="rForm" fxLayout="column" fxLayoutGap="15px">
     <div fxLayout="row wrap">
       <mat-form-field fxFlex="30" fxFlex.xs="100">
-        <input matInput type="text" formControlName="short_name" placeholder="Skrót">
+        <input
+          matInput
+          type="text"
+          formControlName="short_name"
+          placeholder="Skrót"
+        />
       </mat-form-field>
       <mat-form-field fxFlex="70" fxFlex.xs="100">
-        <input matInput type="text" formControlName="legal_name" placeholder="Pełna nazwa">
+        <input
+          matInput
+          type="text"
+          formControlName="legal_name"
+          placeholder="Pełna nazwa"
+        />
       </mat-form-field>
       <mat-form-field>
-        <input matInput type="text" formControlName="vat_id" placeholder="NIP">
+        <input
+          matInput
+          type="text"
+          formControlName="vat_id"
+          placeholder="NIP"
+        />
       </mat-form-field>
       <br />
       <mat-form-field>
-        <input matInput type="text" formControlName="telephone" placeholder="Telefon">
+        <input
+          matInput
+          type="text"
+          formControlName="telephone"
+          placeholder="Telefon"
+        />
       </mat-form-field>
       <mat-form-field>
-        <input matInput type="text" formControlName="fax" placeholder="Fax">
+        <input matInput type="text" formControlName="fax" placeholder="Fax" />
       </mat-form-field>
       <mat-form-field>
-        <input matInput type="text" formControlName="email" placeholder="Email" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
+        <input
+          matInput
+          type="text"
+          formControlName="email"
+          placeholder="Email"
+          pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+        />
       </mat-form-field>
       <mat-form-field>
-        <input matInput type="text" formControlName="url" placeholder="Url">
+        <input matInput type="text" formControlName="url" placeholder="Url" />
       </mat-form-field>
       <mat-form-field>
-        <input matInput type="text" formControlName="trans_id" placeholder="TransId">
+        <input
+          matInput
+          type="text"
+          formControlName="trans_id"
+          placeholder="TransId"
+        />
       </mat-form-field>
     </div>
 
-    <button mat-mini-fab (click)="addressAdd()" [disabled]="addressList.invalid" matTooltip="Dodaj adres firmowy" [matTooltipPosition]="'right'">
+    <button
+      mat-mini-fab
+      (click)="addressAdd()"
+      [disabled]="addressList.invalid"
+      matTooltip="Dodaj adres firmowy"
+      [matTooltipPosition]="'right'"
+    >
       <mat-icon>add_location</mat-icon>
     </button>
     <mat-accordion>
-      <mat-expansion-panel *ngFor="let address of addressList.controls; index as i">
+      <mat-expansion-panel
+        *ngFor="let address of addressList.controls; index as i"
+      >
         <mat-expansion-panel-header>
           <mat-panel-title fxLayout fxLayoutAlign="start center">
             <span *ngIf="address.pristine">Wprowadź adres kontrahenta</span>
             <div>
-              <span *ngIf="address.dirty">{{i+1}})&nbsp;</span>
-              <span>{{address.value.country}} {{address.value.postal_code}} {{address.value.locality}} {{address.value.street_address}}
-                {{address.value.street_number}}
-              </span>&nbsp;
-              <span *ngIf="address.dirty" [style.color]="'red'">({{address.value.address_type}})</span>
+              <span *ngIf="address.dirty">{{ i + 1 }})&nbsp;</span>
+              <span
+                >{{ address.value.country }} {{ address.value.postal_code }}
+                {{ address.value.locality }} {{ address.value.street_address }}
+                {{ address.value.street_number }} </span
+              >&nbsp;
+              <span *ngIf="address.dirty" [style.color]="'red'"
+                >({{ address.value.address_type }})</span
+              >
             </div>
             <div fxFlex></div>
             <mat-icon *ngIf="address.invalid" color="warn">info</mat-icon>
-            <mat-icon color="warn" (click)="addressRemove(i)" *ngIf="addressList.length>1">delete</mat-icon>
-
+            <mat-icon
+              color="warn"
+              (click)="addressRemove(i)"
+              *ngIf="addressList.length > 1"
+              >delete</mat-icon
+            >
           </mat-panel-title>
         </mat-expansion-panel-header>
         <app-address [formGroup]="address"></app-address>
       </mat-expansion-panel>
     </mat-accordion>
-    
+
     <div>
-      <button mat-mini-fab (click)="employeeAdd()" [disabled]="employeeList.invalid" matTooltip="Dodaj dane pracownika" [matTooltipPosition]="'right'">
+      <button
+        mat-mini-fab
+        (click)="employeeAdd()"
+        [disabled]="employeeList.invalid"
+        matTooltip="Dodaj dane pracownika"
+        [matTooltipPosition]="'right'"
+      >
         <mat-icon>person_add</mat-icon>
       </button>
-      <button mat-mini-fab (click)="employeeRemoveAll()" *ngIf="employeeList.length>0" matTooltip="Usuń wszystkich pracowników"
-        [matTooltipPosition]="'right'">
+      <button
+        mat-mini-fab
+        (click)="employeeRemoveAll()"
+        *ngIf="employeeList.length > 0"
+        matTooltip="Usuń wszystkich pracowników"
+        [matTooltipPosition]="'right'"
+      >
         <mat-icon>delete_sweep</mat-icon>
       </button>
     </div>
 
     <mat-accordion>
-      <mat-expansion-panel *ngFor="let p of employeeList.controls; let i=index;" [formGroup]="p">
+      <mat-expansion-panel
+        *ngFor="let p of employeeList.controls; let i = index"
+        [formGroup]="p"
+      >
         <mat-expansion-panel-header>
           <mat-panel-title fxLayout="row" fxLayoutAlign="space-between center">
             <div>
-              {{p.value.given_name}} {{p.value.family_name}} ({{p.value.email}})
+              {{ p.value.given_name }} {{ p.value.family_name }} ({{
+                p.value.email
+              }})
             </div>
             <div>
               <mat-icon color="warn" *ngIf="p.invalid">info</mat-icon>
-              <mat-icon color="warn" (click)="employeeRemove(i)">delete</mat-icon>
+              <mat-icon color="warn" (click)="employeeRemove(i)"
+                >delete</mat-icon
+              >
             </div>
-
           </mat-panel-title>
         </mat-expansion-panel-header>
         <mat-form-field>
-          <input type="text" matInput placeholder="Imię" formControlName="given_name">
+          <input
+            type="text"
+            matInput
+            placeholder="Imię"
+            formControlName="given_name"
+          />
         </mat-form-field>
         <mat-form-field>
-          <input type="text" matInput placeholder="Nazwisko" formControlName="family_name">
+          <input
+            type="text"
+            matInput
+            placeholder="Nazwisko"
+            formControlName="family_name"
+          />
         </mat-form-field>
         <mat-form-field>
-          <input type="text" matInput placeholder="Trans ID" formControlName="trans_id">
+          <input
+            type="text"
+            matInput
+            placeholder="Trans ID"
+            formControlName="trans_id"
+          />
         </mat-form-field>
         <mat-form-field>
-          <input type="email" matInput placeholder="Email" formControlName="email">
+          <input
+            type="email"
+            matInput
+            placeholder="Email"
+            formControlName="email"
+          />
         </mat-form-field>
         <mat-form-field>
-          <input type="text" matInput placeholder="Telefon" formControlName="telephone">
+          <input
+            type="text"
+            matInput
+            placeholder="Telefon"
+            formControlName="telephone"
+          />
         </mat-form-field>
-
       </mat-expansion-panel>
 
-      <button mat-mini-fab (click)="bankAccountAdd()" [disabled]="bankAccountList.invalid" matTooltip="Dodaj konto bankowe" [matTooltipPosition]="'right'">
+      <button
+        mat-mini-fab
+        (click)="bankAccountAdd()"
+        [disabled]="bankAccountList.invalid"
+        matTooltip="Dodaj konto bankowe"
+        [matTooltipPosition]="'right'"
+      >
         <mat-icon>account_balance</mat-icon>
       </button>
-      <mat-expansion-panel *ngFor="let account of bankAccountList.controls; index as i">
+      <mat-expansion-panel
+        *ngFor="let account of bankAccountList.controls; index as i"
+      >
         <mat-expansion-panel-header>
           <mat-panel-title fxLayout fxLayoutAlign="space-between center">
             <div>
-                {{i+1}}) {{account.value.type}} - {{account.value.swift}} {{account.value.account_no}}
+              {{ i + 1 }}) {{ account.value.type }} - {{ account.value.swift }}
+              {{ account.value.account_no }}
             </div>
             <div>
-                <mat-icon color="warn" *ngIf="account.invalid">info</mat-icon>
-                <mat-icon color="warn" (click)="accountRemove(i)">delete</mat-icon>
+              <mat-icon color="warn" *ngIf="account.invalid">info</mat-icon>
+              <mat-icon color="warn" (click)="accountRemove(i)"
+                >delete</mat-icon
+              >
             </div>
           </mat-panel-title>
         </mat-expansion-panel-header>
         <div [formGroup]="account">
           <mat-form-field>
-            <input type="text" matInput formControlName="type" placeholder="typ konta">
+            <input
+              type="text"
+              matInput
+              formControlName="type"
+              placeholder="typ konta"
+            />
           </mat-form-field>
           <mat-form-field>
-            <input type="text" matInput formControlName="swift" placeholder="SWIFT">
+            <input
+              type="text"
+              matInput
+              formControlName="swift"
+              placeholder="SWIFT"
+            />
           </mat-form-field>
           <mat-form-field>
-            <input type="text" matInput formControlName="account_no" placeholder="Numer konta IBAN (28 znaków bez spacji)">
+            <input
+              type="text"
+              matInput
+              formControlName="account_no"
+              placeholder="Numer konta IBAN (28 znaków bez spacji)"
+            />
           </mat-form-field>
         </div>
       </mat-expansion-panel>
-
     </mat-accordion>
   </div>
 </div>

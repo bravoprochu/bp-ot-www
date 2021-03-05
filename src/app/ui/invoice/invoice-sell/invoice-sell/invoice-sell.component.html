@@ -1,4 +1,4 @@
-<app-pending *ngIf="isPending"></app-pending>
+<app-pending [isPending]="isPending"></app-pending>
 <app-nav-detail
   *ngIf="!isPending"
   [isDisabled]="isDisabled"
