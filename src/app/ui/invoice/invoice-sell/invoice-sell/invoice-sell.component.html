@@ -1,7 +1,7 @@
 <app-pending [isPending]="isPending"></app-pending>
 <app-nav-detail
-  *ngIf="!isPending"
-  [isDisabled]="isDisabled"
+  *ngIf="isFormReady"
+  [isDisabled]="isPending"
   [navDetailInfo]="navDetailInfo"
   [rForm]="rForm"
   (navCancel)="navCancel()"
@@ -11,7 +11,7 @@
 >
 </app-nav-detail>
 
-<div *ngIf="!isPending">
+<div *ngIf="isFormReady">
   <div [formGroup]="rForm" fxLayout="column" fxFill class="mat-typography">
     <!-- #region  invoiceTitle-->
     <div fxLayout fxLayoutAlign="center">
