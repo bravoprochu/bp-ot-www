@@ -1,6 +1,6 @@
 <div fxLayout="column">
   <mat-toolbar>
-    <!-- <app-user-info></app-user-info> -->
+    <app-user-info></app-user-info>
     <div fxFlex>&nbsp;</div>
     <div>{{ navTitle?.title }}&nbsp;&nbsp;</div>
     <button
@@ -16,3 +16,5 @@
   </mat-toolbar>
   <router-outlet fxLayoutFill></router-outlet>
 </div>
+
+<a [routerLink]="['contractors']">kontrahent</a>

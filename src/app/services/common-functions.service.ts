@@ -13,7 +13,7 @@ import { ICreationInfo } from "app/shared/interfaces/i-creation-info";
 import { IDateRange } from "app/shared/interfaces/i-date-range";
 import { IStatusCode } from "app/shared/interfaces/istatus-code";
 import * as moment from "moment";
-import { IErrorObj } from "../shared/interfaces/ierror-object";
+import { IErrorObj } from "../auth/interfaces/ierror-object";
 import {
   ILoad,
   ILoadInfo,
@@ -37,7 +37,7 @@ import {
   IInvoiceExtraInfo,
 } from "@bpUI/invoice/interfaces/iinvoice-sell";
 import { isArray } from "util";
-import { ContractorService } from "app/other-modules/contractor/services/contractor.service";
+import { ContractorService } from "app/other-modules/contractors/services/contractor.service";
 
 @Injectable()
 export class CommonFunctionsService {

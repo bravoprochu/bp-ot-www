@@ -1,24 +1,16 @@
-import { IDialogData } from "../../../../../shared/interfaces/i-dialog-data";
+import { IDialogData } from "../../../../shared/interfaces/i-dialog-data";
 import { Observable, Subject } from "rxjs/Rx";
-import { InputDialogComponent } from "../../../../../shared/input-dialog/input-dialog.component";
 import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup } from "@angular/forms";
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from "@angular/material";
-import { ActivatedRoute } from "@angular/router";
-import { CommonFunctionsService } from "app/services/common-functions.service";
 import { IDetailObj } from "app/shared/idetail-obj";
-
-import { TranseuService } from "../../../../../services/transeu/transeu.service";
-import { IDialogTakNieInfo } from "../../../../../shared/interfaces/idialog-tak-nie-info";
+import { IDialogTakNieInfo } from "../../../../shared/interfaces/idialog-tak-nie-info";
 import { DialogTakNieComponent } from "app/shared/dialog-tak-nie/dialog-tak-nie.component";
 import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
-import { ContractorService as ContractorService } from "../../../services/contractor.service";
+import { ContractorService as ContractorService } from "../../services/contractor.service";
 import { FormControl } from "@angular/forms/src/model";
-import { IinputData } from "@bpCommonInterfaces/iinput-data";
-import { finalize, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
-import { empty } from "rxjs";
-import { IEmployee } from "../../../interfaces/iemployee";
-import { ICompany } from "../../../interfaces/icompany";
+import { finalize, switchMap, take, takeUntil } from "rxjs/operators";
+import { ICompany } from "../../interfaces/icompany";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 
 @Component({
@@ -46,9 +38,8 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
   constructor(
     private dialog: MatDialog,
     private fb: FormBuilder,
-    private actRoute: ActivatedRoute,
     private contractorService: ContractorService,
-    private transEuService: TranseuService,
+    // private transEuService: TranseuService,
     private companyDialogRef: MatDialogRef<CompanyComponent>,
     private toastService: ToastMakeService,
     @Inject(MAT_DIALOG_DATA) public dialogData: IDialogData
@@ -225,50 +216,50 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
       });
   }
 
-  transCompanyById(): void {
-    this.isPending = true;
-    let data: IinputData = {
-      title: "TransEu - Dane kontrahenta",
-      question: "Wprowadź Id kontrahenta",
-      inputType: "text",
-    };
-    this.dialog
-      .open(InputDialogComponent, { data: data })
-      .afterClosed()
-      .pipe(
-        switchMap((dialogValue) => {
-          if (dialogValue == undefined) {
-            return empty();
-          }
-          return this.transEuService.kontrahentById(dialogValue);
-        }),
-        switchMap((s) => {
-          let empUrl = s["_links"]["employees"]["href"];
-          this.employeeList.controls = [];
-          this.rForm.patchValue(s);
-          this.rForm.get("trans_id").patchValue(s["id"]);
-          this.addressList.at(0).patchValue(s["address"]);
-          this.addressList.at(0).get("address_type").patchValue("główny");
+  // transCompanyById(): void {
+  //   this.isPending = true;
+  //   let data: IinputData = {
+  //     title: "TransEu - Dane kontrahenta",
+  //     question: "Wprowadź Id kontrahenta",
+  //     inputType: "text",
+  //   };
+  //   this.dialog
+  //     .open(InputDialogComponent, { data: data })
+  //     .afterClosed()
+  //     .pipe(
+  //       switchMap((dialogValue) => {
+  //         if (dialogValue == undefined) {
+  //           return empty();
+  //         }
+  //         return this.transEuService.kontrahentById(dialogValue);
+  //       }),
+  //       switchMap((s) => {
+  //         let empUrl = s["_links"]["employees"]["href"];
+  //         this.employeeList.controls = [];
+  //         this.rForm.patchValue(s);
+  //         this.rForm.get("trans_id").patchValue(s["id"]);
+  //         this.addressList.at(0).patchValue(s["address"]);
+  //         this.addressList.at(0).get("address_type").patchValue("główny");
 
-          return this.contractorService.getTransEuEmployeeList(empUrl);
-        }),
-        map((m) => {
-          return m["_embedded"]["companies_employees"];
-        }),
-        takeUntil(this.isDestroyed$),
-        finalize(() => {
-          this.isPending = true;
-        })
-      )
-      .subscribe((s) => {
-        (<IEmployee[]>s).forEach(() => {
-          this.employeeList.push(
-            this.contractorService.formEmployeeGroup(this.fb)
-          );
-        });
-        this.employeeList.patchValue(s, { emitEvent: false });
-      });
-  }
+  //         return this.contractorService.getTransEuEmployeeList(empUrl);
+  //       }),
+  //       map((m) => {
+  //         return m["_embedded"]["companies_employees"];
+  //       }),
+  //       takeUntil(this.isDestroyed$),
+  //       finalize(() => {
+  //         this.isPending = true;
+  //       })
+  //     )
+  //     .subscribe((s) => {
+  //       (<IEmployee[]>s).forEach(() => {
+  //         this.employeeList.push(
+  //           this.contractorService.formEmployeeGroup(this.fb)
+  //         );
+  //       });
+  //       this.employeeList.patchValue(s, { emitEvent: false });
+  //     });
+  // }
 
   get addressList(): FormArray {
     return <FormArray>this.rForm.get("addressList");

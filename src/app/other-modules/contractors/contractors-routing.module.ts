@@ -2,12 +2,12 @@ import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 import { UserRolesEnum } from "@bpShared/enums/user-roles.enum";
 import { IdentGuard } from "@bpUI/guards/ident.guard";
-import { CompanyListComponent } from "./components/company/company-list/company-list.component";
-import { CompanyComponent } from "./components/company/company/company.component";
+import { CompanyListComponent } from "./components/company-list/company-list.component";
+import { CompanyComponent } from "./components/company/company.component";
 
 const routes: Routes = [
   {
-    path: "kontrahent",
+    path: "lista",
     component: CompanyListComponent,
     canActivate: [IdentGuard],
     data: {
@@ -22,10 +22,7 @@ const routes: Routes = [
     canActivate: [IdentGuard],
     data: { allowed: UserRolesEnum.Spedytor },
   },
-  { path: "", redirectTo: "kontrahent", pathMatch: "full" },
-  { path: "**", redirectTo: "kontrahent" },
-
-  { path: "", redirectTo: "kontrahent", pathMatch: "full" },
+  { path: "", redirectTo: "lista", pathMatch: "full" },
   { path: "**", redirectTo: "kontrahent" },
 ];
 
@@ -33,4 +30,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class ContractorRoutingModule {}
+export class ContractorsRoutingModule {}

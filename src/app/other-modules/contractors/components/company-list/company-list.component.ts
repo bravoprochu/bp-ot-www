@@ -1,6 +1,6 @@
-import { DialogDataTypes } from "../../../../../shared/enums/dialog-data-types.enum";
-import { IDialogData } from "../../../../../shared/interfaces/i-dialog-data";
-import { CommonFunctionsService } from "../../../../../services/common-functions.service";
+import { DialogDataTypes } from "../../../../shared/enums/dialog-data-types.enum";
+import { IDialogData } from "../../../../shared/interfaces/i-dialog-data";
+import { CommonFunctionsService } from "../../../../services/common-functions.service";
 import { CompanyComponent } from "../company/company.component";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import "rxjs/add/operator/take";
@@ -16,12 +16,13 @@ import {
   MatSort,
   MatPaginator,
 } from "@angular/material";
-import { ContractorService } from "../../../services/contractor.service";
+import { ContractorService } from "../../services/contractor.service";
 import { ViewChild } from "@angular/core";
 import { take } from "rxjs/operators";
 import { saveAs } from "file-saver";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
-import { ICompany } from "../../../interfaces/icompany";
+import { ICompany } from "../../interfaces/icompany";
+import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 
 @Component({
   selector: "app-company-list",
@@ -31,6 +32,17 @@ import { ICompany } from "../../../interfaces/icompany";
 export class CompanyListComponent implements OnInit, OnDestroy, IListObj {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  dataObj: any[];
+  isDestroyed$: Subject<boolean>;
+  isPending: boolean;
+  searchFor$ = new Subject();
+  searchForCtrl: any;
+  dataSource: MatTableDataSource<ICompany>;
+  displayedColumns = ["id", "skrot", "nip", "adres", "telefon"];
+  navTitle: ITitle = {
+    subtitle: "Baza zapisanych firm",
+    title: "Firma",
+  };
 
   ngOnDestroy(): void {
     this.isDestroyed$.next(true);
@@ -39,9 +51,9 @@ export class CompanyListComponent implements OnInit, OnDestroy, IListObj {
   }
   constructor(
     private actRoute: ActivatedRoute,
-    private cf: CommonFunctionsService,
-    private df: ContractorService,
-    private dialog: MatDialog
+    private contractorService: ContractorService,
+    private dialog: MatDialog,
+    private toastService: ToastMakeService
   ) {}
 
   ngOnInit() {
@@ -50,35 +62,25 @@ export class CompanyListComponent implements OnInit, OnDestroy, IListObj {
     this.initData();
   }
 
-  dataObj: any[];
-  isDestroyed$: Subject<boolean>;
-  isPending: boolean;
-  searchFor$ = new Subject();
-  searchForCtrl: any;
-  dataSource: any;
-  displayedColumns = ["id", "skrot", "nip", "adres", "telefon"];
-
-  navTitle: ITitle = {
-    subtitle: "Baza zapisanych firm",
-    title: "Firma",
-  };
-
   initData(): void {
-    this.df
+    this.contractorService
       .getAll()
       .takeUntil(this.isDestroyed$)
       .subscribe((s) => {
-        this.dataSource = new MatTableDataSource(s);
-        this.cf.toastMake(
+        this.dataSource = new MatTableDataSource<ICompany>(s);
+        this.toastService.toastMake(
           `Pobrano dane, razem: ${s.length}`,
-          "initData",
-          this.actRoute
+          "initData"
         );
         this.isPending = false;
 
         this.dataSource.sort = this.sort;
-        this.paginator.pageSize = this.cf.paginatorPageSize(s.length);
-        this.paginator.pageSizeOptions = this.cf.paginatorLimitOption(s.length);
+        this.paginator.pageSize = this.contractorService.paginatorPageSize(
+          s.length
+        );
+        this.paginator.pageSizeOptions = this.contractorService.paginatorLimitOption(
+          s.length
+        );
         this.dataSource.paginator = this.paginator;
       });
   }
@@ -94,9 +96,12 @@ export class CompanyListComponent implements OnInit, OnDestroy, IListObj {
       .connect()
       .pipe(take(1))
       .subscribe((_data: any) => {
-        let b = new Blob([this.cf.csvConverter(_data, this.displayedColumns)], {
-          type: "text/csv;charset=utf-8;",
-        });
+        let b = new Blob(
+          [this.contractorService.csvConverter(_data, this.displayedColumns)],
+          {
+            type: "text/csv;charset=utf-8;",
+          }
+        );
         saveAs(b, `Lista kontrahentów.csv`);
       });
   }
@@ -109,7 +114,7 @@ export class CompanyListComponent implements OnInit, OnDestroy, IListObj {
   }
 
   edit(idx: number) {
-    this.df
+    this.contractorService
       .getById(idx)
       .toPromise()
       .then((company) => {

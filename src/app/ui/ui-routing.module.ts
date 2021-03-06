@@ -1,7 +1,5 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
-import { CompanyListComponent } from "app/other-modules/contractor/components/company/company-list/company-list.component";
-import { CompanyComponent } from "app/other-modules/contractor/components/company/company/company.component";
 import { IdentGuard } from "app/ui/guards/ident.guard";
 import { InvoiceBuyListComponent } from "app/ui/invoice/invoice-buy/invoice-buy-list/invoice-buy-list.component";
 import { InvoiceBuyComponent } from "app/ui/invoice/invoice-buy/invoice-buy/invoice-buy.component";
@@ -17,22 +15,6 @@ import { UsersManagementComponent } from "./users-management/users-management.co
 import { InvoiceSellPaymentRemindComponent } from "app/ui/invoice/invoice-sell-payment-remind/invoice-sell-payment-remind.component";
 
 export const uiRoutes: Routes = [
-  {
-    path: "kontrahent",
-    component: CompanyListComponent,
-    canActivate: [IdentGuard],
-    data: {
-      allowed: UserRolesEnum.Manager,
-      name: "Kontrahenci",
-      description: "Baza kontrahentów, tworzenie, modyfikacja danych",
-    },
-  },
-  {
-    path: "kontrahent/:id",
-    component: CompanyComponent,
-    canActivate: [IdentGuard],
-    data: { allowed: UserRolesEnum.Spedytor },
-  },
   {
     path: "ladunek",
     component: LoadListComponent,

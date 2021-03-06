@@ -2,13 +2,13 @@ import { INavRoute } from "../interfaces/i-nav-route";
 
 export const ROUTES_LIST_DATA: INavRoute[] = [
   {
-    route: "kontrahent",
+    route: "contractors",
     name: "Kontrahenci",
     group: "Kontrahent",
     description: "Baza kontrahentów, tworzenie, modyfikacja danych",
   },
   {
-    route: "invoiceSell",
+    route: "/invoiceSell",
     name: "Faktura sprzedaży",
     group: "Faktury",
     description: "",

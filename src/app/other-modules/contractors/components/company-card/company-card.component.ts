@@ -1,12 +1,12 @@
-import { DialogDataTypes } from "../../../../../shared/enums/dialog-data-types.enum";
-import { IDialogData } from "../../../../../shared/interfaces/i-dialog-data";
+import { DialogDataTypes } from "../../../../shared/enums/dialog-data-types.enum";
+import { IDialogData } from "../../../../shared/interfaces/i-dialog-data";
 import { CompanyComponent } from "../company/company.component";
-import { CommonFunctionsService } from "../../../../../services/common-functions.service";
+import { CommonFunctionsService } from "../../../../services/common-functions.service";
 import { Observable, Subject } from "rxjs/Rx";
 import { FormArray, FormBuilder, FormControl, FormGroup } from "@angular/forms";
 import { Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { MatAutocomplete, MatDialog } from "@angular/material";
-import { ContractorService } from "../../../services/contractor.service";
+import { ContractorService } from "../../services/contractor.service";
 import { empty } from "rxjs";
 import {
   debounceTime,
@@ -14,7 +14,7 @@ import {
   switchMap,
   takeUntil,
 } from "rxjs/operators";
-import { ICompany } from "../../../interfaces/icompany";
+import { ICompany } from "../../interfaces/icompany";
 
 @Component({
   selector: "app-company-card",

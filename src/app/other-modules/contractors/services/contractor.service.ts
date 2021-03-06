@@ -12,6 +12,41 @@ export class ContractorService extends DataFactoryService {
     super(environment.apiUrlCompany, http, tokenService);
   }
 
+  csvConverter(data: any[], tableHeaders: string[]): string {
+    if (Array.isArray(data) && data.length > 1) {
+      let firstLine: string = "";
+      let end = ";";
+      let lineEnd = "\r\n";
+      let result: string = "";
+
+      //
+      // header
+      //
+
+      firstLine = tableHeaders.join(end) + lineEnd;
+
+      //
+      // loop
+      //
+
+      data.forEach((row) => {
+        tableHeaders.forEach((header) => {
+          let v: string;
+          if (row[header] == null) {
+            v = "";
+          } else {
+            v = row[header];
+          }
+          result += v + end;
+        });
+        result += lineEnd;
+      });
+
+      return firstLine + result;
+    }
+    return;
+  }
+
   getByKey(key: string) {
     return this.http
       .get(environment.apiUrlCompany + "/GetByKey/" + key, {
@@ -115,6 +150,34 @@ export class ContractorService extends DataFactoryService {
       is_driver: [false],
     });
     return res;
+  }
+
+  paginatorLimitOption(length: number): number[] {
+    let res: number[] = [];
+
+    if (length > 5) {
+      res.push(5);
+    }
+    if (length > 10) {
+      res.push(10);
+    }
+    if (length > 25) {
+      res.push(25);
+    }
+    if (length > 50) {
+      res.push(50);
+    }
+    if (length > 100) {
+      res.push(100);
+    }
+    if (res.length == 0 || (res.length > 0 && res[res.length - 1] != length)) {
+      res.push(length);
+    }
+    return res;
+  }
+
+  paginatorPageSize(length: number): number {
+    return length > 10 ? 10 : length;
   }
 
   patchCompanyData(

@@ -1,133 +1,190 @@
-import { IErrorObj } from '../../shared/interfaces/ierror-object';
-import { Router, ActivatedRoute } from '@angular/router';
-import { CommonFunctionsService } from '../../services/common-functions.service';
-import { Observable } from 'rxjs/Rx';
-import { Component, OnInit } from '@angular/core';
+import { IErrorObj } from "../interfaces/ierror-object";
+import { Router, ActivatedRoute } from "@angular/router";
+import { Observable } from "rxjs/Rx";
+import { Component, OnInit } from "@angular/core";
 import { MatDialogRef } from "@angular/material";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { TokenService } from "app/services/token.service";
-import { HttpClient, HttpHeaders,  } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from "@angular/common/http";
 import { environment } from "environments/environment";
-
-
+import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  selector: "app-login",
+  templateUrl: "./login.component.html",
+  styleUrls: ["./login.component.css"],
 })
 export class LoginComponent implements OnInit {
-  
-   constructor(public dialogRef: MatDialogRef<LoginComponent>, 
-              private fb: FormBuilder,
-              private http: HttpClient,
-              private tokenService: TokenService,
-              private cf:CommonFunctionsService,
-              private actRoute: ActivatedRoute,
-              private router: Router
-             ) { }
+  constructor(
+    public dialogRef: MatDialogRef<LoginComponent>,
+    private fb: FormBuilder,
+    private http: HttpClient,
+    private tokenService: TokenService,
+    private actRoute: ActivatedRoute,
+    private router: Router,
+    private toastService: ToastMakeService
+  ) {}
 
   ngOnInit() {
     this.initForm();
   }
 
-  loginFormGroup:FormGroup;
+  loginFormGroup: FormGroup;
   registerFormGroup: FormGroup;
 
   loginUserNameIsValid: boolean;
-  registerUserNameIsValid:boolean
+  registerUserNameIsValid: boolean;
 
   isPending: boolean;
-  errorObj:IErrorObj[];
+  errorObj: IErrorObj[];
 
-  
-  password(){ return this.registerFormGroup.get("password");}
-  confirmPassword() {return this.registerFormGroup.get("confirmPassword");}
+  password() {
+    return this.registerFormGroup.get("password");
+  }
+  confirmPassword() {
+    return this.registerFormGroup.get("confirmPassword");
+  }
 
-
-  close(){
+  close() {
     this.dialogRef.close(true);
   }
-  cancel(){
+  cancel() {
     this.dialogRef.close(false);
   }
 
-  initForm(){
-    this.registerFormGroup=this.fb.group({
-        "userName": [null, Validators.compose([Validators.required, Validators.email])],
-        "password": [null, Validators.required],
-        "confirmPassword": [null, Validators.required],
+  initForm() {
+    this.registerFormGroup = this.fb.group({
+      userName: [
+        null,
+        Validators.compose([Validators.required, Validators.email]),
+      ],
+      password: [null, Validators.required],
+      confirmPassword: [null, Validators.required],
     });
-    this.loginFormGroup=this.fb.group({
-      "userName": [null , Validators.compose([Validators.required, Validators.email])],
-      "password": [null, Validators.required]
-    })
+    this.loginFormGroup = this.fb.group({
+      userName: [
+        null,
+        Validators.compose([Validators.required, Validators.email]),
+      ],
+      password: [null, Validators.required],
+    });
   }
 
-  
-
-  login(){
-    if(!this.loginFormGroup.valid) return;
-    this.isPending=true;
+  login() {
+    if (!this.loginFormGroup.valid) return;
+    this.isPending = true;
     this.disableForms();
-    return this.http.post(environment.apiUrlToken, JSON.stringify(this.loginFormGroup.value), {headers: new HttpHeaders({"Content-Type": "application/json"}) })
-    .catch(e=>{
-      this.errorObj=this.cf.httpResponseErrorHandler(e);
-      this.enableForms();
-      this.isPending=false;
-      return Observable.throw(e);
-    })
-    .take(1)
-    .do(()=>{this.errorObj=[]})
-    .subscribe(s=>{
-      this.tokenService.setToken(s);
-      this.cf.toastMake(`Użytkownik ${this.tokenService.getToken().userName} został zalogowany.`, "Login", this.actRoute);
-      this.isPending=false;
-      return this.dialogRef.close(true);
-    })
-  }
-
-
-  register(){
-    if(!this.registerFormGroup.valid) return;
-    this.isPending=true;
-    this.disableForms();
-    return this.http.post(environment.apiRegisterUser, JSON.stringify(this.registerFormGroup.value) ,{headers: new HttpHeaders().append("Content-type", "application/json").append("Cache-Control", "no-cache")})
-      .catch((e)=> {
+    return this.http
+      .post(
+        environment.apiUrlToken,
+        JSON.stringify(this.loginFormGroup.value),
+        { headers: new HttpHeaders({ "Content-Type": "application/json" }) }
+      )
+      .catch((e) => {
+        this.errorObj = this.httpResponseErrorHandler(e);
         this.enableForms();
-        this.errorObj=this.cf.httpResponseErrorHandler(e);
-        this.isPending=false;
+        this.isPending = false;
         return Observable.throw(e);
       })
       .take(1)
-      .do(()=>{this.errorObj=[]})
-      .subscribe(()=>{
-        this.cf.toastMake("Użytkownik został zarejestrowany ! Należy sprawdzić email by aktywować konto", "Register", this.actRoute);
-        setTimeout(()=>{
-          this.isPending=false;
+      .do(() => {
+        this.errorObj = [];
+      })
+      .subscribe((s) => {
+        this.tokenService.setToken(s);
+        this.toastService.toastMake(
+          `Użytkownik ${
+            this.tokenService.getToken().userName
+          } został zalogowany.`,
+          "Login"
+        );
+        this.isPending = false;
+        return this.dialogRef.close(true);
+      });
+  }
+
+  register() {
+    if (!this.registerFormGroup.valid) return;
+    this.isPending = true;
+    this.disableForms();
+    return this.http
+      .post(
+        environment.apiRegisterUser,
+        JSON.stringify(this.registerFormGroup.value),
+        {
+          headers: new HttpHeaders()
+            .append("Content-type", "application/json")
+            .append("Cache-Control", "no-cache"),
+        }
+      )
+      .catch((e) => {
+        this.enableForms();
+        this.errorObj = this.httpResponseErrorHandler(e);
+        this.isPending = false;
+        return Observable.throw(e);
+      })
+      .take(1)
+      .do(() => {
+        this.errorObj = [];
+      })
+      .subscribe(() => {
+        this.toastService.toastMake(
+          "Użytkownik został zarejestrowany ! Należy sprawdzić email by aktywować konto",
+          "Register"
+        );
+        setTimeout(() => {
+          this.isPending = false;
           this.close();
           this.router.navigateByUrl("home");
         }, 5000);
-
-      })
+      });
   }
 
-  private enableForms(){
+  private enableForms() {
     this.loginFormGroup.enable();
     this.registerFormGroup.enable();
   }
-  private disableForms(){
-    this.errorObj=<IErrorObj[]>[];
+  private disableForms() {
+    this.errorObj = <IErrorObj[]>[];
     this.loginFormGroup.disable();
-    this.registerFormGroup.disable(); 
+    this.registerFormGroup.disable();
+  }
+
+  private httpResponseErrorHandler(resErrors: HttpErrorResponse): IErrorObj[] {
+    let res: IErrorObj[] = [];
+    let err = resErrors["error"];
+
+    if (err["type"] != "error") {
+      for (let key in err) {
+        let errGroupName = err[key];
+        let e = <IErrorObj>{
+          errorDescription: key,
+          errors: [],
+        };
+        errGroupName.forEach((el) => {
+          e.errors.push(el);
+        });
+        res.push(e);
+      }
+    } else {
+      // no errors object
+      let e = <IErrorObj>{
+        errorDescription: "Error",
+        errors: [],
+      };
+      e.errors.push("Inny błąd serwera");
+      res.push(e);
+    }
+    return res;
   }
 }
 
-
-
-export interface ILoginData{
-  userName: string,
-  password:string,
-  confirmPassword: string
+export interface ILoginData {
+  userName: string;
+  password: string;
+  confirmPassword: string;
 }
-

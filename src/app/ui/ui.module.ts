@@ -17,7 +17,6 @@ import { LoadListComponent } from "app/ui/loads/load-list/load-list.component";
 import { LoadingComponent } from "app/ui/loads/loading/loading.component";
 import { UsersManagementComponent } from "app/ui/users-management/users-management.component";
 import { TokenService } from "app/services/token.service";
-import { CompanyService } from "app/other-modules/contractor/services/services/company.service";
 import { IdentGuard } from "app/ui/guards/ident.guard";
 import { InvoiceSellService } from "app/ui/invoice/invoice-sell/services/invoice-sell.service";
 import { LoadService } from "app/ui/loads/services/load.service";
@@ -40,8 +39,15 @@ import { SharedMaterialMinModule } from "@bpShared/shared-material-min/shared-ma
 import { SharedMaterialRestModule } from "@bpShared/shared-material-rest/shared-material-rest.module";
 import { SharedModule } from "@bpShared/shared.module";
 import { CurrencyModule } from "@bpShared/currency/currency.module";
-import { TableDragDropOptionsComponent } from "./shared/table-drag-drop-options/table-drag-drop-options.component";
 import { InvoiceSellGroupCloneComponent } from "./invoice/invoice-sell/invoice-sell-group-clone/invoice-sell-group-clone.component";
+import { ContractorsModule } from "app/other-modules/contractors/contractors.module";
+
+const IMPORT_EXPORT_MODULES = [
+  UiRoutingModule,
+  HttpClientModule,
+  PaymentTermsModule,
+  CurrencyModule,
+];
 
 @NgModule({
   imports: [
@@ -49,10 +55,6 @@ import { InvoiceSellGroupCloneComponent } from "./invoice/invoice-sell/invoice-s
     SharedMaterialMinModule,
     SharedMaterialRestModule,
     SharedModule,
-    UiRoutingModule,
-    HttpClientModule,
-    PaymentTermsModule,
-    CurrencyModule,
   ],
   declarations: [
     GeoComponent,
@@ -77,13 +79,11 @@ import { InvoiceSellGroupCloneComponent } from "./invoice/invoice-sell/invoice-s
     InvoiceSellPaymentRemindComponent,
     PaymentRemindDialogComponent,
     InvoiceBuyPaymentRemindComponent,
-    TableDragDropOptionsComponent,
     InvoiceSellGroupCloneComponent,
   ],
   providers: [
     HttpClientModule,
     TokenService,
-    CompanyService,
     IdentGuard,
     InvoiceSellService,
     InvoiceBuyService,
