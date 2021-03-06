@@ -2,12 +2,11 @@ import { DialogDataTypes } from "../../../../../shared/enums/dialog-data-types.e
 import { IDialogData } from "../../../../../shared/interfaces/i-dialog-data";
 import { CompanyComponent } from "../company/company.component";
 import { CommonFunctionsService } from "../../../../../services/common-functions.service";
-import { ICompany } from "../../../../../shared/interfaces/icompany";
 import { Observable, Subject } from "rxjs/Rx";
 import { FormArray, FormBuilder, FormControl, FormGroup } from "@angular/forms";
 import { Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { MatAutocomplete, MatDialog } from "@angular/material";
-import { CompanyService } from "app/other-modules/contractor/services/services/company.service";
+import { ContractorService } from "../../../services/contractor.service";
 import { empty } from "rxjs";
 import {
   debounceTime,
@@ -15,6 +14,7 @@ import {
   switchMap,
   takeUntil,
 } from "rxjs/operators";
+import { ICompany } from "../../../interfaces/icompany";
 
 @Component({
   selector: "app-company-card",
@@ -33,7 +33,7 @@ export class CompanyCardComponent implements OnInit, OnDestroy {
   selectedItem = {} as any;
 
   constructor(
-    private df: CompanyService,
+    private companyService: ContractorService,
     private cf: CommonFunctionsService,
     private dialog: MatDialog
   ) {
@@ -62,7 +62,7 @@ export class CompanyCardComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.isDestroyed$))
       .subscribe((s) => {
         if (s != undefined) {
-          this.cf.patchCompanyData(s, this.rForm, this.fb);
+          this.companyService.patchCompanyData(s, this.rForm, this.fb);
           this.rForm.markAsDirty();
         }
       });
@@ -84,14 +84,18 @@ export class CompanyCardComponent implements OnInit, OnDestroy {
         if (sw == null || sw == "" || typeof sw == "object") {
           return empty();
         } else {
-          return this.df.getByKey(sw).take(1);
+          return this.companyService.getByKey(sw).take(1);
         }
       }),
       takeUntil(this.isDestroyed$)
     );
 
     this.ac.optionSelected.takeUntil(this.isDestroyed$).subscribe((s) => {
-      this.cf.patchCompanyData(<ICompany>s.option.value, this.rForm, this.fb);
+      this.companyService.patchCompanyData(
+        <ICompany>s.option.value,
+        this.rForm,
+        this.fb
+      );
       this.rForm.markAsDirty();
     });
   }

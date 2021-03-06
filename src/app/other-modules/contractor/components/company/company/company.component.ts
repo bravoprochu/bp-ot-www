@@ -12,12 +12,14 @@ import { TranseuService } from "../../../../../services/transeu/transeu.service"
 import { IDialogTakNieInfo } from "../../../../../shared/interfaces/idialog-tak-nie-info";
 import { DialogTakNieComponent } from "app/shared/dialog-tak-nie/dialog-tak-nie.component";
 import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
-import { CompanyService } from "app/other-modules/contractor/services/services/company.service";
+import { ContractorService as ContractorService } from "../../../services/contractor.service";
 import { FormControl } from "@angular/forms/src/model";
 import { IinputData } from "@bpCommonInterfaces/iinput-data";
 import { finalize, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { empty } from "rxjs";
-import { IEmployee } from "app/other-modules/contractor/interfaces/iemployee";
+import { IEmployee } from "../../../interfaces/iemployee";
+import { ICompany } from "../../../interfaces/icompany";
+import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 
 @Component({
   selector: "app-company",
@@ -43,12 +45,12 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
 
   constructor(
     private dialog: MatDialog,
-    private cf: CommonFunctionsService,
     private fb: FormBuilder,
     private actRoute: ActivatedRoute,
-    private df: CompanyService,
+    private contractorService: ContractorService,
     private transEuService: TranseuService,
     private companyDialogRef: MatDialogRef<CompanyComponent>,
+    private toastService: ToastMakeService,
     @Inject(MAT_DIALOG_DATA) public dialogData: IDialogData
   ) {
     if (this.companyDialogRef == undefined) {
@@ -120,7 +122,7 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
   employeeGroupAdd(): FormGroup {
-    return this.cf.formEmployeeGroup(this.fb);
+    return this.contractorService.formEmployeeGroup(this.fb);
   }
 
   employeeRemoveAll(): void {
@@ -131,10 +133,14 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
   initForm(): void {
-    this.rForm = this.cf.formCompanyGroup(this.fb);
-    this.addressList.push(this.cf.formAddressGroup(this.fb));
+    this.rForm = this.contractorService.formCompanyGroup(this.fb);
+    this.addressList.push(this.contractorService.formAddressGroup(this.fb));
     if (this.dialogData && this.dialogData.formData) {
-      this.cf.patchCompanyData(this.dialogData.formData, this.rForm, this.fb);
+      this.contractorService.patchCompanyData(
+        this.dialogData.formData,
+        this.rForm,
+        this.fb
+      );
     }
     this.isFormReady = true;
   }
@@ -142,11 +148,13 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
   initData(): void {}
 
   addressAdd(): void {
-    this.addressList.push(this.cf.formAddressGroup(this.fb));
+    this.addressList.push(this.contractorService.formAddressGroup(this.fb));
   }
 
   bankAccountAdd(): void {
-    this.bankAccountList.push(this.cf.formCompanyBankAccountGroup(this.fb));
+    this.bankAccountList.push(
+      this.contractorService.formCompanyBankAccountGroup(this.fb)
+    );
   }
 
   navAccept(): void {
@@ -168,7 +176,7 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
     console.log("delete...");
     this.isPending = true;
 
-    this.df
+    this.contractorService
       .delete(this.companyId.value)
       .pipe(
         takeUntil(this.isDestroyed$),
@@ -191,16 +199,16 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
       this.rForm.get("companyId").value != null
         ? +this.rForm.get("companyId").value
         : 0;
-    this.df
+    this.contractorService
       .update(id, this.rForm.value)
       .pipe(
         take(1),
         switchMap((s) => {
           if (s != null) {
-            this.cf.toastMake(s["info"], "navSave", this.actRoute);
+            this.toastService.toastMake(s["info"], "navSave");
             return Observable.empty();
           } else {
-            return this.df.getById(id).take(1);
+            return this.contractorService.getById(id).take(1);
           }
         }),
         takeUntil(this.isDestroyed$),
@@ -209,11 +217,10 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
         })
       )
       .subscribe((s: ICompany) => {
-        this.cf.patchCompanyData(s, this.rForm, this.fb, true);
-        this.cf.toastMake(
+        this.contractorService.patchCompanyData(s, this.rForm, this.fb, true);
+        this.toastService.toastMake(
           `Zaktualizowano dane ${s.short_name} [id: ${s.companyId}]`,
-          "navSave",
-          this.actRoute
+          "navSave"
         );
       });
   }
@@ -243,7 +250,7 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
           this.addressList.at(0).patchValue(s["address"]);
           this.addressList.at(0).get("address_type").patchValue("główny");
 
-          return this.df.getTransEuEmployeeList(empUrl);
+          return this.contractorService.getTransEuEmployeeList(empUrl);
         }),
         map((m) => {
           return m["_embedded"]["companies_employees"];
@@ -255,7 +262,9 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
       )
       .subscribe((s) => {
         (<IEmployee[]>s).forEach(() => {
-          this.employeeList.push(this.cf.formEmployeeGroup(this.fb));
+          this.employeeList.push(
+            this.contractorService.formEmployeeGroup(this.fb)
+          );
         });
         this.employeeList.patchValue(s, { emitEvent: false });
       });

@@ -1,4 +1,3 @@
-import { ICompany } from "../../../../../shared/interfaces/icompany";
 import { DialogDataTypes } from "../../../../../shared/enums/dialog-data-types.enum";
 import { IDialogData } from "../../../../../shared/interfaces/i-dialog-data";
 import { CommonFunctionsService } from "../../../../../services/common-functions.service";
@@ -17,11 +16,12 @@ import {
   MatSort,
   MatPaginator,
 } from "@angular/material";
-import { CompanyService } from "app/other-modules/contractor/services/services/company.service";
+import { ContractorService } from "../../../services/contractor.service";
 import { ViewChild } from "@angular/core";
 import { take } from "rxjs/operators";
 import { saveAs } from "file-saver";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
+import { ICompany } from "../../../interfaces/icompany";
 
 @Component({
   selector: "app-company-list",
@@ -40,7 +40,7 @@ export class CompanyListComponent implements OnInit, OnDestroy, IListObj {
   constructor(
     private actRoute: ActivatedRoute,
     private cf: CommonFunctionsService,
-    private df: CompanyService,
+    private df: ContractorService,
     private dialog: MatDialog
   ) {}
 

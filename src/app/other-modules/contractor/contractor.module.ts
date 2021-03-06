@@ -12,6 +12,7 @@ import { AddressComponent } from "./components/address/address.component";
 import { CompanyListComponent } from "./components/company/company-list/company-list.component";
 import { CompanyComponent } from "./components/company/company/company.component";
 import { CompanyCardComponent } from "./components/company/company-card/company-card.component";
+import { ToastMakeModule } from "../toast-make/toast-make.module";
 
 const IMPORT_EXPORT_MODULES = [
   FlexLayoutModule,
@@ -20,6 +21,7 @@ const IMPORT_EXPORT_MODULES = [
   MatListModule,
   ReactiveFormsModule,
   RouterModule,
+  ToastMakeModule,
 ];
 
 @NgModule({
