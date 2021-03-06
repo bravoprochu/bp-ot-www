@@ -1,41 +1,30 @@
-import { TokenService } from './services/token.service';
-import { ITitle } from './shared/ititle';
-import { IBasicNav } from './services/ibasic-nav';
-import { RouteListComponent } from './shared/route-list/route-list.component';
-import { Component, OnInit, Input } from '@angular/core';
-import { Subject }    from 'rxjs/Subject';
+import { TokenService } from "./services/token.service";
+import { ITitle } from "./shared/ititle";
+import { Component, OnInit, Input } from "@angular/core";
 import { MatDialog } from "@angular/material";
-import { LoginComponent } from "app/auth/login/login.component";
-import { environment} from "../environments/environment"
-
+import { environment } from "../environments/environment";
+import { RouteListComponent } from "./other-modules/routes-list/components/route-list/route-list.component";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.css"],
 })
-export class AppComponent implements OnInit  {
+export class AppComponent implements OnInit {
+  constructor(private dialog: MatDialog, private tokenService: TokenService) {}
+  navTitle: ITitle = {
+    title: environment.appName,
+  };
 
-  constructor(
-    private dialog: MatDialog,
-    private tokenService: TokenService
-  ){
-
-}
-  navTitle:ITitle={
-    title: environment.appName
-  }
-
-  get isLoggedIn(){
+  get isLoggedIn() {
     return this.tokenService.isLoggedIn;
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
-  menuShow(){
-    this.dialog.open(RouteListComponent, {height:"80%", width: "80%"}).afterClosed()
+  menuShow() {
+    this.dialog
+      .open(RouteListComponent, { height: "80%", width: "80%" })
+      .afterClosed();
   }
-
 }
-

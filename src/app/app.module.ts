@@ -1,24 +1,39 @@
-import { BrowserModule} from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
+import { BrowserModule } from "@angular/platform-browser";
+import { NgModule } from "@angular/core";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { AppRoutingModule } from "./app-routing.module";
+import { AppComponent } from "./app.component";
 import { SharedModule } from "app/shared/shared.module";
 import { UiModule } from "app/ui/ui.module";
-import { HomeComponent } from './components/home/home.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { NotFoundComponent } from './components/not-found/not-found.component';
+import { HomeComponent } from "./components/home/home.component";
+import { DashboardComponent } from "./components/dashboard/dashboard.component";
+import { NotFoundComponent } from "./components/not-found/not-found.component";
 import { CommonFunctionsService } from "app/services/common-functions.service";
-import { SharedMaterialMinModule } from './shared/shared-material-min/shared-material-min.module';
-import { SharedMaterialRestModule } from './shared/shared-material-rest/shared-material-rest.module';
-import { TokenService } from './services/token.service';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { HttpModule } from '@angular/http';
-import { HttpClientModule } from '@angular/common/http';
+import { TokenService } from "./services/token.service";
+import { HttpClientModule } from "@angular/common/http";
+import { FlexLayoutModule } from "@angular/flex-layout";
+import {
+  MatButtonModule,
+  MatCardModule,
+  MatDialogModule,
+  MatDividerModule,
+  MatIconModule,
+  MatToolbarModule,
+  MatTooltipModule,
+} from "@angular/material";
+import { RoutesListModule } from "./other-modules/routes-list/routes-list.module";
 
-
-
+const IMPORT_EXPORT_MODULES = [
+  FlexLayoutModule,
+  MatButtonModule,
+  MatCardModule,
+  MatIconModule,
+  MatDialogModule,
+  MatDividerModule,
+  MatToolbarModule,
+  MatTooltipModule,
+  RoutesListModule,
+];
 
 @NgModule({
   imports: [
@@ -26,12 +41,7 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
-    SharedMaterialMinModule,
-    SharedMaterialRestModule,
-    SharedModule,
-    
-    UiModule,
-
+    IMPORT_EXPORT_MODULES,
   ],
   declarations: [
     AppComponent,
@@ -39,21 +49,14 @@ import { HttpClientModule } from '@angular/common/http';
     DashboardComponent,
     NotFoundComponent,
   ],
-  exports:[
-  ],
+  exports: [IMPORT_EXPORT_MODULES],
 
-  providers: [
-      CommonFunctionsService,
-      TokenService
-  ],
+  providers: [CommonFunctionsService],
   bootstrap: [AppComponent],
 })
-export class AppModule { 
-/**
- *
- */
-constructor() {
-    
-}
-
+export class AppModule {
+  /**
+   *
+   */
+  constructor() {}
 }

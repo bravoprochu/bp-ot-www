@@ -1,17 +1,14 @@
-import { IdentGuard } from './ui/guards/ident.guard';
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { NgModule } from "@angular/core";
+import { Routes, RouterModule } from "@angular/router";
 import { HomeComponent } from "app/components/home/home.component";
-import { NotFoundComponent } from "app/components/not-found/not-found.component";
-import { UiModule } from '@bpUI/ui.module';
 
 const routes: Routes = [
-  { path: 'home', component: HomeComponent },
-  { path: '', redirectTo: '/home', pathMatch: 'full'},  
+  { path: "home", component: HomeComponent },
+  { path: "", redirectTo: "/home", pathMatch: "full" },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

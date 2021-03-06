@@ -1,0 +1,28 @@
+<div fxLayout>
+  <mat-form-field>
+    <input
+      type="text"
+      matInput
+      [(ngModel)]="searchText"
+      (ngModelChange)="searchTextChange($event)"
+      placeholder="Nawigacja, wyszukaj"
+    />
+  </mat-form-field>
+</div>
+
+<div style="overflow-y: auto">
+  <mat-nav-list #mSelect>
+    <mat-list-item (click)="sideNavShut()" routerLink="home">
+      <div matLine>Start</div>
+      <div matLine></div>
+    </mat-list-item>
+    <mat-list-item
+      *ngFor="let r of routes; let last = last"
+      (click)="sideNavShut()"
+      routerLink="{{ r.route }}"
+    >
+      <div class="mat-h3" matLine>{{ r.name }}</div>
+      <div class="mat-body-1" matLine>{{ r.description }}</div>
+    </mat-list-item>
+  </mat-nav-list>
+</div>
