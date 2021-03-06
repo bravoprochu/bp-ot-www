@@ -1,95 +1,41 @@
-export const UI_ROUTES: Routes = [
+import { INavRoute } from "../interfaces/i-nav-route";
+
+export const ROUTES_LIST_DATA: INavRoute[] = [
   {
-    path: "kontrahent",
-    component: CompanyListComponent,
-    canActivate: [IdentGuard],
-    data: {
-      allowed: UserRolesEnum.Manager,
-      name: "Kontrahenci",
-      description: "Baza kontrahentów, tworzenie, modyfikacja danych",
-    },
+    route: "kontrahent",
+    name: "Kontrahenci",
+    group: "Kontrahent",
+    description: "Baza kontrahentów, tworzenie, modyfikacja danych",
   },
   {
-    path: "kontrahent/:id",
-    component: CompanyComponent,
-    canActivate: [IdentGuard],
-    data: { allowed: UserRolesEnum.Spedytor },
+    route: "invoiceSell",
+    name: "Faktura sprzedaży",
+    group: "Faktury",
+    description: "",
   },
   {
-    path: "ladunek",
-    component: LoadListComponent,
-    canActivate: [IdentGuard],
-    data: {
-      allowed: UserRolesEnum.Spedytor,
-      name: "Spedycja",
-      description: "Proces od zakupu, publikacji na giełdzie przez sprzedaż",
-    },
+    route: "invoiceBuy",
+    name: "Faktura zakupu",
+    group: "Faktury",
+    description: "",
   },
   {
-    path: "ladunek/:id",
-    component: LoadComponent,
-    canActivate: [IdentGuard],
-    data: { allowed: UserRolesEnum.Spedytor },
+    route: "spedition",
+    name: "Spedycja",
+    group: "Spedycja",
+    description: "Proces od zakupu po sprzedaż",
   },
   {
-    path: "fakturaSprzedazy",
-    component: InvoiceSellListComponent,
-    canActivate: [IdentGuard],
-    data: { allowed: UserRolesEnum.Finanse, name: "Faktura sprzedaży" },
+    route: "transport",
+    name: "Transport",
+    group: "Transport",
+    description: "Rejestr zakupionych transportów i ich statusy",
   },
   {
-    path: "fakturaSprzedazy/:id",
-    component: InvoiceSellComponent,
-    canActivate: [IdentGuard],
-    data: { allowed: UserRolesEnum.Finanse },
-  },
-  {
-    path: "fakturaZakupu",
-    component: InvoiceBuyListComponent,
-    canActivate: [IdentGuard],
-    data: { allowed: UserRolesEnum.Finanse, name: "Faktura zakupu" },
-  },
-  {
-    path: "fakturaZakupu/:id",
-    component: InvoiceBuyComponent,
-    canActivate: [IdentGuard],
-    data: { allowed: UserRolesEnum.Finanse },
-  },
-  {
-    path: "rozliczeniaSprzedaz",
-    component: InvoiceSellPaymentRemindComponent,
-    canActivate: [IdentGuard],
-    data: {
-      allowed: UserRolesEnum.Finanse,
-      name: "Finanse - rozliczenia",
-      description: "Rozliczenie faktur sprzedaży",
-    },
-  },
-  {
-    path: "transport",
-    component: TransportListComponent,
-    canActivate: [IdentGuard],
-    data: {
-      allowed: UserRolesEnum.Spedytor,
-      name: "Transport",
-      description: "Rejestr zakupionych transportów i ich statusy",
-    },
-  },
-  {
-    path: "transport/:id",
-    component: TransportComponent,
-    canActivate: [IdentGuard],
-    data: { allowed: UserRolesEnum.Spedytor },
-  },
-  {
-    path: "ZarzadzanieUzytkownikami",
-    component: UsersManagementComponent,
-    canActivate: [IdentGuard],
-    data: {
-      allowed: UserRolesEnum.Administrator,
-      name: "Zarządzenie użytkownikami",
-      description:
-        "Przypisywanie uprawnień, modyfikacja danych, usuwanie użytkowników",
-    },
+    route: "user-management",
+    name: "Zarządzanie użytkownikami",
+    group: "Admin",
+    description:
+      "Przypisywanie uprawnień, modyfikakcja danych, usuwanie użytkowników",
   },
 ];

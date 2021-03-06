@@ -8,6 +8,7 @@ import "rxjs/add/operator/filter";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/mergeAll";
 import { INavRoute } from "../../interfaces/i-nav-route";
+import { ROUTES_LIST_DATA } from "../../data/routes-list-data";
 
 @Component({
   selector: "app-route-list",
@@ -73,18 +74,21 @@ export class RouteListComponent implements OnInit, OnDestroy {
   routesListPrep() {
     let userRoles = this.tokenService.getToken().rolesList;
     this.routesData = [];
-    uiRoutes.forEach((route: Route) => {
-      if (route.data["name"]) {
-        let routeListPosition: INavRoute = {
-          description: route.data["description"],
-          group: route.data["group"],
-          name: route.data["name"],
-          route: route.path,
-        };
-        if (this.tokenService.isRouteAuthorized(route.data)) {
-          this.routesData.push(routeListPosition);
-        }
-      }
-    });
+
+    this.routesData = ROUTES_LIST_DATA;
+
+    // uiRoutes.forEach((route: Route) => {
+    //   if (route.data["name"]) {
+    //     let routeListPosition: INavRoute = {
+    //       description: route.data["description"],
+    //       group: route.data["group"],
+    //       name: route.data["name"],
+    //       route: route.path,
+    //     };
+    //     if (this.tokenService.isRouteAuthorized(route.data)) {
+    //       this.routesData.push(routeListPosition);
+    //     }
+    //   }
+    // });
   }
 }
