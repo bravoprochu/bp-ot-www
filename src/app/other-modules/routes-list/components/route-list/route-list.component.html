@@ -16,13 +16,13 @@
       <div matLine>Start</div>
       <div matLine></div>
     </mat-list-item>
-    <mat-list-item
-      *ngFor="let r of routes; let last = last"
-      (click)="sideNavShut()"
-      routerLink="{{ r.route }}"
-    >
-      <div class="mat-h3" matLine>{{ r.name }}</div>
-      <div class="mat-body-1" matLine>{{ r.description }}</div>
-    </mat-list-item>
+    <ng-container *ngFor="let r of routes; let last = last">
+      <a [routerLink]="[r.route]">
+        <mat-list-item (click)="sideNavShut()">
+          <div class="mat-h3" matLine>{{ r.name }}</div>
+          <div class="mat-body-1" matLine>{{ r.description }}</div>
+        </mat-list-item>
+      </a>
+    </ng-container>
   </mat-nav-list>
 </div>
