@@ -1,8 +1,8 @@
-import { IEmployee } from "../../../shared/interfaces/iemployee";
-import { ICompany } from "../../../shared/interfaces/icompany";
-import { IDialogData } from "../../../shared/interfaces/i-dialog-data";
+import { IEmployee } from "../../../../../shared/interfaces/iemployee";
+import { ICompany } from "../../../../../shared/interfaces/icompany";
+import { IDialogData } from "../../../../../shared/interfaces/i-dialog-data";
 import { Observable, Subject } from "rxjs/Rx";
-import { InputDialogComponent } from "../../../shared/input-dialog/input-dialog.component";
+import { InputDialogComponent } from "../../../../../shared/input-dialog/input-dialog.component";
 import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup } from "@angular/forms";
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from "@angular/material";
@@ -10,11 +10,11 @@ import { ActivatedRoute } from "@angular/router";
 import { CommonFunctionsService } from "app/services/common-functions.service";
 import { IDetailObj } from "app/shared/idetail-obj";
 
-import { TranseuService } from "../../../services/transeu/transeu.service";
-import { IDialogTakNieInfo } from "../../../shared/interfaces/idialog-tak-nie-info";
+import { TranseuService } from "../../../../../services/transeu/transeu.service";
+import { IDialogTakNieInfo } from "../../../../../shared/interfaces/idialog-tak-nie-info";
 import { DialogTakNieComponent } from "app/shared/dialog-tak-nie/dialog-tak-nie.component";
 import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
-import { CompanyService } from "app/ui/company/services/company.service";
+import { CompanyService } from "app/other-modules/contractor/components/company/services/company.service";
 import { FormControl } from "@angular/forms/src/model";
 import { IinputData } from "@bpCommonInterfaces/iinput-data";
 import { finalize, map, switchMap, take, takeUntil, tap } from "rxjs/operators";

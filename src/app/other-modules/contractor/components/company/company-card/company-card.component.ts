@@ -1,13 +1,13 @@
-import { DialogDataTypes } from "../../../shared/enums/dialog-data-types.enum";
-import { IDialogData } from "../../../shared/interfaces/i-dialog-data";
+import { DialogDataTypes } from "../../../../../shared/enums/dialog-data-types.enum";
+import { IDialogData } from "../../../../../shared/interfaces/i-dialog-data";
 import { CompanyComponent } from "../company/company.component";
-import { CommonFunctionsService } from "../../../services/common-functions.service";
-import { ICompany } from "../../../shared/interfaces/icompany";
+import { CommonFunctionsService } from "../../../../../services/common-functions.service";
+import { ICompany } from "../../../../../shared/interfaces/icompany";
 import { Observable, Subject } from "rxjs/Rx";
 import { FormArray, FormBuilder, FormControl, FormGroup } from "@angular/forms";
 import { Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { MatAutocomplete, MatDialog } from "@angular/material";
-import { CompanyService } from "app/ui/company/services/company.service";
+import { CompanyService } from "app/other-modules/contractor/components/company/services/company.service";
 import { empty } from "rxjs";
 import {
   debounceTime,
