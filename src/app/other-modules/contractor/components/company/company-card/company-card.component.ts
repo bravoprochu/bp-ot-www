@@ -7,7 +7,7 @@ import { Observable, Subject } from "rxjs/Rx";
 import { FormArray, FormBuilder, FormControl, FormGroup } from "@angular/forms";
 import { Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { MatAutocomplete, MatDialog } from "@angular/material";
-import { CompanyService } from "app/other-modules/contractor/components/company/services/company.service";
+import { CompanyService } from "app/other-modules/contractor/services/services/company.service";
 import { empty } from "rxjs";
 import {
   debounceTime,

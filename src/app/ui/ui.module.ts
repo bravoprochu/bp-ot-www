@@ -4,10 +4,7 @@ import { InvoiceBuyService } from "./invoice/invoice-buy/services/invoice-buy.se
 import { NgModule } from "@angular/core";
 import { HttpClientModule } from "@angular/common/http";
 import { UiRoutingModule } from "app/ui/ui-routing.module";
-import { AddressComponent } from "app/other-modules/contractor/components/address/address.component";
-import { CompanyComponent } from "app/other-modules/contractor/components/company/company/company.component";
-import { CompanyCardComponent } from "app/other-modules/contractor/components/company/company-card/company-card.component";
-import { CompanyListComponent } from "app/other-modules/contractor/components/company/company-list/company-list.component";
+
 import { InvoiceBuyComponent } from "app/ui/invoice/invoice-buy/invoice-buy/invoice-buy.component";
 import { InvoiceBuyListComponent } from "app/ui/invoice/invoice-buy/invoice-buy-list/invoice-buy-list.component";
 import { InvoicePosComponent } from "app/ui/invoice/common/invoice-pos/invoice-pos.component";
@@ -20,7 +17,7 @@ import { LoadListComponent } from "app/ui/loads/load-list/load-list.component";
 import { LoadingComponent } from "app/ui/loads/loading/loading.component";
 import { UsersManagementComponent } from "app/ui/users-management/users-management.component";
 import { TokenService } from "app/services/token.service";
-import { CompanyService } from "app/other-modules/contractor/components/company/services/company.service";
+import { CompanyService } from "app/other-modules/contractor/services/services/company.service";
 import { IdentGuard } from "app/ui/guards/ident.guard";
 import { InvoiceSellService } from "app/ui/invoice/invoice-sell/services/invoice-sell.service";
 import { LoadService } from "app/ui/loads/services/load.service";
@@ -58,10 +55,6 @@ import { InvoiceSellGroupCloneComponent } from "./invoice/invoice-sell/invoice-s
     CurrencyModule,
   ],
   declarations: [
-    AddressComponent,
-    CompanyComponent,
-    CompanyCardComponent,
-    CompanyListComponent,
     GeoComponent,
     InvoiceBuyComponent,
     InvoiceBuyListComponent,
@@ -102,10 +95,6 @@ import { InvoiceSellGroupCloneComponent } from "./invoice/invoice-sell/invoice-s
   ],
   entryComponents: [PaymentRemindDialogComponent],
   exports: [
-    AddressComponent,
-    CompanyComponent,
-    CompanyCardComponent,
-    CompanyListComponent,
     GeoComponent,
     InvoiceBuyComponent,
     InvoiceBuyListComponent,

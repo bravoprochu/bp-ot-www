@@ -1,5 +1,3 @@
-import { IEmployee } from "../../../../../shared/interfaces/iemployee";
-import { ICompany } from "../../../../../shared/interfaces/icompany";
 import { IDialogData } from "../../../../../shared/interfaces/i-dialog-data";
 import { Observable, Subject } from "rxjs/Rx";
 import { InputDialogComponent } from "../../../../../shared/input-dialog/input-dialog.component";
@@ -14,11 +12,12 @@ import { TranseuService } from "../../../../../services/transeu/transeu.service"
 import { IDialogTakNieInfo } from "../../../../../shared/interfaces/idialog-tak-nie-info";
 import { DialogTakNieComponent } from "app/shared/dialog-tak-nie/dialog-tak-nie.component";
 import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
-import { CompanyService } from "app/other-modules/contractor/components/company/services/company.service";
+import { CompanyService } from "app/other-modules/contractor/services/services/company.service";
 import { FormControl } from "@angular/forms/src/model";
 import { IinputData } from "@bpCommonInterfaces/iinput-data";
 import { finalize, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { empty } from "rxjs";
+import { IEmployee } from "app/other-modules/contractor/interfaces/iemployee";
 
 @Component({
   selector: "app-company",

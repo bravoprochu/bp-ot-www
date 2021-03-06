@@ -17,7 +17,7 @@ import {
   MatSort,
   MatPaginator,
 } from "@angular/material";
-import { CompanyService } from "app/other-modules/contractor/components/company/services/company.service";
+import { CompanyService } from "app/other-modules/contractor/services/services/company.service";
 import { ViewChild } from "@angular/core";
 import { take } from "rxjs/operators";
 import { saveAs } from "file-saver";
