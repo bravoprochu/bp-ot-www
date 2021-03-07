@@ -1,6 +1,6 @@
 import { IErrorObj } from "../interfaces/ierror-object";
 import { Router, ActivatedRoute } from "@angular/router";
-import { Observable } from "rxjs/Rx";
+import { Observable } from "rxjs";
 import { Component, OnInit } from "@angular/core";
 import { MatDialogRef } from "@angular/material";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
@@ -12,6 +12,7 @@ import {
 } from "@angular/common/http";
 import { environment } from "environments/environment";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
+import { catchError, take, tap } from "rxjs/operators";
 
 @Component({
   selector: "app-login",
@@ -24,7 +25,6 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private http: HttpClient,
     private tokenService: TokenService,
-    private actRoute: ActivatedRoute,
     private router: Router,
     private toastService: ToastMakeService
   ) {}
@@ -84,16 +84,18 @@ export class LoginComponent implements OnInit {
         JSON.stringify(this.loginFormGroup.value),
         { headers: new HttpHeaders({ "Content-Type": "application/json" }) }
       )
-      .catch((e) => {
-        this.errorObj = this.httpResponseErrorHandler(e);
-        this.enableForms();
-        this.isPending = false;
-        return Observable.throw(e);
-      })
-      .take(1)
-      .do(() => {
-        this.errorObj = [];
-      })
+      .pipe(
+        catchError((e) => {
+          this.errorObj = this.httpResponseErrorHandler(e);
+          this.enableForms();
+          this.isPending = false;
+          return Observable.throw(e);
+        }),
+        take(1),
+        tap(() => {
+          this.errorObj = [];
+        })
+      )
       .subscribe((s) => {
         this.tokenService.setToken(s);
         this.toastService.toastMake(
@@ -121,16 +123,19 @@ export class LoginComponent implements OnInit {
             .append("Cache-Control", "no-cache"),
         }
       )
-      .catch((e) => {
-        this.enableForms();
-        this.errorObj = this.httpResponseErrorHandler(e);
-        this.isPending = false;
-        return Observable.throw(e);
-      })
-      .take(1)
-      .do(() => {
-        this.errorObj = [];
-      })
+      .pipe(
+        catchError((e) => {
+          this.enableForms();
+          this.errorObj = this.httpResponseErrorHandler(e);
+          this.isPending = false;
+          return Observable.throw(e);
+        }),
+        take(1),
+        tap(() => {
+          this.errorObj = [];
+        })
+      )
+
       .subscribe(() => {
         this.toastService.toastMake(
           "Użytkownik został zarejestrowany ! Należy sprawdzić email by aktywować konto",

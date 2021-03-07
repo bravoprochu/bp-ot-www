@@ -8,12 +8,10 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { MatDialog } from "@angular/material";
 import { DialogTakNieComponent } from "app/other-modules/dialog-tak-nie/components/dialog-tak-nie/dialog-tak-nie.component";
 import { IDialogTakNieInfo } from "app/shared/interfaces/idialog-tak-nie-info";
-import { Observable } from "rxjs/Observable";
-import { Subject } from "rxjs";
+import { Observable, empty, Subject, of } from "rxjs";
 import * as moment from "moment";
 import { ICurrency } from "app/other-modules/currency/interfaces/i-currency";
 import { finalize, switchMap, take, takeUntil, tap } from "rxjs/operators";
-import { empty } from "rxjs";
 import { TransportService } from "../../services/transport.service";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
@@ -64,7 +62,7 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
   initRouteId(): void {
-    this.actRoute.paramMap.takeUntil(this.isDestroyed$).subscribe((s) => {
+    this.actRoute.paramMap.pipe(takeUntil(this.isDestroyed$)).subscribe((s) => {
       this.routeId = +s.get("id");
     });
   }
@@ -119,7 +117,7 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
           switchMap((czyPLN) => {
             if (czyPLN) {
               if (actCurr.name == "PLN") {
-                return Observable.of(true);
+                return of(true);
               } else {
                 return this.dialogTakNie
                   .open(DialogTakNieComponent, {
@@ -183,18 +181,21 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
         },
       })
       .afterClosed()
-      .switchMap((sw) => {
-        if (sw) {
-          this.toastService.toastMake(
-            `Trwa usuwanie zlecenia transportowego ${this.offerNo.value}`,
-            "navDelete"
-          );
-          return this.df.delete(this.id.value);
-        } else {
-          return Observable.empty();
-        }
-      })
-      .take(1)
+      .pipe(
+        switchMap((sw) => {
+          if (sw) {
+            this.toastService.toastMake(
+              `Trwa usuwanie zlecenia transportowego ${this.offerNo.value}`,
+              "navDelete"
+            );
+            return this.df.delete(this.id.value).pipe(take(1));
+          } else {
+            return empty();
+          }
+        }),
+        take(1)
+      )
+
       .subscribe((s) => {
         if (s != null) {
           this.toastService.toastMake(s["info"], "navDelete");
@@ -219,7 +220,7 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
         take(1),
         switchMap((sw) => {
           this.toastService.toastMake(`Aktualizuje dane`, "navSave");
-          return this.df.getById(id).take(1);
+          return this.df.getById(id).pipe(take(1));
         }),
         finalize(() => {
           this.isPending = false;

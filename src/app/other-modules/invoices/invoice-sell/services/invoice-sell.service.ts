@@ -5,7 +5,7 @@ import {
 } from "../../interfaces/iinvoice-sell";
 import { DataFactoryService } from "../../../../services/data-factory.service";
 import { environment } from "../../../../../environments/environment";
-import { Observable } from "rxjs/Rx";
+import { Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { catchError, take } from "rxjs/operators";

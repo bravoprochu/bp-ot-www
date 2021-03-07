@@ -7,13 +7,8 @@ import {
   RouterStateSnapshot,
   Router,
 } from "@angular/router";
-import { Observable } from "rxjs/Observable";
-import "rxjs/add/observable/of";
-import "rxjs/add/operator/do";
-import "rxjs/add/operator/map";
+import { Observable, of } from "rxjs";
 import { MatDialog } from "@angular/material";
-
-import { of } from "rxjs";
 import { switchMap } from "rxjs/operators";
 
 @Injectable()

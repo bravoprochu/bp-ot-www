@@ -1,5 +1,5 @@
 import { IDialogData } from "../../../../shared/interfaces/i-dialog-data";
-import { Observable, Subject } from "rxjs/Rx";
+import { empty, Observable, Subject } from "rxjs";
 import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup } from "@angular/forms";
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from "@angular/material";
@@ -103,7 +103,7 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
       },
     });
     d.afterClosed()
-      .takeUntil(this.isDestroyed$)
+      .pipe(takeUntil(this.isDestroyed$))
       .subscribe((s: boolean) => {
         if (s == true) {
           this.employeeList.removeAt(idx);
@@ -197,9 +197,9 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
         switchMap((s) => {
           if (s != null) {
             this.toastService.toastMake(s["info"], "navSave");
-            return Observable.empty();
+            return empty();
           } else {
-            return this.contractorService.getById(id).take(1);
+            return this.contractorService.getById(id).pipe(take(1));
           }
         }),
         takeUntil(this.isDestroyed$),

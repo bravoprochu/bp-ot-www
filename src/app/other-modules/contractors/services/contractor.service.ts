@@ -4,6 +4,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { DataFactoryService } from "app/services/data-factory.service";
 import { TokenService } from "app/services/token.service";
 import { environment } from "environments/environment";
+import { catchError, distinctUntilChanged } from "rxjs/operators";
 import { ICompany } from "../interfaces/icompany";
 
 @Injectable()
@@ -52,7 +53,7 @@ export class ContractorService extends DataFactoryService {
       .get(environment.apiUrlCompany + "/GetByKey/" + key, {
         headers: this.bearerHeader(),
       })
-      .catch(this.errorHandler);
+      .pipe(catchError(this.errorHandler));
   }
 
   getTransEuEmployeeList(employeeUrl: string) {
@@ -107,7 +108,7 @@ export class ContractorService extends DataFactoryService {
     let email = res.get("email");
     let tel = res.get("telephone");
 
-    email.valueChanges.distinctUntilChanged().subscribe((s) => {
+    email.valueChanges.pipe(distinctUntilChanged()).subscribe((s) => {
       if (s) {
         email.setValidators(Validators.email);
         email.updateValueAndValidity();

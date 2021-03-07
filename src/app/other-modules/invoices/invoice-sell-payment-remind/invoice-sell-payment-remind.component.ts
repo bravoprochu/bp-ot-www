@@ -1,11 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material";
-import { Observable } from "rxjs/Observable";
+import { empty, Observable, Subject } from "rxjs";
 import * as moment from "moment";
 import { FormControl } from "@angular/forms";
 import { OnDestroy } from "@angular/core/src/metadata/lifecycle_hooks";
 import { InvoiceSellService } from "../invoice-sell/services/invoice-sell.service";
 import { PaymentRemindDialogComponent } from "../payment-remind-dialog/payment-remind-dialog.component";
+import { switchMap, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "app-invoice-sell-payment-remind",
@@ -13,23 +14,8 @@ import { PaymentRemindDialogComponent } from "../payment-remind-dialog/payment-r
   styleUrls: ["./invoice-sell-payment-remind.component.css"],
 })
 export class InvoiceSellPaymentRemindComponent implements OnInit, OnDestroy {
-  ngOnDestroy(): void {
-    this.isAlive = false;
-  }
-
-  constructor(private df: InvoiceSellService, private dialog: MatDialog) {}
-
-  ngOnInit() {
-    this.isPending = true;
-    this.unpaidSearch$ = new FormControl();
-    this.unpaidOverdueSearch$ = new FormControl();
-    this.notConfirmedSearch$ = new FormControl();
-    this.initData();
-    this.initForm();
-    this.isAlive = true;
-  }
-
   isAlive: Boolean;
+  isDestroyed$ = new Subject() as Subject<boolean>;
   isPending: boolean;
 
   unpaid: any[];
@@ -50,11 +36,29 @@ export class InvoiceSellPaymentRemindComponent implements OnInit, OnDestroy {
   notConfirmedSearch$: FormControl;
   notConfirmedStats: any[];
 
+  constructor(private df: InvoiceSellService, private dialog: MatDialog) {}
+
+  ngOnDestroy(): void {
+    this.isDestroyed$.next(true);
+    this.isDestroyed$.complete();
+    this.isDestroyed$.unsubscribe();
+  }
+
+  ngOnInit() {
+    this.isPending = true;
+    this.unpaidSearch$ = new FormControl();
+    this.unpaidOverdueSearch$ = new FormControl();
+    this.notConfirmedSearch$ = new FormControl();
+    this.initData();
+    this.initForm();
+    this.isAlive = true;
+  }
+
   initData() {
     this.isPending = true;
     this.df
       .paymentRemind()
-      .take(1)
+      .pipe(take(1))
       .subscribe((s) => {
         this.unpaid = s["unpaid"];
         this.unpaidFiltered = s["unpaid"];
@@ -74,7 +78,7 @@ export class InvoiceSellPaymentRemindComponent implements OnInit, OnDestroy {
 
   initForm() {
     this.unpaidSearch$.valueChanges
-      .takeWhile((w) => this.isAlive == true)
+      .pipe(takeUntil(this.isDestroyed$))
       .subscribe((s) => {
         this.unpaidFiltered = this.filterArr(s, this.unpaid);
         this.unpaidFilterInfo =
@@ -84,7 +88,8 @@ export class InvoiceSellPaymentRemindComponent implements OnInit, OnDestroy {
       });
 
     this.unpaidOverdueSearch$.valueChanges
-      .takeWhile((w) => this.isAlive == true)
+      .pipe(takeUntil(this.isDestroyed$))
+
       .subscribe((s) => {
         this.unpaidOverdueFiltered = this.filterArr(s, this.unpaidOverdue);
         this.unpaidOverdueFilterInfo =
@@ -94,7 +99,8 @@ export class InvoiceSellPaymentRemindComponent implements OnInit, OnDestroy {
       });
 
     this.notConfirmedSearch$.valueChanges
-      .takeWhile((w) => this.isAlive == true)
+      .pipe(takeUntil(this.isDestroyed$))
+
       .subscribe((s) => {
         this.notConfirmedFiltered = this.filterArr(s, this.notConfirmed);
         this.notConfirmedFilterInfo =
@@ -115,17 +121,20 @@ export class InvoiceSellPaymentRemindComponent implements OnInit, OnDestroy {
         },
       })
       .afterClosed()
-      .switchMap((sw) => {
-        if (sw !== undefined) {
-          this.isPending = true;
-          let pDate = sw.substring(0, 10);
-          return this.df.paymentConfirmation(payment["invoiceId"], pDate);
-        } else {
-          this.isPending = false;
-          return Observable.empty();
-        }
-      })
-      .take(1)
+      .pipe(
+        switchMap((sw) => {
+          if (sw !== undefined) {
+            this.isPending = true;
+            let pDate = sw.substring(0, 10);
+            return this.df.paymentConfirmation(payment["invoiceId"], pDate);
+          } else {
+            this.isPending = false;
+            return empty();
+          }
+        }),
+        take(1)
+      )
+
       .subscribe((s) => {
         arr.splice(arr.indexOf(payment), 1);
         this.isPending = false;

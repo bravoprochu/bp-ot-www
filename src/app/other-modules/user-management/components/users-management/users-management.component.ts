@@ -10,6 +10,7 @@ import { DialogTakNieComponent } from "app/other-modules/dialog-tak-nie/componen
 import { IDialogTakNieInfo } from "app/shared/interfaces/idialog-tak-nie-info";
 import { FormControl } from "@angular/forms/src/model";
 import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "app-users-management",
@@ -89,7 +90,7 @@ export class UsersManagementComponent implements OnInit, OnDestroy, IDetailObj {
     this.inProgressDisable();
     this.df
       .getAll()
-      .takeUntil(this.isDestroyed$)
+      .pipe(takeUntil(this.isDestroyed$))
       .subscribe((s: IusersManagement) => {
         this.formDataInit(s);
         this.inProgressEnable();
@@ -121,7 +122,7 @@ export class UsersManagementComponent implements OnInit, OnDestroy, IDetailObj {
     this.inProgressDisable();
     this.df
       .updatePackage(this.rForm.value)
-      .takeUntil(this.isDestroyed$)
+      .pipe(takeUntil(this.isDestroyed$))
       .subscribe((s) => {
         this.formDataInit(s["data"]);
         this.inProgressEnable();

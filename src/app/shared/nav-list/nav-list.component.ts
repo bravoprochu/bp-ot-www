@@ -4,6 +4,7 @@ import { IDateRange } from "app/shared/interfaces/i-date-range";
 import { OnDestroy } from "@angular/core/src/metadata/lifecycle_hooks";
 import { Subject } from "rxjs";
 import * as moment from "moment";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "app-nav-list",
@@ -41,10 +42,12 @@ export class NavListComponent implements OnInit, OnDestroy {
     this.showCreate = true;
     this.showSearch = true;
 
-    this.search$.valueChanges.takeUntil(this.isDestroyed$).subscribe((s) => {
-      this.onSearch.emit(s);
-      this.infoSearchFilter = s == "" ? "" : "[TextFilter] ";
-    });
+    this.search$.valueChanges
+      .pipe(takeUntil(this.isDestroyed$))
+      .subscribe((s) => {
+        this.onSearch.emit(s);
+        this.infoSearchFilter = s == "" ? "" : "[TextFilter] ";
+      });
   }
 
   activeRange: boolean;

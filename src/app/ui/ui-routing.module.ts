@@ -4,10 +4,8 @@ import { InvoiceSellPaymentRemindComponent } from "app/other-modules/invoices/in
 import { IdentGuard } from "app/ui/guards/ident.guard";
 import { LoadListComponent } from "app/ui/loads/load-list/load-list.component";
 import { LoadComponent } from "app/ui/loads/load/load.component";
-import { TransportListComponent } from "app/ui/transport/transport-list/transport-list.component";
-import { TransportComponent } from "app/ui/transport/transport/transport.component";
 import { UserRolesEnum } from "../shared/enums/user-roles.enum";
-import { UsersManagementComponent } from "./users-management/users-management.component";
+import { UsersManagementComponent } from "../other-modules/user-management/components/users-management/users-management.component";
 
 export const uiRoutes: Routes = [
   {
@@ -35,22 +33,6 @@ export const uiRoutes: Routes = [
       name: "Finanse - rozliczenia",
       description: "Rozliczenie faktur sprzedaży",
     },
-  },
-  {
-    path: "transport",
-    component: TransportListComponent,
-    canActivate: [IdentGuard],
-    data: {
-      allowed: UserRolesEnum.Spedytor,
-      name: "Transport",
-      description: "Rejestr zakupionych transportów i ich statusy",
-    },
-  },
-  {
-    path: "transport/:id",
-    component: TransportComponent,
-    canActivate: [IdentGuard],
-    data: { allowed: UserRolesEnum.Spedytor },
   },
   {
     path: "ZarzadzanieUzytkownikami",

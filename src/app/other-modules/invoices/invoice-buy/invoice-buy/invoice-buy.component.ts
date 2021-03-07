@@ -14,12 +14,12 @@ import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MatDialog } from "@angular/material";
 import { IDialogTakNieInfo } from "app/shared/interfaces/idialog-tak-nie-info";
-import { Observable } from "rxjs/Observable";
+import { empty, Observable } from "rxjs";
 import { IInvoiceBuy } from "../../interfaces/iinvoice-buy";
 import { InvoiceCommonFunctionsService } from "../../common/invoice-common-functions.service";
 import { Subject } from "rxjs";
 import { CurrencyCommonService } from "app/other-modules/currency/currency-common.service";
-import { takeUntil, tap } from "rxjs/operators";
+import { switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { Location } from "@angular/common";
 
 @Component({
@@ -142,7 +142,7 @@ export class InvoiceBuyComponent implements OnInit, OnDestroy, IDetailObj {
   //#endregion
 
   public initRouteId(): void {
-    this.actRoute.paramMap.takeUntil(this.isDestroyed$).subscribe((s) => {
+    this.actRoute.paramMap.pipe(takeUntil(this.isDestroyed$)).subscribe((s) => {
       this.routeId = +s.get("id");
       this.initData();
     });
@@ -153,7 +153,7 @@ export class InvoiceBuyComponent implements OnInit, OnDestroy, IDetailObj {
     if (id > 0) {
       this.df
         .getById(id)
-        .takeUntil(this.isDestroyed$)
+        .pipe(takeUntil(this.isDestroyed$))
         .subscribe((s: IInvoiceBuy) => {
           this.cf.toastMake(
             `Pobrano dane: ${s.invoiceNo}`,
@@ -184,13 +184,16 @@ export class InvoiceBuyComponent implements OnInit, OnDestroy, IDetailObj {
         },
       })
       .afterClosed()
-      .switchMap((dialogResponse) => {
-        this.cf.toastMake("Usuwam dane", "navDelete", this.actRoute);
-        return dialogResponse
-          ? this.df.delete(this.rForm.value.invoiceBuyId)
-          : Observable.empty();
-      })
-      .take(1)
+      .pipe(
+        switchMap((dialogResponse) => {
+          this.cf.toastMake("Usuwam dane", "navDelete", this.actRoute);
+          return dialogResponse
+            ? this.df.delete(this.rForm.value.invoiceBuyId)
+            : empty();
+        }),
+        take(1)
+      )
+
       .subscribe((s) => {
         this.cf.toastMake("Usunięto dane", "init", this.actRoute);
         this.location.back();
@@ -202,12 +205,15 @@ export class InvoiceBuyComponent implements OnInit, OnDestroy, IDetailObj {
     let id = this.rForm.value.invoiceBuyId ? this.rForm.value.invoiceBuyId : 0;
     this.df
       .update(id, this.rForm.value)
-      .take(1)
-      .switchMap((sw: IInvoiceBuy) => {
-        this.cf.toastMake(`Zaktualizowano dane`, "navSave", this.actRoute);
-        return this.df.getById(id);
-      })
-      .take(1)
+      .pipe(
+        take(1),
+        switchMap((sw: IInvoiceBuy) => {
+          this.cf.toastMake(`Zaktualizowano dane`, "navSave", this.actRoute);
+          return this.df.getById(id);
+        }),
+        take(1)
+      )
+
       .subscribe((s: IInvoiceBuy) => {
         this.cf.toastMake(
           `Pobrano zaktualizowane dane ${s.invoiceNo}, [id: ${s.invoiceBuyId}]`,
@@ -227,13 +233,13 @@ export class InvoiceBuyComponent implements OnInit, OnDestroy, IDetailObj {
     this.invoicePosAdd();
 
     this.dateOfIssue.valueChanges
-      .takeUntil(this.isDestroyed$)
+      .pipe(takeUntil(this.isDestroyed$))
       .subscribe((s) => {
         this.paymentTermsDay0.setValue(s, { emitEvent: true });
       });
 
     this.paymentIsDone.valueChanges
-      .takeUntil(this.isDestroyed$)
+      .pipe(takeUntil(this.isDestroyed$))
       .subscribe((s) => {
         if (s) {
           this.paymentDate.setValidators(Validators.required);
@@ -245,7 +251,7 @@ export class InvoiceBuyComponent implements OnInit, OnDestroy, IDetailObj {
 
     //checkbox if recived
     this.isInvoiceReceived.valueChanges
-      .takeUntil(this.isDestroyed$)
+      .pipe(takeUntil(this.isDestroyed$))
       .subscribe((s) => {
         if (s) {
           this.invoiceReceivedDate.setValidators(Validators.required);

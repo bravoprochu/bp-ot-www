@@ -1,37 +1,45 @@
-import { LoadBuyComponent } from '../load-buy/load-buy.component';
-import { AfterViewInit, ViewChild } from '@angular/core';
-import { ILoad } from '../../../shared/interfaces/iload';
-import { CommonFunctionsService } from '../../../services/common-functions.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { LoadBuyComponent } from "../load-buy/load-buy.component";
+import { AfterViewInit, ViewChild } from "@angular/core";
+import { ILoad } from "../../../shared/interfaces/iload";
+import { CommonFunctionsService } from "../../../services/common-functions.service";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { IDetailObj } from "app/shared/idetail-obj";
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { INavDetailInfo } from 'app/shared/interfaces/inav-detail-info';
-import { LoadService } from 'app/ui/loads/services/load.service';
-import {saveAs} from "file-saver"
-import { Subject } from 'rxjs';
-
-
-
+import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
+import { LoadService } from "app/ui/loads/services/load.service";
+import { saveAs } from "file-saver";
+import { Subject } from "rxjs";
+import {
+  debounceTime,
+  delay,
+  map,
+  switchMap,
+  take,
+  takeUntil,
+  takeWhile,
+} from "rxjs/operators";
 
 @Component({
-  selector: 'app-load',
-  templateUrl: './load.component.html',
-  styleUrls: ['./load.component.css']
+  selector: "app-load",
+  templateUrl: "./load.component.html",
+  styleUrls: ["./load.component.css"],
 })
-export class LoadComponent implements OnInit, OnDestroy, AfterViewInit, IDetailObj {
-
+export class LoadComponent
+  implements OnInit, OnDestroy, AfterViewInit, IDetailObj {
   ngOnDestroy(): void {
-    this.isDestroyed$.next(true); this.isDestroyed$.complete(); this.isDestroyed$.unsubscribe();
+    this.isDestroyed$.next(true);
+    this.isDestroyed$.complete();
+    this.isDestroyed$.unsubscribe();
   }
-  @ViewChild('loadBuy') loadBuy:LoadBuyComponent;
-    
-  constructor (
-    public fb:FormBuilder,
+  @ViewChild("loadBuy") loadBuy: LoadBuyComponent;
+
+  constructor(
+    public fb: FormBuilder,
     private actRoute: ActivatedRoute,
     private df: LoadService,
     private cf: CommonFunctionsService
-  ){}
+  ) {}
 
   ngOnInit() {
     this.isDestroyed$ = new Subject<boolean>();
@@ -40,174 +48,166 @@ export class LoadComponent implements OnInit, OnDestroy, AfterViewInit, IDetailO
     this.initData();
   }
 
-  dataObj:any;
-  
-  isDestroyed$:Subject<boolean>;
-  isPending: boolean=true;
+  dataObj: any;
+
+  isDestroyed$: Subject<boolean>;
+  isPending: boolean = true;
   navDetailInfo: INavDetailInfo = <INavDetailInfo>{
     title: {
       subtitle: "szczegóły, edycja",
-      title: "Ładunek"
+      title: "Ładunek",
     },
-    basicActions: {
-
-    }
+    basicActions: {},
   };
-  deficyt:number;
-  rForm: FormGroup ;
+  deficyt: number;
+  rForm: FormGroup;
   routeId: number;
 
-    
-  get buy():FormGroup
-  {
-    return <FormGroup>this.rForm.get('buy');
+  get buy(): FormGroup {
+    return <FormGroup>this.rForm.get("buy");
   }
 
-  get buyId():FormControl
-  {
-    return <FormControl>this.rForm.get('buy.loadBuyId');
+  get buyId(): FormControl {
+    return <FormControl>this.rForm.get("buy.loadBuyId");
   }
-  get buyingInfoPrice()
-  {
-    return this.rForm.get('buy.buying_info.price');
+  get buyingInfoPrice() {
+    return this.rForm.get("buy.buying_info.price");
   }
 
-  get creationInfo():FormControl
-  {
-    return <FormControl>this.rForm.get('creationInfo');
+  get creationInfo(): FormControl {
+    return <FormControl>this.rForm.get("creationInfo");
   }
-  get isTransEu():boolean
-  {
+  get isTransEu(): boolean {
     return this.rForm.value.transEu;
   }
 
-  get isSell():boolean
-  {
+  get isSell(): boolean {
     return this.rForm.value.sell.loadSellId;
   }
 
-  
-   get isSellInvoiceSell():boolean
-  {
+  get isSellInvoiceSell(): boolean {
     return this.rForm.value.sell;
-  } 
-
-  get loadExtraInfo():FormGroup
-  {
-  return <FormGroup>this.rForm.get('loadExtraInfo');
   }
 
-  get sell():FormGroup
-  {
-    return <FormGroup>this.rForm.get('sell');
+  get loadExtraInfo(): FormGroup {
+    return <FormGroup>this.rForm.get("loadExtraInfo");
   }
 
-  get sellingInfoPrice()
-  {
-    return this.rForm.get('sell.selling_info.price');
+  get sell(): FormGroup {
+    return <FormGroup>this.rForm.get("sell");
   }
 
-
-  get transEu():FormGroup
-  {
-    return <FormGroup>this.rForm.get('transEu');    
+  get sellingInfoPrice() {
+    return this.rForm.get("sell.selling_info.price");
   }
 
-  get buyingPrice(){
-    return this.rForm.get('buy.buying_info.price');
+  get transEu(): FormGroup {
+    return <FormGroup>this.rForm.get("transEu");
   }
 
- 
-  initForm(): void
-  {
-    this.rForm=this.cf.formLoadGroup(this.fb, this.isDestroyed$);
+  get buyingPrice() {
+    return this.rForm.get("buy.buying_info.price");
   }
 
-  initRouteId(): void 
-  {
-    this.actRoute.paramMap
-    .takeUntil(this.isDestroyed$)
-    .subscribe(s=>{
-      this.routeId=+s.get('id');
-    })
+  initForm(): void {
+    this.rForm = this.cf.formLoadGroup(this.fb, this.isDestroyed$);
   }
 
-  initData(): void 
-  {
-    if(this.routeId>0){
-      this.df.getById(this.routeId)
-      .take(1)
-      .subscribe((s:ILoad)=>{
-        this.cf.toastMake(`Pobrano dane ${s.loadNo} [id: ${s.loadId}]`, "initData", this.actRoute);
-        this.cf.patchLoad(s, this.rForm, this.fb, this.isDestroyed$);
-        this.isPending=false;
-      });      
+  initRouteId(): void {
+    this.actRoute.paramMap.pipe(takeUntil(this.isDestroyed$)).subscribe((s) => {
+      this.routeId = +s.get("id");
+    });
+  }
+
+  initData(): void {
+    if (this.routeId > 0) {
+      this.df
+        .getById(this.routeId)
+        .pipe(take(1))
+        .subscribe((s: ILoad) => {
+          this.cf.toastMake(
+            `Pobrano dane ${s.loadNo} [id: ${s.loadId}]`,
+            "initData",
+            this.actRoute
+          );
+          this.cf.patchLoad(s, this.rForm, this.fb, this.isDestroyed$);
+          this.isPending = false;
+        });
     } else {
-      this.isPending=false;
+      this.isPending = false;
     }
   }
-  
-  invoiceSellGen(){
-    this.isPending=true;
-    let id=this.rForm.value.loadId;
-    this.df.loadInvoiceSellGen(id)
-    .take(1)
-    .switchMap(()=>this.df.getById(id).take(1))
-    .take(1)
-    .subscribe(s=>{
-      this.cf.toastMake(`Utworzono fakturę sprzedaży`, "invoiceSellGen", this.actRoute);
-      this.cf.patchLoad(s,this.rForm, this.fb,this.isDestroyed$);
-      this.isPending=false;
-    });
+
+  invoiceSellGen() {
+    this.isPending = true;
+    let id = this.rForm.value.loadId;
+    this.df
+      .loadInvoiceSellGen(id)
+      .pipe(
+        take(1),
+        switchMap(() => this.df.getById(id).pipe(take(1))),
+        take(1)
+      )
+
+      .subscribe((s) => {
+        this.cf.toastMake(
+          `Utworzono fakturę sprzedaży`,
+          "invoiceSellGen",
+          this.actRoute
+        );
+        this.cf.patchLoad(s, this.rForm, this.fb, this.isDestroyed$);
+        this.isPending = false;
+      });
   }
 
-  public ngAfterViewInit(): void 
-  {
+  public ngAfterViewInit(): void {
     this.rForm.valueChanges
-    .delay(1000)
-    .debounceTime(1000)
-    .takeWhile(()=>this.isDestroyed$ && this.rForm.value.sell)
-    .subscribe(()=>{
-      if(this.rForm.valid){
-      }
-    });
+      .pipe(
+        delay(1000),
+        debounceTime(1000),
+        takeWhile(() => this.isDestroyed$ && this.rForm.value.sell)
+      )
+
+      .subscribe(() => {
+        if (this.rForm.valid) {
+        }
+      });
   }
 
-  formUpdate()
-  {
+  formUpdate() {
     this.rForm.markAsDirty();
-    
   }
 
-  navGetCode():void
-  {
+  navGetCode(): void {
     console.log(JSON.stringify(this.rForm.value));
   }
 
-  navCancel(): void {
-  }
+  navCancel(): void {}
   navDownload(): void {
     throw new Error("Method not implemented.");
   }
   navDelete(): void {
     throw new Error("Method not implemented.");
   }
-  navSave(): void 
-  {
+  navSave(): void {}
+
+  offerGenPdf() {
+    this.df
+      .genPdf(this.rForm.value)
+      .pipe(
+        map((res) => {
+          return new Blob([res, "application/pdf"], {
+            type: "application/pdf",
+          });
+        }),
+        takeUntil(this.isDestroyed$)
+      )
+
+      .subscribe((s) => {
+        saveAs(
+          s,
+          "Zlecenie przewozowe nr " + this.rForm.get("loadNo").value + ".pdf"
+        );
+      });
   }
-
-  offerGenPdf(){
-    this.df.genPdf(this.rForm.value)
-    .map(res=>{
-      return new Blob([res, 'application/pdf'], {type: 'application/pdf'});
-    })
-    .takeUntil(this.isDestroyed$)
-    .subscribe(s=>{
-      saveAs(s, 'Zlecenie przewozowe nr '+this.rForm.get('loadNo').value+'.pdf');
-    })
-  }
-
-
-
-
 }

@@ -24,20 +24,21 @@ import {
   IValueViewValue,
   IViewValueGroupName,
 } from "../shared/interfaces/ivalue-view-value";
-import { ITransportOffer } from "../ui/transport/interfaces/itransport-offer";
+import { ITransportOffer } from "../other-modules/transport/interfaces/itransport-offer";
 import { Subject } from "rxjs";
-import { PaymentTermsService } from "@bpShared/payment-terms/payment-terms.service";
 import { CurrencyCommonService } from "app/other-modules/currency/currency-common.service";
 import { ICurrencyNbp } from "app/other-modules/currency/interfaces/i-currency-nbp";
 import { Moment } from "moment";
-import { IPaymentTerm } from "@bpShared/payment-terms/i-payment-term";
-import { MomentCommonService } from "@bpShared/moment-common/moment-common.service";
+import { IPaymentTerm } from "app/other-modules/payment-terms/interfaces/i-payment-term";
 import { isArray } from "util";
 import { ContractorService } from "app/other-modules/contractors/services/contractor.service";
 import {
   IInvoiceExtraInfo,
   IInvoiceExtraInfoChecked,
 } from "app/other-modules/invoices/interfaces/iinvoice-sell";
+import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
+import { PaymentTermsService } from "app/other-modules/payment-terms/services/payment-terms.service";
+import { takeUntil } from "rxjs/operators";
 
 @Injectable()
 export class CommonFunctionsService {
@@ -797,7 +798,7 @@ export class CommonFunctionsService {
 
     res
       .get("date")
-      .valueChanges.takeUntil(isDestroyed$)
+      .valueChanges.pipe(takeUntil(isDestroyed$))
       .subscribe((s: Moment) => {
         let _day0 = <FormControl>res.get("paymentTerms.day0");
         _day0.setValue(s, { emitEvent: true });
@@ -818,7 +819,7 @@ export class CommonFunctionsService {
     });
     pallet
       .get("type")
-      .valueChanges.takeUntil(isDestroyed$)
+      .valueChanges.pipe(takeUntil(isDestroyed$))
       .subscribe((s) => {
         let dimmensions = pallet.get("dimmension");
         let amount = pallet.get("amount");

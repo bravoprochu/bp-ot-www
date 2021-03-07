@@ -1,10 +1,10 @@
-import { Observable } from "rxjs/Rx";
+import { Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { DataFactoryService } from "app/services/data-factory.service";
 import { environment } from "environments/environment";
 import { TokenService } from "app/services/token.service";
-import { catchError, take } from "rxjs/operators";
+import { catchError, take, takeUntil } from "rxjs/operators";
 import {
   FormBuilder,
   FormControl,
@@ -101,7 +101,7 @@ export class TransportService extends DataFactoryService {
 
     res
       .get("date")
-      .valueChanges.takeUntil(isDestroyed$)
+      .valueChanges.pipe(takeUntil(isDestroyed$))
       .subscribe((s: Moment) => {
         let _day0 = <FormControl>res.get("paymentTerms.day0");
         _day0.setValue(s, { emitEvent: true });

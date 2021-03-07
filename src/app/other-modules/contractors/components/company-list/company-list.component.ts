@@ -1,12 +1,8 @@
 import { DialogDataTypes } from "../../../../shared/enums/dialog-data-types.enum";
 import { IDialogData } from "../../../../shared/interfaces/i-dialog-data";
-import { CommonFunctionsService } from "../../../../services/common-functions.service";
 import { CompanyComponent } from "../company/company.component";
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import "rxjs/add/operator/take";
-import { Subject } from "rxjs/Subject";
-import "rxjs/add/operator/debounceTime";
-import "rxjs/add/operator/switchMap";
+import { Subject } from "rxjs";
 import { ActivatedRoute } from "@angular/router";
 import { IListObj } from "app/shared/ilist-obj";
 import { ITitle } from "app/shared/ititle";
@@ -18,7 +14,7 @@ import {
 } from "@angular/material";
 import { ContractorService } from "../../services/contractor.service";
 import { ViewChild } from "@angular/core";
-import { take } from "rxjs/operators";
+import { take, takeUntil } from "rxjs/operators";
 import { saveAs } from "file-saver";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import { ICompany } from "../../interfaces/icompany";
@@ -50,7 +46,6 @@ export class CompanyListComponent implements OnInit, OnDestroy, IListObj {
     this.isDestroyed$.unsubscribe();
   }
   constructor(
-    private actRoute: ActivatedRoute,
     private contractorService: ContractorService,
     private dialog: MatDialog,
     private toastService: ToastMakeService
@@ -65,7 +60,7 @@ export class CompanyListComponent implements OnInit, OnDestroy, IListObj {
   initData(): void {
     this.contractorService
       .getAll()
-      .takeUntil(this.isDestroyed$)
+      .pipe(takeUntil(this.isDestroyed$))
       .subscribe((s) => {
         this.dataSource = new MatTableDataSource<ICompany>(s);
         this.toastService.toastMake(
@@ -131,7 +126,7 @@ export class CompanyListComponent implements OnInit, OnDestroy, IListObj {
               width: "80%",
             })
             .afterClosed()
-            .take(1)
+            .pipe(take(1), takeUntil(this.isDestroyed$))
             .subscribe((s: ICompany) => {
               if (s != undefined) {
                 this.ngOnInit();

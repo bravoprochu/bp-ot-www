@@ -1,12 +1,7 @@
 import { TokenService } from "../../../../services/token.service";
-import { uiRoutes } from "../../../../ui/ui-routing.module";
 import { Component, OnInit, Input, OnDestroy } from "@angular/core";
-import { Route } from "@angular/router";
 import { MatDialogRef } from "@angular/material";
-import { Subject } from "rxjs/Subject";
-import "rxjs/add/operator/filter";
-import "rxjs/add/operator/map";
-import "rxjs/add/operator/mergeAll";
+import { Subject } from "rxjs";
 import { INavRoute } from "../../interfaces/i-nav-route";
 import { ROUTES_LIST_DATA } from "../../data/routes-list-data";
 

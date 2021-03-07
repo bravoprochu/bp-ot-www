@@ -22,6 +22,7 @@ import * as moment from "moment";
 import { IDateRange } from "@bpCommonInterfaces/i-date-range";
 import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 import { PaymentTermsService } from "app/other-modules/payment-terms/services/payment-terms.service";
+import { takeUntil } from "rxjs/operators";
 
 @Injectable()
 export class InvoiceCommonFunctionsService {
@@ -183,7 +184,7 @@ export class InvoiceCommonFunctionsService {
 
     res
       .get("dateOfSell")
-      .valueChanges.takeUntil(isDestroyed$)
+      .valueChanges.pipe(takeUntil(isDestroyed$))
       .subscribe((s) => {
         res.get("paymentTerms.day0").patchValue(s, { emitEvent: false });
       });
@@ -458,7 +459,7 @@ export class InvoiceCommonFunctionsService {
       },
     });
     d.afterClosed()
-      .takeUntil(isDestroyed$)
+      .pipe(takeUntil(isDestroyed$))
       .subscribe((s: boolean) => {
         if (s === true) {
           invoiceLines.removeAt(idx);

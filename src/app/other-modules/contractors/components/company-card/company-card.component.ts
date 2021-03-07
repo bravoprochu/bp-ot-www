@@ -1,16 +1,16 @@
 import { DialogDataTypes } from "../../../../shared/enums/dialog-data-types.enum";
 import { IDialogData } from "../../../../shared/interfaces/i-dialog-data";
 import { CompanyComponent } from "../company/company.component";
-import { Observable, Subject } from "rxjs/Rx";
+import { Observable, Subject, empty } from "rxjs";
 import { FormArray, FormBuilder, FormControl, FormGroup } from "@angular/forms";
 import { Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { MatAutocomplete, MatDialog } from "@angular/material";
 import { ContractorService } from "../../services/contractor.service";
-import { empty } from "rxjs";
 import {
   debounceTime,
   distinctUntilChanged,
   switchMap,
+  take,
   takeUntil,
 } from "rxjs/operators";
 import { ICompany } from "../../interfaces/icompany";
@@ -82,13 +82,13 @@ export class CompanyCardComponent implements OnInit, OnDestroy {
         if (sw == null || sw == "" || typeof sw == "object") {
           return empty();
         } else {
-          return this.companyService.getByKey(sw).take(1);
+          return this.companyService.getByKey(sw).pipe(take(1));
         }
       }),
       takeUntil(this.isDestroyed$)
     );
 
-    this.ac.optionSelected.takeUntil(this.isDestroyed$).subscribe((s) => {
+    this.ac.optionSelected.pipe(takeUntil(this.isDestroyed$)).subscribe((s) => {
       this.companyService.patchCompanyData(
         <ICompany>s.option.value,
         this.rForm,

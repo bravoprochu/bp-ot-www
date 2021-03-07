@@ -10,7 +10,7 @@ import { Subject } from "rxjs";
 import { Moment } from "moment";
 import { DEFAULT_APP_VALUES } from "environments/environment";
 import { saveAs } from "file-saver";
-import { take } from "rxjs/operators";
+import { take, takeUntil } from "rxjs/operators";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 import { InvoiceCommonFunctionsService } from "../../common/invoice-common-functions.service";
 
@@ -74,7 +74,7 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, IListObj {
     ];
     this.invoiceSellService
       .getAll(dateRange)
-      .takeUntil(this.isDestroyed$)
+      .pipe(takeUntil(this.isDestroyed$))
       .subscribe((s: any) => {
         this.dataSource = new MatTableDataSource(s);
         this.toastService.toastMake(
