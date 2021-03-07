@@ -23,7 +23,7 @@ const routes: Routes = [
     data: { allowed: UserRolesEnum.Spedytor },
   },
   { path: "", redirectTo: "lista", pathMatch: "full" },
-  { path: "**", redirectTo: "kontrahent" },
+  { path: "**", redirectTo: "lista" },
 ];
 
 @NgModule({
