@@ -1,18 +1,17 @@
-import { IErrorObj } from '../interfaces/ierror-object';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from "@angular/core";
+import { IErrorObj } from "app/auth/interfaces/ierror-object";
 
 @Component({
-  selector: 'app-error-object',
-  templateUrl: './error-object.component.html',
-  styleUrls: ['./error-object.component.css']
+  selector: "app-error-object",
+  templateUrl: "./error-object.component.html",
+  styleUrls: ["./error-object.component.css"],
 })
 export class ErrorObjectComponent implements OnInit {
-@Input() errorObj:IErrorObj[];
+  @Input() errorObj: IErrorObj[];
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
-    this.errorObj=this.errorObj? this.errorObj: [];
+    this.errorObj = this.errorObj ? this.errorObj : [];
   }
-
 }

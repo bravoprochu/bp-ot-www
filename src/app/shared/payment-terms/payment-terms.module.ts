@@ -1,26 +1,31 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { PaymentTermsComponent } from './payment-terms/payment-terms.component';
-import { SharedMaterialMinModule } from '@bpMaterialMin/shared-material-min.module';
-import { SharedMaterialRestModule } from '@bpMaterialRest/shared-material-rest.module';
-import { PaymentTermsService } from './payment-terms.service';
-import { MomentCommonModule } from '@bpShared/moment-common/moment-common.module';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { PaymentTermsComponent } from "./payment-terms/payment-terms.component";
+import { PaymentTermsService } from "./payment-terms.service";
+import { MomentCommonModule } from "@bpShared/moment-common/moment-common.module";
+import { FlexLayoutModule } from "@angular/flex-layout";
+import { ReactiveFormsModule } from "@angular/forms";
+import {
+  MatDatepickerModule,
+  MatIconModule,
+  MatInputModule,
+  MatSelectModule,
+} from "@angular/material";
+
+const IMPORT_EXPORT_MODULES = [
+  FlexLayoutModule,
+  MatDatepickerModule,
+  MatInputModule,
+  MatIconModule,
+  MatSelectModule,
+  MomentCommonModule,
+  ReactiveFormsModule,
+];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    SharedMaterialMinModule,
-    SharedMaterialRestModule,
-    MomentCommonModule,
-  ],
-  declarations: [
-    PaymentTermsComponent
-  ],
-  exports:[
-    PaymentTermsComponent
-  ],
-  providers: [
-    PaymentTermsService
-  ]
+  imports: [CommonModule, IMPORT_EXPORT_MODULES],
+  declarations: [PaymentTermsComponent],
+  exports: [IMPORT_EXPORT_MODULES, PaymentTermsComponent],
+  providers: [PaymentTermsService],
 })
-export class PaymentTermsModule { }
+export class PaymentTermsModule {}

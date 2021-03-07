@@ -10,6 +10,10 @@ const routes: Routes = [
     loadChildren:
       "./other-modules/contractors/contractors.module#ContractorsModule",
   },
+  {
+    path: "invoices",
+    loadChildren: "./other-modules/invoices/invoices.module#InvoicesModule",
+  },
   { path: "home", component: HomeComponent },
   { path: "not-found", component: NotFoundComponent },
   { path: "", redirectTo: "/home", pathMatch: "full" },

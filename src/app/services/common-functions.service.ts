@@ -27,17 +27,17 @@ import {
 import { ITransportOffer } from "../ui/transport/interfaces/itransport-offer";
 import { Subject } from "rxjs";
 import { PaymentTermsService } from "@bpShared/payment-terms/payment-terms.service";
-import { CurrencyCommonService } from "@bpShared/currency/currency-common.service";
-import { ICurrencyNbp } from "@bpShared/currency/interfaces/i-currency-nbp";
+import { CurrencyCommonService } from "app/other-modules/currency/currency-common.service";
+import { ICurrencyNbp } from "app/other-modules/currency/interfaces/i-currency-nbp";
 import { Moment } from "moment";
 import { IPaymentTerm } from "@bpShared/payment-terms/i-payment-term";
 import { MomentCommonService } from "@bpShared/moment-common/moment-common.service";
-import {
-  IInvoiceExtraInfoChecked,
-  IInvoiceExtraInfo,
-} from "@bpUI/invoice/interfaces/iinvoice-sell";
 import { isArray } from "util";
 import { ContractorService } from "app/other-modules/contractors/services/contractor.service";
+import {
+  IInvoiceExtraInfo,
+  IInvoiceExtraInfoChecked,
+} from "app/other-modules/invoices/interfaces/iinvoice-sell";
 
 @Injectable()
 export class CommonFunctionsService {

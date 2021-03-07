@@ -1,18 +1,13 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+import { InvoiceSellPaymentRemindComponent } from "app/other-modules/invoices/invoice-sell-payment-remind/invoice-sell-payment-remind.component";
 import { IdentGuard } from "app/ui/guards/ident.guard";
-import { InvoiceBuyListComponent } from "app/ui/invoice/invoice-buy/invoice-buy-list/invoice-buy-list.component";
-import { InvoiceBuyComponent } from "app/ui/invoice/invoice-buy/invoice-buy/invoice-buy.component";
-import { InvoiceSellListComponent } from "app/ui/invoice/invoice-sell/invoice-sell-list/invoice-sell-list.component";
-import { InvoiceSellComponent } from "app/ui/invoice/invoice-sell/invoice-sell/invoice-sell.component";
 import { LoadListComponent } from "app/ui/loads/load-list/load-list.component";
 import { LoadComponent } from "app/ui/loads/load/load.component";
 import { TransportListComponent } from "app/ui/transport/transport-list/transport-list.component";
 import { TransportComponent } from "app/ui/transport/transport/transport.component";
-
 import { UserRolesEnum } from "../shared/enums/user-roles.enum";
 import { UsersManagementComponent } from "./users-management/users-management.component";
-import { InvoiceSellPaymentRemindComponent } from "app/ui/invoice/invoice-sell-payment-remind/invoice-sell-payment-remind.component";
 
 export const uiRoutes: Routes = [
   {
@@ -30,30 +25,6 @@ export const uiRoutes: Routes = [
     component: LoadComponent,
     canActivate: [IdentGuard],
     data: { allowed: UserRolesEnum.Spedytor },
-  },
-  {
-    path: "fakturaSprzedazy",
-    component: InvoiceSellListComponent,
-    canActivate: [IdentGuard],
-    data: { allowed: UserRolesEnum.Finanse, name: "Faktura sprzedaży" },
-  },
-  {
-    path: "fakturaSprzedazy/:id",
-    component: InvoiceSellComponent,
-    canActivate: [IdentGuard],
-    data: { allowed: UserRolesEnum.Finanse },
-  },
-  {
-    path: "fakturaZakupu",
-    component: InvoiceBuyListComponent,
-    canActivate: [IdentGuard],
-    data: { allowed: UserRolesEnum.Finanse, name: "Faktura zakupu" },
-  },
-  {
-    path: "fakturaZakupu/:id",
-    component: InvoiceBuyComponent,
-    canActivate: [IdentGuard],
-    data: { allowed: UserRolesEnum.Finanse },
   },
   {
     path: "rozliczeniaSprzedaz",
