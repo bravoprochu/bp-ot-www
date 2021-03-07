@@ -1,8 +1,7 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { PaymentTermsComponent } from "./payment-terms/payment-terms.component";
-import { PaymentTermsService } from "./payment-terms.service";
-import { MomentCommonModule } from "@bpShared/moment-common/moment-common.module";
+import { MomentCommonModule } from "app/other-modules/moment-common/moment-common.module";
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { ReactiveFormsModule } from "@angular/forms";
 import {
@@ -11,6 +10,7 @@ import {
   MatInputModule,
   MatSelectModule,
 } from "@angular/material";
+import { PaymentTermsService } from "./services/payment-terms.service";
 
 const IMPORT_EXPORT_MODULES = [
   FlexLayoutModule,
