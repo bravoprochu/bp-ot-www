@@ -7,12 +7,13 @@ import {
   Output,
 } from "@angular/core";
 import { MatDialog } from "@angular/material";
-import { DialogTakNieComponent } from "app/shared/dialog-tak-nie/dialog-tak-nie.component";
+import { DialogTakNieComponent } from "app/other-modules/dialog-tak-nie/components/dialog-tak-nie/dialog-tak-nie.component";
 import { FormGroup } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { Location } from "@angular/common";
 
 @Component({
   selector: "app-nav-detail",
@@ -36,8 +37,8 @@ export class NavDetailComponent implements OnInit, OnDestroy {
 
   constructor(
     public dialog: MatDialog,
-    private router: Router,
-    private activeRoute: ActivatedRoute
+    private activeRoute: ActivatedRoute,
+    private location: Location
   ) {}
 
   ngOnDestroy(): void {
@@ -59,9 +60,7 @@ export class NavDetailComponent implements OnInit, OnDestroy {
   }
 
   goBack() {
-    this.activeRoute.url.pipe(takeUntil(this.isDestroyed$)).subscribe((s) => {
-      this.router.navigateByUrl(s[0].path);
-    });
+    this.location.back();
   }
 
   cancel() {
