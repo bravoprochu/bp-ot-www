@@ -10,6 +10,7 @@ import {
 } from "@angular/material";
 import { RouterModule } from "@angular/router";
 import { DialogTakNieModule } from "../dialog-tak-nie/dialog-tak-nie.module";
+import { ReactiveFormsModule } from "@angular/forms";
 
 const IMPORT_EXPORT_MODULES = [
   DialogTakNieModule,
@@ -19,6 +20,7 @@ const IMPORT_EXPORT_MODULES = [
   MatIconModule,
   MatTooltipModule,
   RouterModule,
+  ReactiveFormsModule,
 ];
 
 @NgModule({

@@ -32,7 +32,7 @@ export const ROUTES_LIST_DATA: INavRoute[] = [
     description: "Rejestr zakupionych transportów i ich statusy",
   },
   {
-    route: "user-management",
+    route: "user-management/zarzadzanie-uzytkownikami",
     name: "Zarządzanie użytkownikami",
     group: "Admin",
     description:

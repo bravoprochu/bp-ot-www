@@ -14,6 +14,15 @@ const routes: Routes = [
     path: "invoices",
     loadChildren: "./other-modules/invoices/invoices.module#InvoicesModule",
   },
+  {
+    path: "transport",
+    loadChildren: "./other-modules/transport/transport.module#TransportModule",
+  },
+  {
+    path: "user-management",
+    loadChildren:
+      "./other-modules/user-management/user-management.module#UserManagementModule",
+  },
   { path: "home", component: HomeComponent },
   { path: "not-found", component: NotFoundComponent },
   { path: "", redirectTo: "/home", pathMatch: "full" },
