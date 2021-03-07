@@ -26,7 +26,7 @@ export const ROUTES_LIST_DATA: INavRoute[] = [
     description: "Proces od zakupu po sprzedaż",
   },
   {
-    route: "transport",
+    route: "transport/lista",
     name: "Transport",
     group: "Transport",
     description: "Rejestr zakupionych transportów i ich statusy",

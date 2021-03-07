@@ -1,21 +1,22 @@
-import { ITransportOffer } from "../interfaces/itransport-offer";
+import { ITransportOffer } from "../../interfaces/itransport-offer";
 import { FormBuilder, FormControl } from "@angular/forms";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { IDetailObj } from "app/shared/idetail-obj";
 import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
-import { CommonFunctionsService } from "app/services/common-functions.service";
 import { FormGroup } from "@angular/forms/src/model";
-import { TransportService } from "app/ui/transport/services/transport.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MatDialog } from "@angular/material";
-import { DialogTakNieComponent } from "app/shared/dialog-tak-nie/dialog-tak-nie.component";
+import { DialogTakNieComponent } from "app/other-modules/dialog-tak-nie/components/dialog-tak-nie/dialog-tak-nie.component";
 import { IDialogTakNieInfo } from "app/shared/interfaces/idialog-tak-nie-info";
 import { Observable } from "rxjs/Observable";
 import { Subject } from "rxjs";
 import * as moment from "moment";
-import { ICurrency } from "@bpShared/currency/interfaces/i-currency";
+import { ICurrency } from "app/other-modules/currency/interfaces/i-currency";
 import { finalize, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { empty } from "rxjs";
+import { TransportService } from "../../services/transport.service";
+import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
+import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 
 @Component({
   selector: "app-transport",
@@ -39,10 +40,11 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
 
   constructor(
     private actRoute: ActivatedRoute,
-    private cf: CommonFunctionsService,
     private df: TransportService,
     private dialogTakNie: MatDialog,
-    private router: Router
+    private momentService: MomentCommonService,
+    private router: Router,
+    private toastService: ToastMakeService
   ) {}
 
   ngOnDestroy(): void {
@@ -58,7 +60,7 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
   initForm(): void {
-    this.rForm = this.cf.formTransportGroup(this.fb, this.isDestroyed$);
+    this.rForm = this.df.formTransportGroup(this.fb, this.isDestroyed$);
   }
 
   initRouteId(): void {
@@ -81,17 +83,16 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
           })
         )
         .subscribe((data: ITransportOffer) => {
-          this.cf.toastMake(
+          this.toastService.toastMake(
             `Pobrano dane ${data.offerNo}, [id: ${data.transportOfferId}]`,
-            "initData",
-            this.actRoute
+            "initData"
           );
-          this.cf.patchTransport(data, this.rForm, this.fb, this.isDestroyed$);
+          this.df.patchTransport(data, this.rForm, this.fb, this.isDestroyed$);
           this.rForm.markAsPristine();
         });
     } else {
-      this.loadDate.patchValue(this.cf.getNextHour());
-      this.unloadDate.patchValue(this.cf.getNextHour(2));
+      this.loadDate.patchValue(this.momentService.getNextHour());
+      this.unloadDate.patchValue(this.momentService.getNextHour(2));
       this.isPending = false;
       this.isFormReady = true;
     }
@@ -135,10 +136,9 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
             }
           }),
           switchMap((sw) => {
-            this.cf.toastMake(
+            this.toastService.toastMake(
               "Generuję fakturę sprzedaży",
-              "Transport - potwierdzenie",
-              this.actRoute
+              "Transport - potwierdzenie"
             );
             if (sw) {
               return this.df.invoiceSellGen(id, true);
@@ -148,10 +148,9 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
           }),
           switchMap((sw) => this.df.getById(id)),
           tap((d) =>
-            this.cf.toastMake(
+            this.toastService.toastMake(
               "Pobieram zaktualizowane dane",
-              "Transport - potwierdzenie",
-              this.actRoute
+              "Transport - potwierdzenie"
             )
           ),
           take(1),
@@ -159,7 +158,7 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
           takeUntil(this.isDestroyed$)
         )
         .subscribe((s) => {
-          this.cf.patchTransport(s, this.rForm, this.fb, this.isDestroyed$);
+          this.df.patchTransport(s, this.rForm, this.fb, this.isDestroyed$);
         });
     }
   }
@@ -186,10 +185,9 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
       .afterClosed()
       .switchMap((sw) => {
         if (sw) {
-          this.cf.toastMake(
+          this.toastService.toastMake(
             `Trwa usuwanie zlecenia transportowego ${this.offerNo.value}`,
-            "navDelete",
-            this.actRoute
+            "navDelete"
           );
           return this.df.delete(this.id.value);
         } else {
@@ -199,9 +197,9 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
       .take(1)
       .subscribe((s) => {
         if (s != null) {
-          this.cf.toastMake(s["info"], "navDelete", this.actRoute);
+          this.toastService.toastMake(s["info"], "navDelete");
         } else {
-          this.cf.toastMake(`Usunięto dane`, "navDelete", this.actRoute);
+          this.toastService.toastMake(`Usunięto dane`, "navDelete");
           this.router.navigate(["transport"]);
         }
       });
@@ -220,7 +218,7 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
       .pipe(
         take(1),
         switchMap((sw) => {
-          this.cf.toastMake(`Aktualizuje dane`, "navSave", this.actRoute);
+          this.toastService.toastMake(`Aktualizuje dane`, "navSave");
           return this.df.getById(id).take(1);
         }),
         finalize(() => {
@@ -229,12 +227,11 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
         takeUntil(this.isDestroyed$)
       )
       .subscribe((s) => {
-        this.cf.toastMake(
+        this.toastService.toastMake(
           `Pobrano zaktualizowane dane ${s.offerNo}, [id: ${s.transportOfferId}]`,
-          "navSave",
-          this.actRoute
+          "navSave"
         );
-        this.cf.patchTransport(s, this.rForm, this.fb, this.isDestroyed$);
+        this.df.patchTransport(s, this.rForm, this.fb, this.isDestroyed$);
         this.rForm.markAsPristine();
       });
   }

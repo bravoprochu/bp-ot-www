@@ -2,17 +2,15 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { IListObj } from "app/shared/ilist-obj";
 import { ITitle } from "app/shared/ititle";
-
-import { TransportService } from "../services/transport.service";
-import { CommonFunctionsService } from "app/services/common-functions.service";
 import { MatSort, MatTableDataSource, MatPaginator } from "@angular/material";
 import { IDateRange } from "app/shared/interfaces/i-date-range";
-
 import { Subject } from "rxjs";
-import { ITransportList } from "@bpUI/transport/interfaces/i-transport-list";
+import { ITransportList } from "app/other-modules/transport/interfaces/i-transport-list";
 import { saveAs } from "file-saver";
-
 import { finalize, take, takeUntil } from "rxjs/operators";
+import { TransportService } from "../../services/transport.service";
+import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
+import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 
 @Component({
   selector: "app-transport-list",
@@ -47,10 +45,10 @@ export class TransportListComponent implements OnInit, IListObj, OnDestroy {
   };
 
   constructor(
-    private actRoute: ActivatedRoute,
-    private cf: CommonFunctionsService,
-    private df: TransportService,
-    private router: Router
+    private transportService: TransportService,
+    private momentService: MomentCommonService,
+    private router: Router,
+    private toastService: ToastMakeService
   ) {}
 
   ngOnDestroy(): void {
@@ -60,21 +58,21 @@ export class TransportListComponent implements OnInit, IListObj, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.dateRange = this.cf.dateRangeLastQuarter();
+    this.dateRange = this.transportService.dateRangeLastQuarter();
     this.isDestroyed$ = new Subject<boolean>();
     this.isPending = true;
     this.initData(this.dateRange);
   }
 
   createNew(): void {
-    this.router.navigate(["transport", 0]);
+    this.router.navigate(["transport/transport", 0]);
   }
   edit(id: number): void {
-    this.router.navigate(["transport", id]);
+    this.router.navigate(["transport/transport", id]);
   }
   initData(dateRange: IDateRange): void {
     this.isPending = true;
-    this.df
+    this.transportService
       .getAll(dateRange)
       .pipe(
         take(1),
@@ -86,14 +84,17 @@ export class TransportListComponent implements OnInit, IListObj, OnDestroy {
       .subscribe((s) => {
         this.data = s;
         this.dataSource = new MatTableDataSource(s);
-        this.cf.toastMake(
+        this.toastService.toastMake(
           `Pobrano dane, razem: ${s.length}`,
-          "initData",
-          this.actRoute
+          "initData"
         );
         this.dataSource.sort = this.sort;
-        this.paginator.pageSize = this.cf.paginatorPageSize(s.length);
-        this.paginator.pageSizeOptions = this.cf.paginatorLimitOption(s.length);
+        this.paginator.pageSize = this.transportService.paginatorPageSize(
+          s.length
+        );
+        this.paginator.pageSizeOptions = this.transportService.paginatorLimitOption(
+          s.length
+        );
         this.dataSource.paginator = this.paginator;
       });
   }
@@ -115,15 +116,15 @@ export class TransportListComponent implements OnInit, IListObj, OnDestroy {
       .subscribe(
         (_data: any) => {
           let b = new Blob(
-            [this.cf.csvConverter(_data, this.displayedColumns)],
+            [this.transportService.csvConverter(_data, this.displayedColumns)],
             { type: "text/csv;charset=utf-8;" }
           );
           saveAs(
             b,
             `Lista transportów ${this.dateRange.dateStart.format(
-              this.cf.dateLocaleFormat()
+              this.momentService.dateLocaleFormat()
             )} - ${this.dateRange.dateEnd.format(
-              this.cf.dateLocaleFormat()
+              this.momentService.dateLocaleFormat()
             )}.csv`
           );
         },
