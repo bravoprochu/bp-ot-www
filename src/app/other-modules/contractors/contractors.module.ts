@@ -22,11 +22,12 @@ import { CompanyComponent } from "./components/company/company.component";
 import { CompanyCardComponent } from "./components/company-card/company-card.component";
 import { ToastMakeModule } from "../toast-make/toast-make.module";
 import { PendingIndicatorModule } from "../pending-indicator/pending-indicator.module";
-import { TableDragDropOptionsComponent } from "@bpUI/shared/table-drag-drop-options/table-drag-drop-options.component";
 import { ContractorsRoutingModule } from "./contractors-routing.module";
 import { ContractorService } from "./services/contractor.service";
+import { DragDropOptionsModule } from "../drag-drop-options/drag-drop-options.module";
 
 const IMPORT_EXPORT_MODULES = [
+  DragDropOptionsModule,
   FlexLayoutModule,
   MatAutocompleteModule,
   MatButtonModule,
@@ -51,7 +52,6 @@ const IMPORT_EXPORT_MODULES = [
     CompanyListComponent,
     CompanyComponent,
     CompanyCardComponent,
-    TableDragDropOptionsComponent,
   ],
   entryComponents: [CompanyComponent, CompanyCardComponent],
   exports: [
