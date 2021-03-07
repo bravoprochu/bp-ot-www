@@ -26,8 +26,8 @@ import {
   distinctUntilKeyChanged,
 } from "rxjs/operators";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
-import { MomentCommonService } from "@bpShared/moment-common/moment-common.service";
 import { ICurrencyNbpResultRate } from "app/other-modules/currency/interfaces/i-currency-nbp-result-rate";
+import { MomentCommonService } from "../moment-common/services/moment-common.service";
 
 export const CURRENCY_LIST: ICurrency[] = [
   { currencyId: 1, description: "bat (Tajlandia)", name: "THB" },

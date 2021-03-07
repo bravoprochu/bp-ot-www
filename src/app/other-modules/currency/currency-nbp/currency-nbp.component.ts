@@ -3,8 +3,8 @@ import { FormControl, FormGroup } from "@angular/forms";
 import { Subject } from "rxjs";
 import { CurrencyCommonService } from "app/other-modules/currency/currency-common.service";
 import { Moment } from "moment";
-import { MomentCommonService } from "@bpShared/moment-common/moment-common.service";
 import { takeUntil } from "rxjs/operators";
+import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 
 @Component({
   selector: "app-currency-nbp",
