@@ -1,7 +1,7 @@
 import { Component, Input, EventEmitter, OnInit, Output } from "@angular/core";
 import { FormControl } from "@angular/forms/";
+import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 import { IDateRange } from "app/shared/interfaces/i-date-range";
-import { MomentCommonService } from "@bpShared/moment-common/moment-common.service";
 
 @Component({
   selector: "app-date-range",

@@ -15,6 +15,7 @@ import {
   MatMomentDateModule,
   MAT_MOMENT_DATE_ADAPTER_OPTIONS,
 } from "@angular/material-moment-adapter";
+import { MomentCommonModule } from "../moment-common/moment-common.module";
 
 const IMPORT_EXPORT_MODULES = [
   FlexLayoutModule,
@@ -24,6 +25,7 @@ const IMPORT_EXPORT_MODULES = [
   MatIconModule,
   MatInputModule,
   MatMomentDateModule,
+  MomentCommonModule,
   ReactiveFormsModule,
 ];
 
