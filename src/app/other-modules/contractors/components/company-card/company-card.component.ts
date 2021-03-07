@@ -1,7 +1,6 @@
 import { DialogDataTypes } from "../../../../shared/enums/dialog-data-types.enum";
 import { IDialogData } from "../../../../shared/interfaces/i-dialog-data";
 import { CompanyComponent } from "../company/company.component";
-import { CommonFunctionsService } from "../../../../services/common-functions.service";
 import { Observable, Subject } from "rxjs/Rx";
 import { FormArray, FormBuilder, FormControl, FormGroup } from "@angular/forms";
 import { Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
@@ -34,7 +33,6 @@ export class CompanyCardComponent implements OnInit, OnDestroy {
 
   constructor(
     private companyService: ContractorService,
-    private cf: CommonFunctionsService,
     private dialog: MatDialog
   ) {
     this.search$ = new FormControl();

@@ -5,7 +5,7 @@ import { FormArray, FormBuilder, FormGroup } from "@angular/forms";
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from "@angular/material";
 import { IDetailObj } from "app/shared/idetail-obj";
 import { IDialogTakNieInfo } from "../../../../shared/interfaces/idialog-tak-nie-info";
-import { DialogTakNieComponent } from "app/shared/dialog-tak-nie/dialog-tak-nie.component";
+import { DialogTakNieComponent } from "app/other-modules/dialog-tak-nie/components/dialog-tak-nie/dialog-tak-nie.component";
 import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
 import { ContractorService as ContractorService } from "../../services/contractor.service";
 import { FormControl } from "@angular/forms/src/model";

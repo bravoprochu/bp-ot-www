@@ -25,8 +25,10 @@ import { PendingIndicatorModule } from "../pending-indicator/pending-indicator.m
 import { ContractorsRoutingModule } from "./contractors-routing.module";
 import { ContractorService } from "./services/contractor.service";
 import { DragDropOptionsModule } from "../drag-drop-options/drag-drop-options.module";
+import { DialogTakNieModule } from "../dialog-tak-nie/dialog-tak-nie.module";
 
 const IMPORT_EXPORT_MODULES = [
+  DialogTakNieModule,
   DragDropOptionsModule,
   FlexLayoutModule,
   MatAutocompleteModule,
