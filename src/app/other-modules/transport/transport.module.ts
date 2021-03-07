@@ -46,7 +46,7 @@ const IMPORT_EXPORT_MODULES = [
 
 @NgModule({
   declarations: [TransportComponent, TransportListComponent],
-  exports: [IMPORT_EXPORT_MODULES, TransportComponent, TransportListComponent],
+  exports: [IMPORT_EXPORT_MODULES],
   imports: [CommonModule, TransportRoutingModule, IMPORT_EXPORT_MODULES],
   providers: [TransportService],
 })
