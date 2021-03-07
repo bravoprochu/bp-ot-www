@@ -15,7 +15,7 @@ import { Subject, empty } from "rxjs";
 import { InvoiceCommonFunctionsService } from "../../common/invoice-common-functions.service";
 import { CurrencyCommonService } from "app/other-modules/currency/currency-common.service";
 import { ICurrencyNbp } from "app/other-modules/currency/interfaces/i-currency-nbp";
-import { MomentCommonService } from "@bpShared/moment-common/moment-common.service";
+
 import {
   IInvoiceLineGroup,
   IInvoiceSell,
@@ -32,6 +32,7 @@ import { ICurrency } from "app/other-modules/currency/interfaces/i-currency";
 import { IInvoicePos } from "../../interfaces/iinvoice-pos";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 import { Location } from "@angular/common";
+import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 
 @Component({
   selector: "app-invoice-sell",

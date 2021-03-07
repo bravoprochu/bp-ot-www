@@ -33,7 +33,7 @@ const routes: Routes = [
   },
 
   { path: "", redirectTo: "fakturaSprzedazy", pathMatch: "full" },
-  { path: "**", redirectTo: "sprzedazLista" },
+  { path: "**", redirectTo: "fakturaSprzedazy" },
 ];
 
 @NgModule({

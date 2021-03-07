@@ -6,8 +6,8 @@ import {
 import { ICreationInfo } from "../../../shared/interfaces/i-creation-info";
 import { Moment } from "moment";
 import { ICurrency } from "app/other-modules/currency/interfaces/i-currency";
-import { IPaymentTerms } from "@bpShared/payment-terms/i-payment-terms";
 import { ICompany } from "app/other-modules/contractors/interfaces/icompany";
+import { IPaymentTerms } from "app/other-modules/payment-terms/interfaces/i-payment-terms";
 
 export interface IInvoiceCommon extends ICreationInfo {
   companyBuyer: ICompany;

@@ -1,8 +1,8 @@
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Component, OnInit, Input, OnDestroy } from "@angular/core";
-import { MomentCommonService } from "@bpShared/moment-common/moment-common.service";
 import { startWith, takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
+import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 
 @Component({
   selector: "app-extra-info-checked",

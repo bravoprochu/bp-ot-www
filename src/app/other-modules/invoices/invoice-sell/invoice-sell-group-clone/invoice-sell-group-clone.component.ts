@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { InvoiceSellService } from "../services/invoice-sell.service";
-import { CommonFunctionsService } from "app/services/common-functions.service";
-import { MomentCommonService } from "@bpShared/moment-common/moment-common.service";
+
 import {
   CdkDragDrop,
   moveItemInArray,
@@ -11,12 +10,12 @@ import { FormGroup, FormControl } from "@angular/forms";
 import { DialogTakNieComponent } from "app/other-modules/dialog-tak-nie/components/dialog-tak-nie/dialog-tak-nie.component";
 import { MatDialog } from "@angular/material";
 import { IDialogTakNieInfo } from "@bpCommonInterfaces/idialog-tak-nie-info";
-import { ActivatedRoute } from "@angular/router";
 import { empty, Subject } from "rxjs";
 import { take, switchMap, takeUntil, startWith } from "rxjs/operators";
 import { IInvoiceSellLineList } from "../../interfaces/i-invoice-line-list";
 import { IInvoiceSellGroupClone } from "../../interfaces/i-invoice-sell-group-clone";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
+import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 
 @Component({
   selector: "app-invoice-sell-group-clone",
@@ -31,7 +30,6 @@ export class InvoiceSellGroupCloneComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private actRoute: ActivatedRoute,
     private df: InvoiceSellService,
     private toastService: ToastMakeService,
     private dialogTakNie: MatDialog,

@@ -15,13 +15,13 @@ import {
   IInvoiceExtraInfo,
 } from "../interfaces/iinvoice-sell";
 import { IInvoiceRate } from "../interfaces/iinvoice-rate";
-import { MomentCommonService } from "@bpShared/moment-common/moment-common.service";
 import { ICreationInfo } from "@bpCommonInterfaces/i-creation-info";
-import { PaymentTermsService } from "@bpShared/payment-terms/payment-terms.service";
 import { CurrencyCommonService } from "app/other-modules/currency/currency-common.service";
 import { ContractorService } from "app/other-modules/contractors/services/contractor.service";
 import * as moment from "moment";
 import { IDateRange } from "@bpCommonInterfaces/i-date-range";
+import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
+import { PaymentTermsService } from "app/other-modules/payment-terms/services/payment-terms.service";
 
 @Injectable()
 export class InvoiceCommonFunctionsService {

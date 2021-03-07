@@ -20,13 +20,12 @@ import {
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { InvoiceSellComponent } from "./invoice-sell/invoice-sell/invoice-sell.component";
 import { ExtraInfoCheckedComponent } from "./common/extra-info-checked/extra-info-checked.component";
-import { CreationInfoComponent } from "@bpUI/creation-info/creation-info.component";
 import { CurrencyModule } from "app/other-modules/currency/currency.module";
 import { InvoiceSellGroupCloneComponent } from "./invoice-sell/invoice-sell-group-clone/invoice-sell-group-clone.component";
 import { InvoiceSellListComponent } from "./invoice-sell/invoice-sell-list/invoice-sell-list.component";
 import { InvoiceSellPaymentRemindComponent } from "./invoice-sell-payment-remind/invoice-sell-payment-remind.component";
 import { PaymentRemindDialogComponent } from "./payment-remind-dialog/payment-remind-dialog.component";
-import { PaymentTermsModule } from "@bpShared/payment-terms/payment-terms.module";
+import { PaymentTermsModule } from "app/other-modules/payment-terms/payment-terms.module";
 import { ContractorsModule } from "../contractors/contractors.module";
 import { DragDropOptionsModule } from "../drag-drop-options/drag-drop-options.module";
 import { InvoicePosComponent } from "./common/invoice-pos/invoice-pos.component";
@@ -41,9 +40,12 @@ import { InvoiceCommonFunctionsService } from "./common/invoice-common-functions
 import { InvoiceBuyListComponent } from "./invoice-buy/invoice-buy-list/invoice-buy-list.component";
 import { InvoiceBuyComponent } from "./invoice-buy/invoice-buy/invoice-buy.component";
 import { DialogTakNieModule } from "../dialog-tak-nie/dialog-tak-nie.module";
+import { MomentCommonModule } from "../moment-common/moment-common.module";
+import { CreationInfoModule } from "../creation-info/creation-info.module";
 
 const IMPORT_EXPORT_MODULES = [
   ContractorsModule,
+  CreationInfoModule,
   CurrencyModule,
   DateRangeModule,
   DialogTakNieModule,
@@ -62,6 +64,7 @@ const IMPORT_EXPORT_MODULES = [
   MatPaginatorModule,
   MatTabsModule,
   MatTableModule,
+  MomentCommonModule,
   NavDetailModule,
   NavListModule,
   PendingIndicatorModule,
@@ -72,7 +75,6 @@ const IMPORT_EXPORT_MODULES = [
 
 @NgModule({
   declarations: [
-    CreationInfoComponent,
     ExtraInfoCheckedComponent,
     InvoicePosComponent,
     InvoicePosResumeComponent,
