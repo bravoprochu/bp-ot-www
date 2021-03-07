@@ -6,13 +6,13 @@ import {
   OnInit,
   Output,
 } from "@angular/core";
-import { IBasicActions } from "app/shared/ibasic-actions";
 import { MatDialog } from "@angular/material";
 import { DialogTakNieComponent } from "app/shared/dialog-tak-nie/dialog-tak-nie.component";
-import { FormControl, FormGroup } from "@angular/forms";
-import { ActivatedRoute, UrlSegment, Router } from "@angular/router";
+import { FormGroup } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
 import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
 import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "app-nav-detail",
@@ -20,7 +20,7 @@ import { Subject } from "rxjs";
   styleUrls: ["./nav-detail.component.css"],
 })
 export class NavDetailComponent implements OnInit, OnDestroy {
-  isDestroyed$: Subject<boolean>;
+  isDestroyed$ = new Subject<boolean>() as Subject<boolean>;
 
   @Input() dialogData?: any;
   @Input() isDisabled = false;
@@ -47,10 +47,11 @@ export class NavDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.isDestroyed$ = new Subject<boolean>();
-    this.activeRoute.paramMap.takeUntil(this.isDestroyed$).subscribe((s) => {
-      let id = +s.get("id");
-    });
+    this.activeRoute.paramMap
+      .pipe(takeUntil(this.isDestroyed$))
+      .subscribe((s) => {
+        let id = +s.get("id");
+      });
   }
 
   getCode() {
@@ -58,7 +59,7 @@ export class NavDetailComponent implements OnInit, OnDestroy {
   }
 
   goBack() {
-    this.activeRoute.url.takeUntil(this.isDestroyed$).subscribe((s) => {
+    this.activeRoute.url.pipe(takeUntil(this.isDestroyed$)).subscribe((s) => {
       this.router.navigateByUrl(s[0].path);
     });
   }
@@ -93,7 +94,7 @@ export class NavDetailComponent implements OnInit, OnDestroy {
     });
     dialogRef
       .afterClosed()
-      .takeUntil(this.isDestroyed$)
+      .pipe(takeUntil(this.isDestroyed$))
       .subscribe((s) => console.log(s));
   }
 
