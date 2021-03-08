@@ -3,7 +3,14 @@ import { IDialogData } from "../../../../shared/interfaces/i-dialog-data";
 import { CompanyComponent } from "../company/company.component";
 import { Observable, Subject, empty } from "rxjs";
 import { FormArray, FormBuilder, FormControl, FormGroup } from "@angular/forms";
-import { Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { MatAutocomplete } from "@angular/material/autocomplete";
 import { MatDialog } from "@angular/material/dialog";
 import { ContractorService } from "../../services/contractor.service";
@@ -21,11 +28,11 @@ import { ICompany } from "../../interfaces/icompany";
   templateUrl: "./company-card.component.html",
   styleUrls: ["./company-card.component.css"],
 })
-export class CompanyCardComponent implements OnInit, OnDestroy {
+export class CompanyCardComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() placeholder: string;
   @Input() rForm: FormGroup; //formCompanyGroup
   @Input() fb: FormBuilder;
-  @ViewChild("ac") ac: MatAutocomplete;
+  @ViewChild("autoComplete") autoComplete: MatAutocomplete;
   search$ = new FormControl("");
   data$: Observable<any>;
   dataFiltered$: Observable<any[]>;
@@ -48,6 +55,21 @@ export class CompanyCardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initData();
     this.initForm();
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.autoComplete.optionSelected
+        .pipe(takeUntil(this.isDestroyed$))
+        .subscribe((s) => {
+          this.companyService.patchCompanyData(
+            <ICompany>s.option.value,
+            this.rForm,
+            this.fb
+          );
+          this.rForm.markAsDirty();
+        });
+    }, 0);
   }
 
   companyAdd(): void {
@@ -88,15 +110,6 @@ export class CompanyCardComponent implements OnInit, OnDestroy {
       }),
       takeUntil(this.isDestroyed$)
     );
-
-    this.ac.optionSelected.pipe(takeUntil(this.isDestroyed$)).subscribe((s) => {
-      this.companyService.patchCompanyData(
-        <ICompany>s.option.value,
-        this.rForm,
-        this.fb
-      );
-      this.rForm.markAsDirty();
-    });
   }
 
   get addressList(): FormArray {

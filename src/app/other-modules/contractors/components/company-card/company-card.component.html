@@ -5,12 +5,15 @@
         matInput
         type="search"
         [formControl]="search$"
-        [matAutocomplete]="ac"
+        [matAutocomplete]="autoComplete"
         placeholder="{{ placeholder }}, wyszukaj dane"
       />
     </mat-form-field>
 
-    <mat-autocomplete #ac="matAutocomplete" [displayWith]="displayWith">
+    <mat-autocomplete
+      #autoComplete="matAutocomplete"
+      [displayWith]="displayWith"
+    >
       <mat-option *ngFor="let c of data$ | async" [value]="c">
         <strong>{{ c.short_name }}</strong>
         <span *ngIf="addressList.length > 0">{{
