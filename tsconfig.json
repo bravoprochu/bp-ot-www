@@ -32,23 +32,8 @@
       "@bpShared/*": [
         "app/shared/*"
       ],
-      "@bpSharedFeatures/*": [
-        "app/shared/shared-features/*"
-      ],
-      "@bpMaterialMin/*": [
-        "app/shared/shared-material-min/*"
-      ],
-      "@bpMaterialRest/*": [
-        "app/shared/shared-material-rest/*"
-      ],
       "@bpSharedServices/*": [
         "app/shared/shared-services/*"
-      ],
-      "@bpUI/*": [
-        "app/ui/*"
-      ],
-      "@bpLib": [
-        "app/lib/*"
       ]
     },
   }

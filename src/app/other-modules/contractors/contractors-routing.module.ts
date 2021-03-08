@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 import { UserRolesEnum } from "@bpShared/enums/user-roles.enum";
-import { IdentGuard } from "@bpUI/guards/ident.guard";
+import { IdentGuard } from "app/ui/guards/ident.guard";
 import { CompanyListComponent } from "./components/company-list/company-list.component";
 import { CompanyComponent } from "./components/company/company.component";
 

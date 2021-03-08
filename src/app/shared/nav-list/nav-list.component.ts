@@ -1,7 +1,7 @@
 import { FormControl } from "@angular/forms";
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { IDateRange } from "app/shared/interfaces/i-date-range";
-import { OnDestroy } from "@angular/core/src/metadata/lifecycle_hooks";
+import { OnDestroy } from "@angular/core";
 import { Subject } from "rxjs";
 import * as moment from "moment";
 import { takeUntil } from "rxjs/operators";

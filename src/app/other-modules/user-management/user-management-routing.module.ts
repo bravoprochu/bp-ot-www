@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 import { UserRolesEnum } from "@bpShared/enums/user-roles.enum";
-import { IdentGuard } from "@bpUI/guards/ident.guard";
+import { IdentGuard } from "app/ui/guards/ident.guard";
 import { UsersManagementComponent } from "./components/users-management/users-management.component";
 
 const routes: Routes = [

@@ -1,5 +1,4 @@
 import { InvoiceSellService } from "../services/invoice-sell.service";
-import { CommonFunctionsService } from "../../../../services/common-functions.service";
 import { IDetailObj } from "../../../../shared/idetail-obj";
 import { INavDetailInfo } from "../../../../shared/interfaces/inav-detail-info";
 import { DialogTakNieComponent } from "../../../dialog-tak-nie/components/dialog-tak-nie/dialog-tak-nie.component";
@@ -9,7 +8,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { IBasicActions } from "app/shared/ibasic-actions";
-import { FormControl } from "@angular/forms/src/model";
+import { FormControl } from "@angular/forms";
 import { saveAs } from "file-saver";
 import { Subject, empty } from "rxjs";
 import { InvoiceCommonFunctionsService } from "../../common/invoice-common-functions.service";

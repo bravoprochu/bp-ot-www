@@ -1,14 +1,18 @@
 import { IDialogData } from "../../../../shared/interfaces/i-dialog-data";
-import { empty, Observable, Subject } from "rxjs";
+import { empty, Subject } from "rxjs";
 import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup } from "@angular/forms";
-import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import {
+  MatDialog,
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+} from "@angular/material/dialog";
 import { IDetailObj } from "app/shared/idetail-obj";
 import { IDialogTakNieInfo } from "../../../../shared/interfaces/idialog-tak-nie-info";
 import { DialogTakNieComponent } from "app/other-modules/dialog-tak-nie/components/dialog-tak-nie/dialog-tak-nie.component";
 import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
 import { ContractorService as ContractorService } from "../../services/contractor.service";
-import { FormControl } from "@angular/forms/src/model";
+import { FormControl } from "@angular/forms";
 import { finalize, switchMap, take, takeUntil } from "rxjs/operators";
 import { ICompany } from "../../interfaces/icompany";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";

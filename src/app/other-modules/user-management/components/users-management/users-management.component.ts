@@ -8,7 +8,7 @@ import { UsersManagementService } from "app/services/users-management/users-mana
 import { MatDialog } from "@angular/material/dialog";
 import { DialogTakNieComponent } from "app/other-modules/dialog-tak-nie/components/dialog-tak-nie/dialog-tak-nie.component";
 import { IDialogTakNieInfo } from "app/shared/interfaces/idialog-tak-nie-info";
-import { FormControl } from "@angular/forms/src/model";
+import { FormControl } from "@angular/forms";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 

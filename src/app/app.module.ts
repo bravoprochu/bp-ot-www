@@ -23,7 +23,7 @@ import { LoginComponent } from "./auth/login/login.component";
 import { PendingIndicatorModule } from "./other-modules/pending-indicator/pending-indicator.module";
 import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
-import { IdentGuard } from "@bpUI/guards/ident.guard";
+import { IdentGuard } from "./ui/guards/ident.guard";
 
 const IMPORT_EXPORT_MODULES = [
   FlexLayoutModule,

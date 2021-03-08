@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { empty, Observable, Subject } from "rxjs";
+import { empty, Subject } from "rxjs";
 import * as moment from "moment";
 import { FormControl } from "@angular/forms";
-import { OnDestroy } from "@angular/core/src/metadata/lifecycle_hooks";
+import { OnDestroy } from "@angular/core";
 import { InvoiceSellService } from "../invoice-sell/services/invoice-sell.service";
 import { PaymentRemindDialogComponent } from "../payment-remind-dialog/payment-remind-dialog.component";
 import { switchMap, take, takeUntil } from "rxjs/operators";

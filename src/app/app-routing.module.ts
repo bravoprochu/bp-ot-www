@@ -1,27 +1,36 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
-import { IdentGuard } from "@bpUI/guards/ident.guard";
 import { HomeComponent } from "app/components/home/home.component";
 import { NotFoundComponent } from "./components/not-found/not-found.component";
 
 const routes: Routes = [
   {
     path: "contractors",
-    loadChildren:
-      () => import('./other-modules/contractors/contractors.module').then(m => m.ContractorsModule),
+    loadChildren: () =>
+      import("./other-modules/contractors/contractors.module").then(
+        (m) => m.ContractorsModule
+      ),
   },
   {
     path: "invoices",
-    loadChildren: () => import('./other-modules/invoices/invoices.module').then(m => m.InvoicesModule),
+    loadChildren: () =>
+      import("./other-modules/invoices/invoices.module").then(
+        (m) => m.InvoicesModule
+      ),
   },
   {
     path: "transport",
-    loadChildren: () => import('./other-modules/transport/transport.module').then(m => m.TransportModule),
+    loadChildren: () =>
+      import("./other-modules/transport/transport.module").then(
+        (m) => m.TransportModule
+      ),
   },
   {
     path: "user-management",
-    loadChildren:
-      () => import('./other-modules/user-management/user-management.module').then(m => m.UserManagementModule),
+    loadChildren: () =>
+      import("./other-modules/user-management/user-management.module").then(
+        (m) => m.UserManagementModule
+      ),
   },
   { path: "home", component: HomeComponent },
   { path: "not-found", component: NotFoundComponent },
@@ -30,7 +39,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: "legacy" })],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
