@@ -7,7 +7,7 @@ import {
   Validators,
   FormControl,
 } from "@angular/forms";
-import { MatSnackBar } from "@angular/material";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActivatedRoute } from "@angular/router";
 import { ICreationInfo } from "app/shared/interfaces/i-creation-info";
 import { IDateRange } from "app/shared/interfaces/i-date-range";

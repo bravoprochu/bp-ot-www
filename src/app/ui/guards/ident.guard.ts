@@ -8,7 +8,7 @@ import {
   Router,
 } from "@angular/router";
 import { Observable, of } from "rxjs";
-import { MatDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import { switchMap } from "rxjs/operators";
 
 @Injectable()

@@ -1,6 +1,6 @@
 import { TokenService } from "../../../../services/token.service";
 import { Component, OnInit, Input, OnDestroy } from "@angular/core";
-import { MatDialogRef } from "@angular/material";
+import { MatDialogRef } from "@angular/material/dialog";
 import { Subject } from "rxjs";
 import { INavRoute } from "../../interfaces/i-nav-route";
 import { ROUTES_LIST_DATA } from "../../data/routes-list-data";

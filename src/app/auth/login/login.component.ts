@@ -2,7 +2,7 @@ import { IErrorObj } from "../interfaces/ierror-object";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Observable } from "rxjs";
 import { Component, OnInit } from "@angular/core";
-import { MatDialogRef } from "@angular/material";
+import { MatDialogRef } from "@angular/material/dialog";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { TokenService } from "app/services/token.service";
 import {

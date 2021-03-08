@@ -6,7 +6,9 @@ import { CommonFunctionsService } from "../../../../services/common-functions.se
 import { IListObj } from "../../../../shared/ilist-obj";
 import { InvoiceBuyService } from "../services/invoice-buy.service";
 import { IDateRange } from "app/shared/interfaces/i-date-range";
-import { MatTableDataSource, MatSort, MatPaginator } from "@angular/material";
+import { MatPaginator } from "@angular/material/paginator";
+import { MatSort } from "@angular/material/sort";
+import { MatTableDataSource } from "@angular/material/table";
 import { Subject } from "rxjs";
 import { Moment } from "moment";
 import { DEFAULT_APP_VALUES } from "environments/environment.prod";

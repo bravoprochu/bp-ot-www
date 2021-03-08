@@ -1,7 +1,7 @@
 import { LoginComponent } from '../../auth/login/login.component';
 import { TokenService } from '../../services/token.service';
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-user-info',

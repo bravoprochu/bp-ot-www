@@ -16,7 +16,7 @@ import {
 import { ILoadTransEuLoadingPlace } from "app/shared/interfaces/i-load-trans-eu-loading-place";
 import { ILoadTransEuAddress } from "app/shared/interfaces/i-load-trans-eu-address";
 import { IValueViewValue } from "app/shared/interfaces/ivalue-view-value";
-import { MatSelect } from "@angular/material";
+import { MatSelect } from "@angular/material/select";
 import { ContractorService } from "app/other-modules/contractors/services/contractor.service";
 import { switchMap, take, takeUntil } from "rxjs/operators";
 

@@ -2,7 +2,7 @@ import { CommonFunctionsService } from "../../../services/common-functions.servi
 import { FormBuilder, FormGroup, FormArray } from "@angular/forms";
 import { Component, OnDestroy, OnInit, Input, ViewChild } from "@angular/core";
 import { IEmployee } from "app/other-modules/contractors/interfaces/iemployee";
-import { MatSelect } from "@angular/material";
+import { MatSelect } from "@angular/material/select";
 import { LoadService } from "app/ui/loads/services/load.service";
 import { ILoad } from "app/shared/interfaces/iload";
 import { Subject } from "rxjs";

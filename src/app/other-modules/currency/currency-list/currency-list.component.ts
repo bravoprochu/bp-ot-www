@@ -5,7 +5,7 @@ import {
   CurrencyCommonService,
 } from "../currency-common.service";
 import { FormControl } from "@angular/forms";
-import { MatAutocomplete } from "@angular/material";
+import { MatAutocomplete } from "@angular/material/autocomplete";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 

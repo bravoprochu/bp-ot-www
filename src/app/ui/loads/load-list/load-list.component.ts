@@ -5,7 +5,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { IListObj } from "app/shared/ilist-obj";
 import { ITitle } from "app/shared/ititle";
 import { ActivatedRoute, Router } from "@angular/router";
-import { MatSlider } from "@angular/material";
+import { MatSlider } from "@angular/material/slider";
 import { LoadService } from "app/ui/loads/services/load.service";
 import { AfterViewInit } from "@angular/core/src/metadata/lifecycle_hooks";
 import { takeUntil } from "rxjs/operators";

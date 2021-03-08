@@ -6,15 +6,13 @@ import { FlexLayoutModule } from "@angular/flex-layout";
 import { TransportService } from "./services/transport.service";
 import { NavDetailModule } from "../nav-detail/nav-detail.module";
 import { NavListModule } from "../nav-list/nav-list.module";
-import {
-  MatButtonModule,
-  MatCardModule,
-  MatDatepickerModule,
-  MatFormFieldModule,
-  MatInputModule,
-  MatPaginatorModule,
-  MatTableModule,
-} from "@angular/material";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatPaginatorModule } from "@angular/material/paginator";
+import { MatTableModule } from "@angular/material/table";
 import { PendingIndicatorModule } from "../pending-indicator/pending-indicator.module";
 import { CurrencyModule } from "../currency/currency.module";
 import { ReactiveFormsModule } from "@angular/forms";

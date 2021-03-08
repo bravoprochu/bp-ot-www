@@ -8,7 +8,7 @@ import {
 } from "@angular/cdk/drag-drop";
 import { FormGroup, FormControl } from "@angular/forms";
 import { DialogTakNieComponent } from "app/other-modules/dialog-tak-nie/components/dialog-tak-nie/dialog-tak-nie.component";
-import { MatDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import { IDialogTakNieInfo } from "@bpCommonInterfaces/idialog-tak-nie-info";
 import { empty, Subject } from "rxjs";
 import { take, switchMap, takeUntil, startWith } from "rxjs/operators";

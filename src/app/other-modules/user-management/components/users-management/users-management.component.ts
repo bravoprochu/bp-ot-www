@@ -5,7 +5,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { IDetailObj } from "../../../../shared/idetail-obj";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { UsersManagementService } from "app/services/users-management/users-management.service";
-import { MatDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import { DialogTakNieComponent } from "app/other-modules/dialog-tak-nie/components/dialog-tak-nie/dialog-tak-nie.component";
 import { IDialogTakNieInfo } from "app/shared/interfaces/idialog-tak-nie-info";
 import { FormControl } from "@angular/forms/src/model";

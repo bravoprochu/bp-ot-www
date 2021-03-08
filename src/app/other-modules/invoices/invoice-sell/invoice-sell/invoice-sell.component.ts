@@ -6,7 +6,7 @@ import { DialogTakNieComponent } from "../../../dialog-tak-nie/components/dialog
 import { IDialogTakNieInfo } from "../../../../shared/interfaces/idialog-tak-nie-info";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { MatDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { IBasicActions } from "app/shared/ibasic-actions";
 import { FormControl } from "@angular/forms/src/model";

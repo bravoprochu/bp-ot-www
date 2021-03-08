@@ -6,12 +6,10 @@ import { Subject } from "rxjs";
 import { ActivatedRoute } from "@angular/router";
 import { IListObj } from "app/shared/ilist-obj";
 import { ITitle } from "app/shared/ititle";
-import {
-  MatDialog,
-  MatTableDataSource,
-  MatSort,
-  MatPaginator,
-} from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
+import { MatPaginator } from "@angular/material/paginator";
+import { MatSort } from "@angular/material/sort";
+import { MatTableDataSource } from "@angular/material/table";
 import { ContractorService } from "../../services/contractor.service";
 import { ViewChild } from "@angular/core";
 import { take, takeUntil } from "rxjs/operators";

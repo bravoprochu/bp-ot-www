@@ -1,7 +1,7 @@
 import { TokenService } from "./services/token.service";
 import { ITitle } from "./shared/ititle";
 import { Component, OnInit, Input } from "@angular/core";
-import { MatDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import { environment } from "../environments/environment";
 import { RouteListComponent } from "./other-modules/routes-list/components/route-list/route-list.component";
 

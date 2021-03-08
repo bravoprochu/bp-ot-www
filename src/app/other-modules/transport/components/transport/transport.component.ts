@@ -5,7 +5,7 @@ import { IDetailObj } from "app/shared/idetail-obj";
 import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
 import { FormGroup } from "@angular/forms/src/model";
 import { ActivatedRoute, Router } from "@angular/router";
-import { MatDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import { DialogTakNieComponent } from "app/other-modules/dialog-tak-nie/components/dialog-tak-nie/dialog-tak-nie.component";
 import { IDialogTakNieInfo } from "app/shared/interfaces/idialog-tak-nie-info";
 import { Observable, empty, Subject, of } from "rxjs";

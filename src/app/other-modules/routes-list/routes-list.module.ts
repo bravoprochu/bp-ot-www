@@ -2,11 +2,9 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouteListComponent } from "./components/route-list/route-list.component";
 import { FlexLayoutModule } from "@angular/flex-layout";
-import {
-  MatFormFieldModule,
-  MatInputModule,
-  MatListModule,
-} from "@angular/material";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatListModule } from "@angular/material/list";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { TokenService } from "app/services/token.service";

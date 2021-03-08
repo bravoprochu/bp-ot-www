@@ -8,7 +8,7 @@ import { ILoad } from "../../../shared/interfaces/iload";
 import { IValueViewValue } from "../../../shared/interfaces/ivalue-view-value";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Component, Input, OnInit, OnDestroy } from "@angular/core";
-import { MatDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import * as moment from "moment";
 import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
 import { Subject } from "rxjs";

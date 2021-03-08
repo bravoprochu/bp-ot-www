@@ -4,7 +4,8 @@ import { CompanyComponent } from "../company/company.component";
 import { Observable, Subject, empty } from "rxjs";
 import { FormArray, FormBuilder, FormControl, FormGroup } from "@angular/forms";
 import { Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { MatAutocomplete, MatDialog } from "@angular/material";
+import { MatAutocomplete } from "@angular/material/autocomplete";
+import { MatDialog } from "@angular/material/dialog";
 import { ContractorService } from "../../services/contractor.service";
 import {
   debounceTime,

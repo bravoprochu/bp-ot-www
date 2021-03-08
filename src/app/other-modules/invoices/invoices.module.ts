@@ -3,20 +3,18 @@ import { CommonModule } from "@angular/common";
 import { InvoicesRoutingModule } from "./invoices-routing.module";
 import { PendingIndicatorModule } from "../pending-indicator/pending-indicator.module";
 import { FlexLayoutModule } from "@angular/flex-layout";
-import {
-  MatBadgeModule,
-  MatButtonModule,
-  MatCardModule,
-  MatCheckboxModule,
-  MatDatepickerModule,
-  MatExpansionModule,
-  MatFormFieldModule,
-  MatIconModule,
-  MatInputModule,
-  MatPaginatorModule,
-  MatTableModule,
-  MatTabsModule,
-} from "@angular/material";
+import { MatBadgeModule } from "@angular/material/badge";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatPaginatorModule } from "@angular/material/paginator";
+import { MatTableModule } from "@angular/material/table";
+import { MatTabsModule } from "@angular/material/tabs";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { InvoiceSellComponent } from "./invoice-sell/invoice-sell/invoice-sell.component";
 import { ExtraInfoCheckedComponent } from "./common/extra-info-checked/extra-info-checked.component";

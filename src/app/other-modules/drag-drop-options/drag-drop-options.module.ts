@@ -1,7 +1,8 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FlexLayoutModule } from "@angular/flex-layout";
-import { MatExpansionModule, MatIconModule } from "@angular/material";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatIconModule } from "@angular/material/icon";
 import { DragDropModule } from "@angular/cdk/drag-drop";
 import { TableDragDropOptionsComponent } from "./components/table-drag-drop-options/table-drag-drop-options.component";
 

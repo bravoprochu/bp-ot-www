@@ -12,7 +12,7 @@ import { IDetailObj } from "../../../../shared/idetail-obj";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
 import { ActivatedRoute, Router } from "@angular/router";
-import { MatDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import { IDialogTakNieInfo } from "app/shared/interfaces/idialog-tak-nie-info";
 import { empty, Observable } from "rxjs";
 import { IInvoiceBuy } from "../../interfaces/iinvoice-buy";

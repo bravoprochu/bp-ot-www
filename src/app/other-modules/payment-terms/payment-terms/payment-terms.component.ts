@@ -2,7 +2,7 @@ import { OnDestroy, ViewChild, AfterViewInit } from "@angular/core";
 import { Component, Input, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup } from "@angular/forms";
 import { Subject } from "rxjs";
-import { MatSelect } from "@angular/material";
+import { MatSelect } from "@angular/material/select";
 
 import { IPaymentTerm } from "../interfaces/i-payment-term";
 import * as moment from "moment";

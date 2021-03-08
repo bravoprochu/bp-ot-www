@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { DialogTakNieComponent } from "../../dialog-tak-nie/components/dialog-tak-nie/dialog-tak-nie.component";
 import { IDialogTakNieInfo } from "../../../shared/interfaces/idialog-tak-nie-info";
-import { MatDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import { Subject } from "rxjs";
 import { IInvoicePos } from "../interfaces/iinvoice-pos";
 import { IInvoiceBuy } from "../interfaces/iinvoice-buy";
