@@ -22,7 +22,7 @@ export class LoadListComponent
     this.isDestroyed$.complete();
     this.isDestroyed$.unsubscribe();
   }
-  @ViewChild("slider") slider: MatSlider;
+  @ViewChild("slider", /* TODO: add static flag */ {}) slider: MatSlider;
 
   constructor(
     private actRoute: ActivatedRoute,

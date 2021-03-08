@@ -28,7 +28,7 @@ import { switchMap, take, takeUntil } from "rxjs/operators";
 export class LoadTransEuComponent implements OnInit, OnDestroy {
   @Input() rForm: FormGroup;
   @Input() fb: FormBuilder;
-  @ViewChild("sel") sel: MatSelect;
+  @ViewChild("sel", /* TODO: add static flag */ {}) sel: MatSelect;
 
   constructor(
     private cf: CommonFunctionsService,

@@ -32,7 +32,7 @@ export class LoadComponent
     this.isDestroyed$.complete();
     this.isDestroyed$.unsubscribe();
   }
-  @ViewChild("loadBuy") loadBuy: LoadBuyComponent;
+  @ViewChild("loadBuy", /* TODO: add static flag */ {}) loadBuy: LoadBuyComponent;
 
   constructor(
     public fb: FormBuilder,

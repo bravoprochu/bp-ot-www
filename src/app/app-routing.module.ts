@@ -8,20 +8,20 @@ const routes: Routes = [
   {
     path: "contractors",
     loadChildren:
-      "./other-modules/contractors/contractors.module#ContractorsModule",
+      () => import('./other-modules/contractors/contractors.module').then(m => m.ContractorsModule),
   },
   {
     path: "invoices",
-    loadChildren: "./other-modules/invoices/invoices.module#InvoicesModule",
+    loadChildren: () => import('./other-modules/invoices/invoices.module').then(m => m.InvoicesModule),
   },
   {
     path: "transport",
-    loadChildren: "./other-modules/transport/transport.module#TransportModule",
+    loadChildren: () => import('./other-modules/transport/transport.module').then(m => m.TransportModule),
   },
   {
     path: "user-management",
     loadChildren:
-      "./other-modules/user-management/user-management.module#UserManagementModule",
+      () => import('./other-modules/user-management/user-management.module').then(m => m.UserManagementModule),
   },
   { path: "home", component: HomeComponent },
   { path: "not-found", component: NotFoundComponent },
@@ -30,7 +30,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

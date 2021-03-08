@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { LoadTransEuComponent } from './load-trans-eu.component';
 
@@ -6,7 +6,7 @@ describe('LoadTransEuComponent', () => {
   let component: LoadTransEuComponent;
   let fixture: ComponentFixture<LoadTransEuComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ LoadTransEuComponent ]
     })

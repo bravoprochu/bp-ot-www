@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TransEuPasswordComponent } from './trans-eu-password.component';
 
@@ -6,7 +6,7 @@ describe('TransEuPasswordComponent', () => {
   let component: TransEuPasswordComponent;
   let fixture: ComponentFixture<TransEuPasswordComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ TransEuPasswordComponent ]
     })

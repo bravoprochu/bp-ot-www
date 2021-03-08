@@ -17,7 +17,7 @@ import { switchMap, take, takeUntil } from "rxjs/operators";
 export class LoadSellComponent implements OnInit, OnDestroy {
   @Input() rForm: FormGroup;
   @Input() fb: FormBuilder;
-  @ViewChild("sel") sel: MatSelect;
+  @ViewChild("sel", /* TODO: add static flag */ {}) sel: MatSelect;
   contact = [] as IEmployee[];
   isDestroyed$ = new Subject<boolean>() as Subject<boolean>;
   principalEmployees = [] as IEmployee[];
