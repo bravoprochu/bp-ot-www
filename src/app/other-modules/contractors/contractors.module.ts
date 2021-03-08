@@ -24,6 +24,7 @@ import { ContractorsRoutingModule } from "./contractors-routing.module";
 import { ContractorService } from "./services/contractor.service";
 import { DragDropOptionsModule } from "../drag-drop-options/drag-drop-options.module";
 import { DialogTakNieModule } from "../dialog-tak-nie/dialog-tak-nie.module";
+import { NavListModule } from "../nav-list/nav-list.module";
 
 const IMPORT_EXPORT_MODULES = [
   DialogTakNieModule,
@@ -40,6 +41,7 @@ const IMPORT_EXPORT_MODULES = [
   MatPaginatorModule,
   MatTableModule,
   MatTooltipModule,
+  NavListModule,
   PendingIndicatorModule,
   ReactiveFormsModule,
   RouterModule,
