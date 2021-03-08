@@ -135,8 +135,11 @@ export class CompanyListComponent implements OnInit, OnDestroy, IListObj {
   }
 
   searchFilter(filterValue) {
-    filterValue = filterValue.trim();
-    filterValue = filterValue.toLowerCase();
+    if (filterValue != null) {
+      filterValue = filterValue.trim();
+      filterValue = filterValue.toLowerCase();
+    }
+
     this.dataSource.filter = filterValue;
   }
 
