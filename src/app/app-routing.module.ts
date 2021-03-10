@@ -19,6 +19,13 @@ const routes: Routes = [
       ),
   },
   {
+    path: "invoices-status",
+    loadChildren: () =>
+      import(
+        "./other-modules/invoices-payment-status/invoices-payment-status.module"
+      ).then((m) => m.InvoicesPaymentStatusModule),
+  },
+  {
     path: "transport",
     loadChildren: () =>
       import("./other-modules/transport/transport.module").then(

@@ -10,8 +10,6 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { catchError, take } from "rxjs/operators";
 import { IInvoiceSellGroupClone } from "../../interfaces/i-invoice-sell-group-clone";
-import * as moment from "moment";
-import { IDateRange } from "@bpCommonInterfaces/i-date-range";
 
 @Injectable()
 export class InvoiceSellService extends DataFactoryService {
@@ -66,37 +64,6 @@ export class InvoiceSellService extends DataFactoryService {
       .post(environment.apiInvoiceSellGenInvoicePdf, invoice, {
         headers: this.bearerHeader(),
         responseType: "blob",
-      })
-      .pipe(
-        take(1),
-        catchError((err) => {
-          console.log(err);
-          return err;
-        })
-      );
-  }
-
-  paymentConfirmation(id: number, paymentDate: string): Observable<any> {
-    return this.http
-      .get(
-        `${environment.apiInvoiceSellPaymentConfirmation}/${id}/${paymentDate}`,
-        {
-          headers: this.bearerHeader(),
-        }
-      )
-      .pipe(
-        take(1),
-        catchError((err) => {
-          console.log(err);
-          return err;
-        })
-      );
-  }
-
-  paymentRemind(): Observable<any> {
-    return this.http
-      .get(environment.apiInvoiceSellPaymentRemind, {
-        headers: this.bearerHeader(),
       })
       .pipe(
         take(1),

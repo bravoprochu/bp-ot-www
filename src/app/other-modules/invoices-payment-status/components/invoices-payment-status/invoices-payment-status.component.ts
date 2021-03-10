@@ -1,19 +1,18 @@
 import { Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { empty, Subject } from "rxjs";
-import * as moment from "moment";
 import { FormControl } from "@angular/forms";
 import { OnDestroy } from "@angular/core";
-import { InvoiceSellService } from "../invoice-sell/services/invoice-sell.service";
 import { PaymentRemindDialogComponent } from "../payment-remind-dialog/payment-remind-dialog.component";
 import { switchMap, take, takeUntil } from "rxjs/operators";
+import { InvoicesPaymentStatusService } from "../../services/invoices-payment-status.service";
 
 @Component({
-  selector: "app-invoice-sell-payment-remind",
-  templateUrl: "./invoice-sell-payment-remind.component.html",
-  styleUrls: ["./invoice-sell-payment-remind.component.css"],
+  selector: "app-invoices-payment-status",
+  templateUrl: "./invoices-payment-status.component.html",
+  styleUrls: ["./invoices-payment-status.component.css"],
 })
-export class InvoiceSellPaymentRemindComponent implements OnInit, OnDestroy {
+export class InvoicesPaymentStatusComponent implements OnInit, OnDestroy {
   isAlive: Boolean;
   isDestroyed$ = new Subject() as Subject<boolean>;
   isPending: boolean;
@@ -36,7 +35,10 @@ export class InvoiceSellPaymentRemindComponent implements OnInit, OnDestroy {
   notConfirmedSearch$: FormControl;
   notConfirmedStats: any[];
 
-  constructor(private df: InvoiceSellService, private dialog: MatDialog) {}
+  constructor(
+    private invoicePaymentStatusService: InvoicesPaymentStatusService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnDestroy(): void {
     this.isDestroyed$.next(true);
@@ -56,7 +58,7 @@ export class InvoiceSellPaymentRemindComponent implements OnInit, OnDestroy {
 
   initData() {
     this.isPending = true;
-    this.df
+    this.invoicePaymentStatusService
       .paymentRemind()
       .pipe(take(1))
       .subscribe((s) => {
@@ -126,7 +128,10 @@ export class InvoiceSellPaymentRemindComponent implements OnInit, OnDestroy {
           if (sw !== undefined) {
             this.isPending = true;
             let pDate = sw.substring(0, 10);
-            return this.df.paymentConfirmation(payment["invoiceId"], pDate);
+            return this.invoicePaymentStatusService.paymentConfirmation(
+              payment["invoiceId"],
+              pDate
+            );
           } else {
             this.isPending = false;
             return empty();

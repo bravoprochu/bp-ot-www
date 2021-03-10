@@ -21,8 +21,7 @@ import { ExtraInfoCheckedComponent } from "./common/extra-info-checked/extra-inf
 import { CurrencyModule } from "app/other-modules/currency/currency.module";
 import { InvoiceSellGroupCloneComponent } from "./invoice-sell/invoice-sell-group-clone/invoice-sell-group-clone.component";
 import { InvoiceSellListComponent } from "./invoice-sell/invoice-sell-list/invoice-sell-list.component";
-import { InvoiceSellPaymentRemindComponent } from "./invoice-sell-payment-remind/invoice-sell-payment-remind.component";
-import { PaymentRemindDialogComponent } from "./payment-remind-dialog/payment-remind-dialog.component";
+import { PaymentRemindDialogComponent } from "../invoices-payment-status/components/payment-remind-dialog/payment-remind-dialog.component";
 import { PaymentTermsModule } from "app/other-modules/payment-terms/payment-terms.module";
 import { ContractorsModule } from "../contractors/contractors.module";
 import { DragDropOptionsModule } from "../drag-drop-options/drag-drop-options.module";
@@ -81,8 +80,6 @@ const IMPORT_EXPORT_MODULES = [
     InvoiceSellComponent,
     InvoiceSellListComponent,
     InvoiceSellGroupCloneComponent,
-    InvoiceSellPaymentRemindComponent,
-    PaymentRemindDialogComponent,
   ],
   entryComponents: [PaymentRemindDialogComponent],
   exports: [IMPORT_EXPORT_MODULES],

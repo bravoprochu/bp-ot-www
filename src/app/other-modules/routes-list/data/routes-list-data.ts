@@ -20,6 +20,12 @@ export const ROUTES_LIST_DATA: INavRoute[] = [
     description: "",
   },
   {
+    route: "invoices-status",
+    name: "Rozliczenie płatności",
+    group: "Faktury",
+    description: "",
+  },
+  {
     route: "spedition",
     name: "Spedycja",
     group: "Spedycja",

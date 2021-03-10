@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
-import { InvoiceSellPaymentRemindComponent } from "app/other-modules/invoices/invoice-sell-payment-remind/invoice-sell-payment-remind.component";
+import { InvoiceSellPaymentRemindComponent } from "app/other-modules/invoices-payment-status/components/invoice-sell-payment-remind/invoice-sell-payment-remind.component";
 import { IdentGuard } from "app/ui/guards/ident.guard";
 import { LoadListComponent } from "app/ui/loads/load-list/load-list.component";
 import { LoadComponent } from "app/ui/loads/load/load.component";

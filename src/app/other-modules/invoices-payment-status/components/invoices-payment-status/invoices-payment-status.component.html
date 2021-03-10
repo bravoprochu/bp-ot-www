@@ -19,13 +19,14 @@
     <mat-list>
       <div *ngFor="let g of notConfirmedFiltered">
         <mat-list-item>
-          <button
-            mat-mini-fab
-            [routerLink]="['/fakturaSprzedazy', g.invoiceId]"
-            matTooltip="Przejdź do faktury id: {{ g.invoiceId }}"
-          >
-            <mat-icon>zoom_in</mat-icon>
-          </button>
+          <a [routerLink]="['/invoices/fakturaSprzedazy', g.invoiceId]">
+            <button
+              mat-mini-fab
+              matTooltip="Przejdź do faktury id: {{ g.invoiceId }}"
+            >
+              <mat-icon>zoom_in</mat-icon>
+            </button>
+          </a>
           <h3 mat-line>
             <span>{{ g.paymentDate | date: "yyyy-MM-dd" }}</span>
             <small>
@@ -95,13 +96,14 @@
     <mat-list>
       <div *ngFor="let g of unpaidFiltered">
         <mat-list-item>
-          <button
-            mat-mini-fab
-            [routerLink]="['/fakturaSprzedazy', g.invoiceId]"
-            matTooltip="Przejdź do faktury id: {{ g.invoiceId }}"
-          >
-            <mat-icon>zoom_in</mat-icon>
-          </button>
+          <a [routerLink]="['/invoices/fakturaSprzedazy', g.invoiceId]">
+            <button
+              mat-mini-fab
+              matTooltip="Przejdź do faktury id: {{ g.invoiceId }}"
+            >
+              <mat-icon>zoom_in</mat-icon>
+            </button>
+          </a>
           <div>&nbsp;</div>
           <button
             mat-mini-fab
@@ -179,13 +181,14 @@
     <mat-list>
       <div *ngFor="let g of unpaidOverdueFiltered">
         <mat-list-item>
-          <button
-            mat-mini-fab
-            [routerLink]="['/fakturaSprzedazy', g.invoiceId]"
-            matTooltip="Przejdź do faktury id: {{ g.invoiceId }}"
-          >
-            <mat-icon>zoom_in</mat-icon>
-          </button>
+          <a [routerLink]="['/invoices/fakturaSprzedazy', g.invoiceId]">
+            <button
+              mat-mini-fab
+              matTooltip="Przejdź do faktury id: {{ g.invoiceId }}"
+            >
+              <mat-icon>zoom_in</mat-icon>
+            </button>
+          </a>
           <div>&nbsp;</div>
           <button
             mat-mini-fab
