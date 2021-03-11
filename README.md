@@ -1,3 +1,5 @@
+## fixed architecture - lazyloaded modules
+
 # Angular CLI Material Design WEB APP for Sped/Transport company
 
 - webToken based authentication/authorization
@@ -12,10 +14,4 @@
 - financial - due,charge,payment groups raports
 - i inne pierdoły
 
-
 backend: dotnet webapi
- 
-
-
-
-
