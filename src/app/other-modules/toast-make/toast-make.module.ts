@@ -3,7 +3,9 @@ import { CommonModule } from "@angular/common";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { ToastMakeService } from "./toast-make.service";
 
-const IMPORT_EXPORT_MODULES = [MatSnackBarModule];
+const IMPORT_EXPORT_MODULES = [
+  MatSnackBarModule
+];
 
 @NgModule({
   declarations: [],

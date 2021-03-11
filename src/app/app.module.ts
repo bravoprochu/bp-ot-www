@@ -21,6 +21,7 @@ import { PendingIndicatorModule } from "./other-modules/pending-indicator/pendin
 import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { IdentGuard } from "./ui/guards/ident.guard";
+import { ToastMakeModule } from "./other-modules/toast-make/toast-make.module";
 
 const IMPORT_EXPORT_MODULES = [
   FlexLayoutModule,
@@ -34,6 +35,7 @@ const IMPORT_EXPORT_MODULES = [
   PendingIndicatorModule,
   RoutesListModule,
   RouterModule,
+  ToastMakeModule,
 ];
 
 @NgModule({
