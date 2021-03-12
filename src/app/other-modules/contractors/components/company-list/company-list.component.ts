@@ -3,7 +3,6 @@ import { IDialogData } from "../../../../shared/interfaces/i-dialog-data";
 import { CompanyComponent } from "../company/company.component";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Subject } from "rxjs";
-import { ActivatedRoute } from "@angular/router";
 import { IListObj } from "app/shared/ilist-obj";
 import { ITitle } from "app/shared/ititle";
 import { MatDialog } from "@angular/material/dialog";
@@ -12,11 +11,12 @@ import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { ContractorService } from "../../services/contractor.service";
 import { ViewChild } from "@angular/core";
-import { take, takeUntil } from "rxjs/operators";
+import { map, take, takeUntil } from "rxjs/operators";
 import { saveAs } from "file-saver";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import { ICompany } from "../../interfaces/icompany";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
+import { IContrahentDialogCloseData } from "../../interfaces/i-contrahent-dialog-close-data";
 
 @Component({
   selector: "app-company-list",
@@ -79,9 +79,20 @@ export class CompanyListComponent implements OnInit, OnDestroy, IListObj {
   }
 
   createNew() {
-    return this.dialog
+    console.log("create new");
+
+    this.dialog
       .open(CompanyComponent, { height: "80%", width: "80%" })
-      .afterClosed();
+      .afterClosed()
+      .pipe(takeUntil(this.isDestroyed$))
+      .subscribe((createNew: any) => {
+        if (
+          createNew &&
+          (createNew.forceToUpdate as IContrahentDialogCloseData)
+        ) {
+          this.initData();
+        }
+      });
   }
 
   genCsv() {
@@ -124,7 +135,20 @@ export class CompanyListComponent implements OnInit, OnDestroy, IListObj {
               width: "80%",
             })
             .afterClosed()
-            .pipe(take(1), takeUntil(this.isDestroyed$))
+            .pipe(
+              map((val: any) => {
+                /**
+                 * force to update (data changed - deleted/updated)
+                 *
+                 */
+                if (val && (val.forceToUpdate as IContrahentDialogCloseData)) {
+                  this.initData();
+                }
+                return val;
+              }),
+              take(1),
+              takeUntil(this.isDestroyed$)
+            )
             .subscribe((s: ICompany) => {
               if (s != undefined) {
                 this.ngOnInit();

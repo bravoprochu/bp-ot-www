@@ -22,6 +22,7 @@ import {
   takeUntil,
 } from "rxjs/operators";
 import { ICompany } from "../../interfaces/icompany";
+import { IContrahentDialogCloseData } from "../../interfaces/i-contrahent-dialog-close-data";
 
 @Component({
   selector: "app-company-card",
@@ -81,9 +82,16 @@ export class CompanyCardComponent implements OnInit, OnDestroy, AfterViewInit {
       .open(CompanyComponent, { data: dialogData, height: "90%" })
       .afterClosed()
       .pipe(takeUntil(this.isDestroyed$))
-      .subscribe((s) => {
-        if (s != undefined) {
-          this.companyService.patchCompanyData(s, this.rForm, this.fb);
+      .subscribe((dialogData) => {
+        if (
+          dialogData &&
+          (dialogData.contractor as IContrahentDialogCloseData)
+        ) {
+          this.companyService.patchCompanyData(
+            dialogData.contractor,
+            this.rForm,
+            this.fb
+          );
           this.rForm.markAsDirty();
         }
       });

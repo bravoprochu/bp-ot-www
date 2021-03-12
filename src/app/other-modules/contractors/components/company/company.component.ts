@@ -16,6 +16,7 @@ import { FormControl } from "@angular/forms";
 import { finalize, switchMap, take, takeUntil } from "rxjs/operators";
 import { ICompany } from "../../interfaces/icompany";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
+import { IContrahentDialogCloseData } from "../../interfaces/i-contrahent-dialog-close-data";
 
 @Component({
   selector: "app-company",
@@ -46,6 +47,7 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
     // private transEuService: TranseuService,
     private companyDialogRef: MatDialogRef<CompanyComponent>,
     private toastService: ToastMakeService,
+
     @Inject(MAT_DIALOG_DATA) public dialogData: IDialogData
   ) {
     if (this.companyDialogRef == undefined) {
@@ -73,7 +75,9 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
   dialogOk(): void {
-    this.companyDialogRef.close(this.rForm.value);
+    this.companyDialogRef.close({
+      contractor: this.rForm.value,
+    } as IContrahentDialogCloseData);
   }
   dialogCancel(): void {
     this.companyDialogRef.close();
@@ -153,7 +157,7 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
   navAccept(): void {
-    this.companyDialogRef.close(this.rForm.value);
+    this.companyDialogRef.close();
   }
 
   navGetCode(): void {
@@ -168,20 +172,42 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
   navDelete(): void {
-    console.log("delete...");
     this.isPending = true;
 
-    this.contractorService
-      .delete(this.companyId.value)
+    this.dialog
+      .open(DialogTakNieComponent, {
+        data: {
+          question: `Czy na pewno usunąć kontrahenta ${this.companyName.value} ?`,
+          title: "Kontrahent - usuń dane",
+        } as IDialogTakNieInfo,
+      })
+      .afterClosed()
       .pipe(
-        takeUntil(this.isDestroyed$),
+        switchMap((isOK: boolean) => {
+          if (isOK === true) {
+            return this.contractorService
+              .delete(this.companyId.value)
+              .pipe(takeUntil(this.isDestroyed$));
+          } else {
+            return empty();
+          }
+        }),
         finalize(() => {
           this.isPending = false;
-        })
+        }),
+        takeUntil(this.isDestroyed$)
       )
       .subscribe(
         (deleted: any) => {
-          console.log("deleted subs:", deleted);
+          this.toastService.toastMake(
+            `Usunięto kontrahenta o ID: ${this.companyId.value}`,
+            "delete",
+            10000
+          );
+
+          this.companyDialogRef.close({
+            forceToUpdate: true,
+          } as IContrahentDialogCloseData);
         },
         (error) => console.log("deleted error", error),
         () => console.log("deleted completed..")
@@ -275,6 +301,10 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
 
   get companyId(): FormControl {
     return <FormControl>this.rForm.get("companyId");
+  }
+
+  get companyName(): FormControl {
+    return <FormControl>this.rForm.get("legal_name");
   }
 
   get employeeList(): FormArray {
