@@ -25,12 +25,12 @@ export const ROUTES_LIST_DATA: INavRoute[] = [
     group: "Faktury",
     description: "",
   },
-  {
-    route: "spedition",
-    name: "Spedycja",
-    group: "Spedycja",
-    description: "Proces od zakupu po sprzedaż",
-  },
+  // {
+  //   route: "spedition",
+  //   name: "Spedycja",
+  //   group: "Spedycja",
+  //   description: "Proces od zakupu po sprzedaż",
+  // },
   {
     route: "transport/lista",
     name: "Transport",
