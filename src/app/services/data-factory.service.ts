@@ -1,9 +1,15 @@
 import { TokenService } from "./token.service";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { empty, EmptyError, Observable, of } from "rxjs";
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+  HttpResponse,
+} from "@angular/common/http";
 import { IDateRange } from "app/shared/interfaces/i-date-range";
-import { catchError, take } from "rxjs/operators";
+import { catchError, map, take } from "rxjs/operators";
+import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 
 @Injectable()
 export class DataFactoryService {
@@ -52,7 +58,15 @@ export class DataFactoryService {
   delete(id: number): Observable<any> {
     return this.http
       .delete(this.url + "/Delete/" + id, { headers: this.bearerHeader() })
-      .pipe(take(1), catchError(this.errorHandler));
+      .pipe(
+        catchError((err: HttpErrorResponse) => {
+          if (err && err.error && err.error.warning) {
+            this.tokenService.message(err.error.warning, "warning", 7000);
+          }
+          return empty();
+        }),
+        take(1)
+      );
   }
 
   update(id: number, item: any): Observable<any> {
