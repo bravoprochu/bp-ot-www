@@ -1,7 +1,6 @@
 import {
   Compiler,
   Component,
-  ComponentFactoryResolver,
   Injector,
   OnDestroy,
   OnInit,
@@ -21,11 +20,10 @@ import { empty, Observable, of, Subject } from "rxjs";
 import { Moment } from "moment";
 import { DEFAULT_APP_VALUES } from "environments/environment";
 import { saveAs } from "file-saver";
-import { delay, map, switchMap, take, takeUntil } from "rxjs/operators";
+import { switchMap, take, takeUntil } from "rxjs/operators";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 import { InvoiceCommonFunctionsService } from "../../common/invoice-common-functions.service";
 import { InvoiceSellGroupCloneComponent } from "app/other-modules/invoice-sell-group-clone/components/invoice-sell-group-clone/invoice-sell-group-clone.component";
-import { promise } from "selenium-webdriver";
 
 @Component({
   selector: "app-invoice-sell-list",
@@ -130,11 +128,8 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, IListObj {
         takeUntil(this.isDestroyed$)
       )
       .subscribe(
-        (isGroupClone: any) => {
-          console.log("isGroupClone subs:", isGroupClone);
-        },
-        (error) => console.log("isGroupClone error", error),
-        () => console.log("isGroupClone completed..")
+        (isGroupClone: any) => {},
+        (error) => console.log("isGroupClone error", error)
       );
   }
 
