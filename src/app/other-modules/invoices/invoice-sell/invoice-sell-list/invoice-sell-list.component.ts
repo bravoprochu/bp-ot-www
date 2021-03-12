@@ -1,4 +1,13 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import {
+  Compiler,
+  Component,
+  ComponentFactoryResolver,
+  Injector,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ViewContainerRef,
+} from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
@@ -8,13 +17,15 @@ import { IDateRange } from "app/shared/interfaces/i-date-range";
 import { IListObj } from "../../../../shared/ilist-obj";
 import { ITitle } from "../../../../shared/ititle";
 import { InvoiceSellService } from "../services/invoice-sell.service";
-import { Subject } from "rxjs";
+import { empty, Observable, of, Subject } from "rxjs";
 import { Moment } from "moment";
 import { DEFAULT_APP_VALUES } from "environments/environment";
 import { saveAs } from "file-saver";
-import { take, takeUntil } from "rxjs/operators";
+import { delay, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 import { InvoiceCommonFunctionsService } from "../../common/invoice-common-functions.service";
+import { InvoiceSellGroupCloneComponent } from "app/other-modules/invoice-sell-group-clone/components/invoice-sell-group-clone/invoice-sell-group-clone.component";
+import { promise } from "selenium-webdriver";
 
 @Component({
   selector: "app-invoice-sell-list",
@@ -27,15 +38,24 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, IListObj {
   dateRange: IDateRange = <IDateRange>{};
   dataSource: any;
   displayedColumns: string[];
-  isDestroyed$: Subject<boolean>;
-  isGroupClone: boolean;
+  isDestroyed$ = new Subject<boolean>() as Subject<boolean>;
+  isGroupClone = false;
+  isGroupClone$ = new FormControl(false);
+  isPending: boolean;
+  navTitle = {
+    title: "Faktury sprzedaży",
+    subtitle: `Data sprzedaży `,
+  } as ITitle;
   search$: FormControl;
 
   constructor(
     private invoiceCommonService: InvoiceCommonFunctionsService,
     private invoiceSellService: InvoiceSellService,
     private router: Router,
-    private toastService: ToastMakeService
+    private toastService: ToastMakeService,
+    private viewContainerRef: ViewContainerRef,
+    private compiler: Compiler,
+    private injector: Injector
   ) {}
 
   ngOnDestroy(): void {
@@ -45,22 +65,16 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, IListObj {
   }
 
   ngOnInit() {
-    this.isDestroyed$ = new Subject<boolean>();
     this.dateRange = this.invoiceCommonService.dateRangeLastQuarter();
+    this.initObservable();
     this.initData(this.dateRange);
   }
 
-  public navTitle: ITitle = <ITitle>{
-    title: "Faktury sprzedaży",
-    subtitle: `Data sprzedaży `,
-  };
-  public isPending: boolean;
-
-  public createNew(): void {
+  createNew(): void {
     this.router.navigate(["/invoices/fakturaSprzedazy", 0]);
   }
 
-  public initData(dateRange?: IDateRange): void {
+  initData(dateRange?: IDateRange): void {
     this.isPending = true;
 
     this.displayedColumns = [
@@ -98,6 +112,53 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, IListObj {
         );
         this.dataSource.paginator = this.paginator;
       });
+  }
+
+  initObservable() {
+    this.isGroupClone$.valueChanges
+      .pipe(
+        switchMap((isGroupClone: boolean) => {
+          if (isGroupClone) {
+            this.isGroupClone = true;
+            return this.loadGroupCloneComponent$();
+          } else {
+            this.isGroupClone = false;
+            this.viewContainerRef.clear();
+            return empty();
+          }
+        }),
+        takeUntil(this.isDestroyed$)
+      )
+      .subscribe(
+        (isGroupClone: any) => {
+          console.log("isGroupClone subs:", isGroupClone);
+        },
+        (error) => console.log("isGroupClone error", error),
+        () => console.log("isGroupClone completed..")
+      );
+  }
+
+  loadGroupCloneComponent$(): Observable<boolean> | Promise<boolean> {
+    return import(
+      "app/other-modules/invoice-sell-group-clone/invoice-sell-group-clone.module"
+    ).then((mod) => {
+      return this.compiler
+        .compileModuleAndAllComponentsAsync(mod.InvoiceSellGroupCloneModule)
+        .then((modFactory) => {
+          return modFactory.ngModuleFactory.create(this.injector);
+        })
+        .then((moduleRef) => {
+          const groupCloneComp = moduleRef.componentFactoryResolver.resolveComponentFactory(
+            InvoiceSellGroupCloneComponent
+          );
+
+          this.viewContainerRef.clear();
+          this.viewContainerRef.createComponent(groupCloneComp);
+          this.isGroupClone = false;
+
+          return true;
+        });
+    });
   }
 
   searchFilter(filterValue: string) {

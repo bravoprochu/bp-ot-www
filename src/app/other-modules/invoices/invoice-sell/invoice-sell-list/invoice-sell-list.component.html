@@ -44,8 +44,11 @@
   </table>
   <mat-paginator #paginator showFirstLastButtons></mat-paginator>
 
-  <mat-checkbox [(ngModel)]="isGroupClone">Group clone</mat-checkbox>
+  <mat-checkbox [formControl]="isGroupClone$">Group clone</mat-checkbox>
 </div>
+<!-- 
 <app-invoice-sell-group-clone
   *ngIf="isGroupClone"
-></app-invoice-sell-group-clone>
+></app-invoice-sell-group-clone> -->
+
+<app-pending *ngIf="isGroupClone" [isPending]="isGroupClone"></app-pending>
