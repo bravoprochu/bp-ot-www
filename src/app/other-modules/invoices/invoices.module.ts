@@ -19,7 +19,6 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { InvoiceSellComponent } from "./invoice-sell/invoice-sell/invoice-sell.component";
 import { ExtraInfoCheckedComponent } from "./common/extra-info-checked/extra-info-checked.component";
 import { CurrencyModule } from "app/other-modules/currency/currency.module";
-import { InvoiceSellGroupCloneComponent } from "./invoice-sell/invoice-sell-group-clone/invoice-sell-group-clone.component";
 import { InvoiceSellListComponent } from "./invoice-sell/invoice-sell-list/invoice-sell-list.component";
 import { PaymentRemindDialogComponent } from "../invoices-payment-status/components/payment-remind-dialog/payment-remind-dialog.component";
 import { PaymentTermsModule } from "app/other-modules/payment-terms/payment-terms.module";
@@ -79,7 +78,6 @@ const IMPORT_EXPORT_MODULES = [
     InvoiceBuyListComponent,
     InvoiceSellComponent,
     InvoiceSellListComponent,
-    InvoiceSellGroupCloneComponent,
   ],
   entryComponents: [PaymentRemindDialogComponent],
   exports: [IMPORT_EXPORT_MODULES],

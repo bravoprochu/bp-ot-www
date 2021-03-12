@@ -7,7 +7,6 @@ import {
   Output,
   EventEmitter,
 } from "@angular/core";
-import { CommonFunctionsService } from "app/services/common-functions.service";
 import {
   merge,
   takeUntil,

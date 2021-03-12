@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
-import { InvoiceSellService } from "../services/invoice-sell.service";
 
 import {
   CdkDragDrop,
@@ -12,10 +11,11 @@ import { MatDialog } from "@angular/material/dialog";
 import { IDialogTakNieInfo } from "@bpCommonInterfaces/idialog-tak-nie-info";
 import { empty, Subject } from "rxjs";
 import { take, switchMap, takeUntil, startWith } from "rxjs/operators";
-import { IInvoiceSellLineList } from "../../interfaces/i-invoice-line-list";
-import { IInvoiceSellGroupClone } from "../../interfaces/i-invoice-sell-group-clone";
+import { IInvoiceSellLineList } from "../../../invoices/interfaces/i-invoice-line-list";
+import { IInvoiceSellGroupClone } from "../../../invoices/interfaces/i-invoice-sell-group-clone";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
+import { InvoiceSellGroupCloneService } from "../../services/invoice-sell-group-clone.service";
 
 @Component({
   selector: "app-invoice-sell-group-clone",
@@ -23,25 +23,6 @@ import { MomentCommonService } from "app/other-modules/moment-common/services/mo
   styleUrls: ["./invoice-sell-group-clone.component.css"],
 })
 export class InvoiceSellGroupCloneComponent implements OnInit, OnDestroy {
-  ngOnDestroy(): void {
-    this.isDestroyed$.next(true);
-    this.isDestroyed$.complete();
-    this.isDestroyed$.unsubscribe();
-  }
-
-  constructor(
-    private df: InvoiceSellService,
-    private toastService: ToastMakeService,
-    private dialogTakNie: MatDialog,
-    private momentService: MomentCommonService
-  ) {}
-
-  ngOnInit() {
-    this.isDestroyed$ = new Subject<boolean>();
-    this.monthsAgo = new FormControl(1);
-    this.initData();
-  }
-
   isDestroyed$: Subject<boolean>;
   invoiceLine: FormGroup;
   invoiceList: IInvoiceSellLineList[] = [];
@@ -51,6 +32,25 @@ export class InvoiceSellGroupCloneComponent implements OnInit, OnDestroy {
   dateOfSell = new FormControl(this.momentService.getToday());
   dateOfIssue = new FormControl(this.momentService.getToday());
   monthsAgo: FormControl;
+
+  constructor(
+    private invoiceGroupCloneService: InvoiceSellGroupCloneService,
+    private toastService: ToastMakeService,
+    private dialogTakNie: MatDialog,
+    private momentService: MomentCommonService
+  ) {}
+
+  ngOnDestroy(): void {
+    this.isDestroyed$.next(true);
+    this.isDestroyed$.complete();
+    this.isDestroyed$.unsubscribe();
+  }
+
+  ngOnInit() {
+    this.isDestroyed$ = new Subject<boolean>();
+    this.monthsAgo = new FormControl(1);
+    this.initData();
+  }
 
   copyToProductName(text: string) {
     this.productName.setValue(text);
@@ -95,7 +95,9 @@ export class InvoiceSellGroupCloneComponent implements OnInit, OnDestroy {
         switchMap((dialogResponse) => {
           this.toastService.toastMake("Zapisuję dane", "navDelete");
           if (dialogResponse) {
-            return this.df.postInvoiceListToClone(dataToPost);
+            return this.invoiceGroupCloneService.postInvoiceListToClone(
+              dataToPost
+            );
           }
           this.isPending = false;
           return empty();
@@ -135,7 +137,7 @@ export class InvoiceSellGroupCloneComponent implements OnInit, OnDestroy {
           if (!_monthsAgo) {
             return empty();
           }
-          return this.df
+          return this.invoiceGroupCloneService
             .getLastMonthInvoices(this.monthsAgo.value)
             .pipe(take(1));
         })

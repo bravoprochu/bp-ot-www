@@ -7,7 +7,6 @@ import {
   FormControl,
   Validators,
 } from "@angular/forms";
-import { CommonFunctionsService } from "../../../../services/common-functions.service";
 import { IDetailObj } from "../../../../shared/idetail-obj";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
@@ -21,6 +20,7 @@ import { Subject } from "rxjs";
 import { CurrencyCommonService } from "app/other-modules/currency/currency-common.service";
 import { switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { Location } from "@angular/common";
+import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 
 @Component({
   selector: "app-invoice-sell-buy",
@@ -32,14 +32,14 @@ export class InvoiceBuyComponent implements OnInit, OnDestroy, IDetailObj {
    *
    */
   constructor(
-    private cf: CommonFunctionsService,
     private currencyService: CurrencyCommonService,
     private icf: InvoiceCommonFunctionsService,
     private df: InvoiceBuyService,
     private dialogTakNie: MatDialog,
     public fb: FormBuilder,
     private location: Location,
-    private actRoute: ActivatedRoute
+    private actRoute: ActivatedRoute,
+    private toastService: ToastMakeService
   ) {}
 
   ngOnDestroy(): void {
@@ -155,10 +155,9 @@ export class InvoiceBuyComponent implements OnInit, OnDestroy, IDetailObj {
         .getById(id)
         .pipe(takeUntil(this.isDestroyed$))
         .subscribe((s: IInvoiceBuy) => {
-          this.cf.toastMake(
+          this.toastService.toastMake(
             `Pobrano dane: ${s.invoiceNo}`,
-            "initData",
-            this.actRoute
+            "initData"
           );
           this.icf.patchInvoiceBuy(s, this.rForm, this.fb);
           this.navDetailInfo.basicActions.canDelete = true;
@@ -186,7 +185,7 @@ export class InvoiceBuyComponent implements OnInit, OnDestroy, IDetailObj {
       .afterClosed()
       .pipe(
         switchMap((dialogResponse) => {
-          this.cf.toastMake("Usuwam dane", "navDelete", this.actRoute);
+          this.toastService.toastMake("Usuwam dane", "navDelete");
           return dialogResponse
             ? this.df.delete(this.rForm.value.invoiceBuyId)
             : empty();
@@ -195,7 +194,7 @@ export class InvoiceBuyComponent implements OnInit, OnDestroy, IDetailObj {
       )
 
       .subscribe((s) => {
-        this.cf.toastMake("Usunięto dane", "init", this.actRoute);
+        this.toastService.toastMake("Usunięto dane", "init");
         this.location.back();
       });
   }
@@ -208,17 +207,16 @@ export class InvoiceBuyComponent implements OnInit, OnDestroy, IDetailObj {
       .pipe(
         take(1),
         switchMap((sw: IInvoiceBuy) => {
-          this.cf.toastMake(`Zaktualizowano dane`, "navSave", this.actRoute);
+          this.toastService.toastMake(`Zaktualizowano dane`, "navSave");
           return this.df.getById(id);
         }),
         take(1)
       )
 
       .subscribe((s: IInvoiceBuy) => {
-        this.cf.toastMake(
+        this.toastService.toastMake(
           `Pobrano zaktualizowane dane ${s.invoiceNo}, [id: ${s.invoiceBuyId}]`,
-          "navSave",
-          this.actRoute
+          "navSave"
         );
         this.icf.patchInvoiceBuy(s, this.rForm, this.fb);
         this.isPending = false;

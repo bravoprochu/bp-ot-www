@@ -27,29 +27,9 @@ import {
 })
 export class LoadComponent
   implements OnInit, OnDestroy, AfterViewInit, IDetailObj {
-  ngOnDestroy(): void {
-    this.isDestroyed$.next(true);
-    this.isDestroyed$.complete();
-    this.isDestroyed$.unsubscribe();
-  }
-  @ViewChild("loadBuy", /* TODO: add static flag */ {}) loadBuy: LoadBuyComponent;
-
-  constructor(
-    public fb: FormBuilder,
-    private actRoute: ActivatedRoute,
-    private df: LoadService,
-    private cf: CommonFunctionsService
-  ) {}
-
-  ngOnInit() {
-    this.isDestroyed$ = new Subject<boolean>();
-    this.initRouteId();
-    this.initForm();
-    this.initData();
-  }
-
+  @ViewChild("loadBuy", /* TODO: add static flag */ {})
+  loadBuy: LoadBuyComponent;
   dataObj: any;
-
   isDestroyed$: Subject<boolean>;
   isPending: boolean = true;
   navDetailInfo: INavDetailInfo = <INavDetailInfo>{
@@ -62,6 +42,26 @@ export class LoadComponent
   deficyt: number;
   rForm: FormGroup;
   routeId: number;
+
+  constructor(
+    public fb: FormBuilder,
+    private actRoute: ActivatedRoute,
+    private df: LoadService,
+    private cf: CommonFunctionsService
+  ) {}
+
+  ngOnDestroy(): void {
+    this.isDestroyed$.next(true);
+    this.isDestroyed$.complete();
+    this.isDestroyed$.unsubscribe();
+  }
+
+  ngOnInit() {
+    this.isDestroyed$ = new Subject<boolean>();
+    this.initRouteId();
+    this.initForm();
+    this.initData();
+  }
 
   get buy(): FormGroup {
     return <FormGroup>this.rForm.get("buy");

@@ -1,8 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { FormBuilder } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { ITitle } from "app/shared/ititle";
-import { CommonFunctionsService } from "../../../../services/common-functions.service";
 import { IListObj } from "../../../../shared/ilist-obj";
 import { InvoiceBuyService } from "../services/invoice-buy.service";
 import { IDateRange } from "app/shared/interfaces/i-date-range";
