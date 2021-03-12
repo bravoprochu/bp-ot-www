@@ -1,0 +1,11 @@
+.info-container {
+  width: 100%;
+}
+
+.info {
+  margin: auto;
+  width: 200px;
+  min-height: 200px;
+  text-align: center;
+  vertical-align: middle;
+}
