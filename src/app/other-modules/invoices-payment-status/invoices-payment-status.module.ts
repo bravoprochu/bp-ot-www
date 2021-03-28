@@ -22,8 +22,10 @@ import {
   MAT_MOMENT_DATE_ADAPTER_OPTIONS,
 } from "@angular/material-moment-adapter";
 import { InvoicesPaymentStatusComponent } from "./components/invoices-payment-status/invoices-payment-status.component";
+import { FlexLayoutModule } from "@angular/flex-layout";
 
 const IMPORT_EXPORT_MODULES = [
+  FlexLayoutModule,
   FormsModule,
   MatButtonModule,
   MatCardModule,
