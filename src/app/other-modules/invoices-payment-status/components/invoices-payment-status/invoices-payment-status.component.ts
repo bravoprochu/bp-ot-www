@@ -6,6 +6,8 @@ import { OnDestroy } from "@angular/core";
 import { PaymentRemindDialogComponent } from "../payment-remind-dialog/payment-remind-dialog.component";
 import { switchMap, take, takeUntil } from "rxjs/operators";
 import { InvoicesPaymentStatusService } from "../../services/invoices-payment-status.service";
+import { IInvoicePaymentStatusInfo } from "../../interfaces/i-invoice-payment-status-info";
+import { IInvoicePaymentStatus } from "../../interfaces/i-invoice-payment-status";
 
 @Component({
   selector: "app-invoices-payment-status",
@@ -61,18 +63,18 @@ export class InvoicesPaymentStatusComponent implements OnInit, OnDestroy {
     this.invoicePaymentStatusService
       .paymentRemind()
       .pipe(take(1))
-      .subscribe((s) => {
-        this.unpaid = s["unpaid"];
-        this.unpaidFiltered = s["unpaid"];
-        this.unpaidStats = s["unpaidStats"];
+      .subscribe((s: IInvoicePaymentStatus) => {
+        this.unpaid = s.unpaid;
+        this.unpaidFiltered = s.unpaid;
+        this.unpaidStats = s.unpaidOverdueStats;
 
-        this.unpaidOverdue = s["unpaidOverdue"];
-        this.unpaidOverdueFiltered = s["unpaidOverdue"];
-        this.unpaidOverdueStats = s["unpaidOverdueStats"];
+        this.unpaidOverdue = s.unpaidOverdue;
+        this.unpaidOverdueFiltered = s.unpaidOverdue;
+        this.unpaidOverdueStats = s.unpaidOverdueStats;
 
-        this.notConfirmed = s["notConfirmed"];
-        this.notConfirmedFiltered = s["notConfirmed"];
-        this.notConfirmedStats = s["notConfirmedStats"];
+        this.notConfirmed = s.notConfirmed;
+        this.notConfirmedFiltered = s.notConfirmed;
+        this.notConfirmedStats = s.notConfirmedStats;
 
         this.isPending = false;
       });
