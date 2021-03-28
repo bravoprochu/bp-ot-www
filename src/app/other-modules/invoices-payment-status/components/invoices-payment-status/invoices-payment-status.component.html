@@ -16,60 +16,19 @@
       />
     </mat-form-field>
     {{ notConfirmedFilterInfo }}
-    <mat-list>
-      <div *ngFor="let g of notConfirmedFiltered">
-        <mat-list-item>
-          <a [routerLink]="['/invoices/fakturaSprzedazy', g.invoiceId]">
-            <button
-              mat-mini-fab
-              matTooltip="Przejdź do faktury id: {{ g.invoiceId }}"
-            >
-              <mat-icon>zoom_in</mat-icon>
-            </button>
-          </a>
-          <h3 mat-line>
-            <span>{{ g.paymentDate | date: "yyyy-MM-dd" }}</span>
-            <small>
-              &nbsp;&nbsp;
-              <i>
-                {{ g.invoiceNo }}
-              </i>
-              &nbsp;&nbsp;
-              <strong>
-                {{ g.company.shortName }}
-              </strong>
-            </small>
-          </h3>
-          <h2 class="mat-h2" mat-line>
-            {{ g.invoiceTotal.total_netto | number: "1.2-2" }} |
-            {{ g.invoiceTotal.total_tax | number: "1.2-2" }} |
-            <strong>
-              {{ g.invoiceTotal.total_brutto | number: "1.2-2" }}
-              {{ g.currency.name }}
-              <span
-                [style.color]="'red'"
-                *ngIf="g.invoiceTotal.total_brutto != g.invoiceValue"
-                >({{ g.correctionPaymenntInfo }})</span
-              >
-            </strong>
-          </h2>
-          <h5 class="mat-h5" mat-line>
-            {{ g.company.address }}
-            <span *ngIf="g.company.contact"
-              >|&nbsp;&nbsp;{{ g.company.contact }}&nbsp;|</span
-            >
-          </h5>
-          <h6
-            class="mat-h6"
-            mat-line
-            *ngFor="let bank of g.company.bankAccounts"
-          >
-            {{ bank }}
-          </h6>
-        </mat-list-item>
-        <mat-divider></mat-divider>
-      </div>
-    </mat-list>
+
+    <ng-container
+      *ngFor="
+        let g of notConfirmedFiltered;
+        index as index;
+        odd as isOdd;
+        even as isEven
+      "
+    >
+      <ng-container
+        *ngTemplateOutlet="basicInfo; context: { $implicit: g }"
+      ></ng-container>
+    </ng-container>
   </mat-tab>
 
   <mat-tab label="Należności">
@@ -325,3 +284,60 @@
     </div>
   </mat-tab>
 </mat-tab-group>
+
+<ng-template #basicInfo let-g>
+  <div
+    fxLayout
+    fxLayoutGap="15px"
+    fxLayoutAlign="start center"
+    class="basic-info-container"
+  >
+    <div>
+      <a [routerLink]="['/invoices/fakturaSprzedazy', g.invoiceId]">
+        <button
+          mat-mini-fab
+          matTooltip="Przejdź do faktury id: {{ g.invoiceId }}"
+        >
+          <mat-icon>zoom_in</mat-icon>
+        </button>
+      </a>
+    </div>
+    <div fxLayout="column">
+      <div>
+        <span>{{ g.paymentDate | date: "yyyy-MM-dd" }}</span>
+        <small>
+          &nbsp;&nbsp;
+          <i>
+            {{ g.invoiceNo }}
+          </i>
+          &nbsp;&nbsp;
+          <strong>
+            {{ g.company.shortName }}
+          </strong>
+        </small>
+      </div>
+      <h3 class="mat-h3">
+        {{ g.invoiceTotal.total_netto | number: "1.2-2" }} |
+        {{ g.invoiceTotal.total_tax | number: "1.2-2" }} |
+        <strong>
+          {{ g.invoiceTotal.total_brutto | number: "1.2-2" }}
+          {{ g.currency.name }}
+          <span
+            [style.color]="'red'"
+            *ngIf="g.invoiceTotal.total_brutto != g.invoiceValue"
+            >({{ g.correctionPaymenntInfo }})</span
+          >
+        </strong>
+      </h3>
+      <h5 class="mat-h5">
+        {{ g.company.address }}
+        <span *ngIf="g.company.contact"
+          >|&nbsp;&nbsp;{{ g.company.contact }}&nbsp;|</span
+        >
+      </h5>
+      <h6 class="mat-h6" mat-line *ngFor="let bank of g.company.bankAccounts">
+        {{ bank }}
+      </h6>
+    </div>
+  </div>
+</ng-template>
