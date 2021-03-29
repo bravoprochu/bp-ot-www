@@ -5,6 +5,7 @@ import { TokenService } from "app/services/token.service";
 import { environment } from "environments/environment";
 import { Observable } from "rxjs";
 import { catchError, take } from "rxjs/operators";
+import { IInvoiceStatusConfirmation } from "../interfaces/i-invoice-status-confirmation";
 
 @Injectable({
   providedIn: "root",
@@ -14,14 +15,14 @@ export class InvoicesPaymentStatusService extends DataFactoryService {
     super(environment.apiInvoiceSell, httpClient, tokenService);
   }
 
-  paymentConfirmation(id: number, paymentDate: string): Observable<any> {
+  confirmation(
+    id: number,
+    payload: IInvoiceStatusConfirmation
+  ): Observable<any> {
     return this.http
-      .get(
-        `${environment.apiInvoiceSellPaymentConfirmation}/${id}/${paymentDate}`,
-        {
-          headers: this.bearerHeader(),
-        }
-      )
+      .put(`${environment.apiInvoiceSellConfirmation}/${id}`, payload, {
+        headers: this.bearerHeader(),
+      })
       .pipe(
         take(1),
         catchError((err) => {

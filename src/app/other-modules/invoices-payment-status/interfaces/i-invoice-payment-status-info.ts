@@ -21,6 +21,9 @@ export interface IInvoicePaymentStatusInfo {
     total_tax: number;
   };
   invoiceValue: number;
+  IsCmrReceived: boolean;
+  IsInvoiceSent: boolean;
+  IsInvoiceReceived: boolean;
   isTransportOrLoadInvoice: boolean;
   paymentDays: number;
   receivedInvoiceDate: Date | null;

@@ -1,13 +1,31 @@
-<h1 mat-dialog-title>{{data.title}}, {{data.price | number: '1.2-2'}} {{data.currency}}</h1>
-<div mat-dialog-content>
-<mat-form-field>
-  <input matInput [matDatepicker]="picker" [(ngModel)]="data.paymentDate" placeholder="Data wpłaty">
-  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-  <mat-datepicker #picker></mat-datepicker>
-</mat-form-field>
+<div mat-dialog-title>
+  <div>
+    <span>{{ data.title }}</span>
+  </div>
+
+  <div class="mat-body-2">
+    {{ data.subtitle }}
+  </div>
 </div>
-<div mat-dialog-actions>
+<mat-dialog-content fxLayout="column" [formGroup]="rForm$">
+  <mat-form-field>
+    <input
+      matInput
+      [matDatepicker]="picker"
+      formControlName="paymentDate"
+      placeholder="Data wpłaty"
+    />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field *ngIf="data.isInfo" fxFill>
+    <mat-label>Uwagi</mat-label>
+    <input formControlName="info" matInput type="text" placeholder="Info" />
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
   <!-- <button mat-button (click)="onNoClick()">Anuluj</button> -->
   <button mat-button [mat-dialog-close]="">Anuluj</button>
   <button mat-button (click)="onYesClick()" cdkFocusInitial>Ok</button>
-</div>
+</mat-dialog-actions>

@@ -5,17 +5,20 @@
       Na liście znajdują się wszystkie faktury sprzedaży, które nie mają statusu
       potwierdzony odbiór przez nabywcę
     </p>
-
-    <mat-form-field>
-      <mat-icon matPrefix>search</mat-icon>
-      <input
-        type="search"
-        [formControl]="notConfirmedSearch$"
-        matInput
-        placeholder="Wyszukaj płatność"
-      />
-    </mat-form-field>
-    {{ notConfirmedFilterInfo }}
+    <div fxLayout="column" fxLayoutGap="15px">
+      <div class="mat-body">
+        {{ notConfirmedFilterInfo }}
+      </div>
+      <mat-form-field>
+        <mat-icon matPrefix>search</mat-icon>
+        <input
+          type="search"
+          [formControl]="notConfirmedSearch$"
+          matInput
+          placeholder="Wyszukaj płatność"
+        />
+      </mat-form-field>
+    </div>
 
     <ng-container
       *ngFor="
@@ -52,68 +55,18 @@
       />
     </mat-form-field>
     {{ unpaidFilterInfo }}
-    <mat-list>
-      <div *ngFor="let g of unpaidFiltered">
-        <mat-list-item>
-          <a [routerLink]="['/invoices/fakturaSprzedazy', g.invoiceId]">
-            <button
-              mat-mini-fab
-              matTooltip="Przejdź do faktury id: {{ g.invoiceId }}"
-            >
-              <mat-icon>zoom_in</mat-icon>
-            </button>
-          </a>
-          <div>&nbsp;</div>
-          <button
-            mat-mini-fab
-            (click)="checkAsPaid(g, unpaid)"
-            matTooltip="Wprowadź datę zapłaty"
-          >
-            <mat-icon>euro_symbol</mat-icon>
-          </button>
-          <h3 mat-line>
-            <span>{{ g.paymentDate | date: "yyyy-MM-dd" }}</span>
-            <small>
-              &nbsp;&nbsp;
-              <i>
-                {{ g.invoiceNo }}
-              </i>
-              &nbsp;&nbsp;
-              <strong>
-                {{ g.company.shortName }}
-              </strong>
-            </small>
-          </h3>
-          <h2 class="mat-h2" mat-line>
-            {{ g.invoiceTotal.total_netto | number: "1.2-2" }} |
-            {{ g.invoiceTotal.total_tax | number: "1.2-2" }} |
-            <strong>
-              {{ g.invoiceTotal.total_brutto | number: "1.2-2" }}
-              {{ g.currency.name }}
-              <span
-                [style.color]="'red'"
-                *ngIf="g.invoiceTotal.total_brutto != g.invoiceValue"
-                >({{ g.correctionPaymenntInfo }})</span
-              >
-            </strong>
-          </h2>
-          <h5 class="mat-h5" mat-line>
-            {{ g.company.address }}
-            <span *ngIf="g.company.contact"
-              >|&nbsp;&nbsp;{{ g.company.contact }}&nbsp;|</span
-            >
-          </h5>
-          <h6
-            class="mat-h6"
-            mat-line
-            *ngFor="let bank of g.company.bankAccounts"
-          >
-            {{ bank }}
-          </h6>
-        </mat-list-item>
-        <mat-divider></mat-divider>
-      </div>
-    </mat-list>
+
+    <ng-container
+      *ngFor="
+        let g of unpaidFiltered;
+        index as index;
+        odd as isOdd;
+        even as isEven
+      "
+    >
+      <ng-container *ngTemplateOutlet="basicInfo; context: { $implicit: g }">
+      </ng-container>
+    </ng-container>
   </mat-tab>
 
   <mat-tab label="Należności przeterminowane">
@@ -137,68 +90,18 @@
       />
     </mat-form-field>
     {{ unpaidOverdueFilterInfo }}
-    <mat-list>
-      <div *ngFor="let g of unpaidOverdueFiltered">
-        <mat-list-item>
-          <a [routerLink]="['/invoices/fakturaSprzedazy', g.invoiceId]">
-            <button
-              mat-mini-fab
-              matTooltip="Przejdź do faktury id: {{ g.invoiceId }}"
-            >
-              <mat-icon>zoom_in</mat-icon>
-            </button>
-          </a>
-          <div>&nbsp;</div>
-          <button
-            mat-mini-fab
-            (click)="checkAsPaid(g, unpaidOverdue)"
-            matTooltip="Wprowadź datę zapłaty"
-          >
-            <mat-icon>euro_symbol</mat-icon>
-          </button>
-          <h3 mat-line>
-            <span>{{ g.paymentDate | date: "yyyy-MM-dd" }}</span>
-            <small>
-              &nbsp;&nbsp;
-              <i>
-                {{ g.invoiceNo }}
-              </i>
-              &nbsp;&nbsp;
-              <strong>
-                {{ g.company.shortName }}
-              </strong>
-            </small>
-          </h3>
-          <h2 class="mat-h2" mat-line>
-            {{ g.invoiceTotal.total_netto | number: "1.2-2" }} |
-            {{ g.invoiceTotal.total_tax | number: "1.2-2" }} |
-            <strong>
-              {{ g.invoiceTotal.total_brutto | number: "1.2-2" }}
-              {{ g.currency.name }}
-              <span
-                [style.color]="'red'"
-                *ngIf="g.invoiceTotal.total_brutto != g.invoiceValue"
-                >({{ g.correctionPaymenntInfo }})</span
-              >
-            </strong>
-          </h2>
-          <h5 class="mat-h5" mat-line>
-            {{ g.company.address }}
-            <span *ngIf="g.company.contact"
-              >|&nbsp;&nbsp;{{ g.company.contact }}&nbsp;|</span
-            >
-          </h5>
-          <h6
-            class="mat-h6"
-            mat-line
-            *ngFor="let bank of g.company.bankAccounts"
-          >
-            {{ bank }}
-          </h6>
-        </mat-list-item>
-        <mat-divider></mat-divider>
-      </div>
-    </mat-list>
+
+    <ng-container
+      *ngFor="
+        let g of unpaidOverdueFiltered;
+        index as index;
+        odd as isOdd;
+        even as isEven
+      "
+    >
+      <ng-container *ngTemplateOutlet="basicInfo; context: { $implicit: g }">
+      </ng-container>
+    </ng-container>
   </mat-tab>
 
   <mat-tab label="Statystyki">
@@ -304,7 +207,7 @@
       </div>
       <div fxLayout="column">
         <div>
-          <span>{{ g.paymentDate | date: "yyyy-MM-dd" }}</span>
+          <strong>{{ g.paymentDate | date: "yyyy-MM-dd" }}</strong>
           <small>
             &nbsp;&nbsp;
             <i>
@@ -341,13 +244,80 @@
       </div>
     </div>
 
-    <div fxLayout fxLayoutAlign="center center">
-      <div *ngIf="g.daysOverdue">
-        <span>{{ g.daysOverdue }}</span>
+    <div
+      fxLayout="column"
+      fxLayout.gt-xs="row"
+      fxLayoutGap="5px"
+      fxLayoutAlign="center center"
+    >
+      <div
+        class="small-indicators"
+        fxLayout="column"
+        fxLayoutAlign="center center"
+      >
+        <ng-container *ngIf="g.isTransportOrLoadInvoice">
+          <div
+            class="color-warn pointer"
+            (click)="confirmCmr(g)"
+            *ngIf="!g.isCmrReceived; else cmrConfirmed"
+          >
+            CMR do potwierdzenia
+          </div>
+        </ng-container>
+
+        <div
+          class="color-warn pointer"
+          (click)="confirmInvSent(g)"
+          *ngIf="!g.isInvoiceSent; else invSentConfirmed"
+        >
+          FV NIE wysłana
+        </div>
+        <div
+          class="color-warn pointer"
+          (click)="confirmInvReceived(g)"
+          *ngIf="!g.isInvoiceReceived; else invReceivedConfirmed"
+        >
+          FV NIE potwierdzona
+        </div>
       </div>
       <div class="big-letter">
-        <span *ngIf="g.isTransportOrLoadInvoice">T</span>
+        <span *ngIf="g.isTransportOrLoadInvoice">(T)</span>
+      </div>
+      <div
+        *ngIf="g.daysOverdue"
+        fxLayout="column"
+        fxLayoutAlign="center center"
+      >
+        <div class="big-letter overdue">
+          <span>{{ g.daysOverdue }}</span>
+        </div>
+        <div>
+          <span *ngIf="g.daysOverdue === 1; else dniContent">dzień</span>
+        </div>
+      </div>
+      <div>
+        <button
+          mat-mini-fab
+          (click)="confirmPayment(g)"
+          matTooltip="Wprowadź datę zapłaty"
+        >
+          <mat-icon>euro_symbol</mat-icon>
+        </button>
       </div>
     </div>
   </div>
 </ng-template>
+
+<ng-template #dniContent> dni </ng-template>
+
+<ng-template #cmrConfirmed let-g>
+  <div class="color-ok">CMR, OK!</div>
+</ng-template>
+
+<ng-template #invSentConfirmed>
+  <div class="color-ok">FV wysłana, OK!</div>
+</ng-template>
+
+<ng-template #invReceivedConfirmed>
+  <div class="color-ok">FV odebrana, OK!</div></ng-template
+>

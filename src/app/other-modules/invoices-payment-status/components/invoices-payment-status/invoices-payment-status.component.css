@@ -1,3 +1,8 @@
+mat-tab-group {
+  margin: auto;
+  max-width: 960px;
+}
+
 h5 {
   border-top: 1px solid darkgray;
 }
@@ -19,4 +24,26 @@ mat-list {
   vertical-align: middle;
 
   font-size: xx-large;
+}
+
+.overdue {
+  color: red;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.small-indicators {
+  font-size: small;
+}
+
+.color-ok {
+  color: green;
+  font-weight: 200;
+}
+
+.color-warn {
+  color: red;
+  font-weight: 300;
 }
