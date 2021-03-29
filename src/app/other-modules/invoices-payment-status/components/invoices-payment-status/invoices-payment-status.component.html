@@ -288,56 +288,66 @@
 <ng-template #basicInfo let-g>
   <div
     fxLayout
-    fxLayoutGap="15px"
-    fxLayoutAlign="start center"
+    fxLayoutAlign="space-between center"
     class="basic-info-container"
   >
-    <div>
-      <a [routerLink]="['/invoices/fakturaSprzedazy', g.invoiceId]">
-        <button
-          mat-mini-fab
-          matTooltip="Przejdź do faktury id: {{ g.invoiceId }}"
-        >
-          <mat-icon>zoom_in</mat-icon>
-        </button>
-      </a>
-    </div>
-    <div fxLayout="column">
+    <div fxLayout fxLayoutGap="15px" fxLayoutAlign="start center">
       <div>
-        <span>{{ g.paymentDate | date: "yyyy-MM-dd" }}</span>
-        <small>
-          &nbsp;&nbsp;
-          <i>
-            {{ g.invoiceNo }}
-          </i>
-          &nbsp;&nbsp;
-          <strong>
-            {{ g.company.shortName }}
-          </strong>
-        </small>
-      </div>
-      <h3 class="mat-h3">
-        {{ g.invoiceTotal.total_netto | number: "1.2-2" }} |
-        {{ g.invoiceTotal.total_tax | number: "1.2-2" }} |
-        <strong>
-          {{ g.invoiceTotal.total_brutto | number: "1.2-2" }}
-          {{ g.currency.name }}
-          <span
-            [style.color]="'red'"
-            *ngIf="g.invoiceTotal.total_brutto != g.invoiceValue"
-            >({{ g.correctionPaymenntInfo }})</span
+        <a [routerLink]="['/invoices/fakturaSprzedazy', g.invoiceId]">
+          <button
+            mat-mini-fab
+            matTooltip="Przejdź do faktury id: {{ g.invoiceId }}"
           >
-        </strong>
-      </h3>
-      <h5 class="mat-h5">
-        {{ g.company.address }}
-        <span *ngIf="g.company.contact"
-          >|&nbsp;&nbsp;{{ g.company.contact }}&nbsp;|</span
-        >
-      </h5>
-      <h6 class="mat-h6" mat-line *ngFor="let bank of g.company.bankAccounts">
-        {{ bank }}
-      </h6>
+            <mat-icon>zoom_in</mat-icon>
+          </button>
+        </a>
+      </div>
+      <div fxLayout="column">
+        <div>
+          <span>{{ g.paymentDate | date: "yyyy-MM-dd" }}</span>
+          <small>
+            &nbsp;&nbsp;
+            <i>
+              {{ g.invoiceNo }}
+            </i>
+            &nbsp;&nbsp;
+            <strong>
+              {{ g.company.shortName }}
+            </strong>
+          </small>
+        </div>
+        <h3 class="mat-h3">
+          {{ g.invoiceTotal.total_netto | number: "1.2-2" }} |
+          {{ g.invoiceTotal.total_tax | number: "1.2-2" }} |
+          <strong>
+            {{ g.invoiceTotal.total_brutto | number: "1.2-2" }}
+            {{ g.currency.name }}
+            <span
+              [style.color]="'red'"
+              *ngIf="g.invoiceTotal.total_brutto != g.invoiceValue"
+              >({{ g.correctionPaymenntInfo }})</span
+            >
+          </strong>
+        </h3>
+        <h5 class="mat-h5">
+          {{ g.company.address }}
+          <span *ngIf="g.company.contact"
+            >|&nbsp;&nbsp;{{ g.company.contact }}&nbsp;</span
+          >
+        </h5>
+        <h6 class="mat-h6" mat-line *ngFor="let bank of g.company.bankAccounts">
+          {{ bank }}
+        </h6>
+      </div>
+    </div>
+
+    <div fxLayout fxLayoutAlign="center center">
+      <div *ngIf="g.daysOverdue">
+        <span>{{ g.daysOverdue }}</span>
+      </div>
+      <div class="big-letter">
+        <span *ngIf="g.isTransportOrLoadInvoice">T</span>
+      </div>
     </div>
   </div>
 </ng-template>
