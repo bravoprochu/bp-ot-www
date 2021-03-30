@@ -24,6 +24,7 @@ import {
 import { InvoicesPaymentStatusComponent } from "./components/invoices-payment-status/invoices-payment-status.component";
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { MatBadgeModule } from "@angular/material/badge";
+import { ScrollingModule } from "@angular/cdk/scrolling";
 
 const IMPORT_EXPORT_MODULES = [
   FlexLayoutModule,
@@ -43,6 +44,7 @@ const IMPORT_EXPORT_MODULES = [
   PendingIndicatorModule,
   RouterModule,
   ReactiveFormsModule,
+  ScrollingModule,
 ];
 
 @NgModule({

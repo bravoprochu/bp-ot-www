@@ -1,5 +1,5 @@
 <app-pending [isPending]="isPending"></app-pending>
-<mat-tab-group>
+<mat-tab-group dynamicHeight>
   <mat-tab>
     <ng-template matTabLabel>
       <span [matBadge]="notConfirmed?.length"
@@ -19,49 +19,77 @@
       "
     ></ng-template>
 
-    <ng-container
-      *ngFor="
-        let g of notConfirmedFiltered;
-        index as index;
-        odd as isOdd;
-        even as isEven
-      "
+    <cdk-virtual-scroll-viewport
+      [itemSize]="itemSize"
+      [style.minHeight.px]="itemSize * itemsOnViewport"
     >
       <ng-container
-        *ngTemplateOutlet="basicInfo; context: { $implicit: g }"
-      ></ng-container>
-    </ng-container>
+        *cdkVirtualFor="
+          let g of notConfirmedFiltered;
+          index as index;
+          odd as isOdd;
+          even as isEven
+        "
+        cdkVirtualForTemplateCacheSize="0"
+      >
+        <ng-container
+          [style.min-height.px]="itemSize"
+          *ngTemplateOutlet="
+            basicInfo;
+            context: { data: g, itemSize: itemSize }
+          "
+        ></ng-container>
+      </ng-container>
+    </cdk-virtual-scroll-viewport>
   </mat-tab>
 
   <mat-tab>
     <ng-template matTabLabel>
       <span [matBadge]="unpaid?.length">&nbsp;Należności&nbsp;</span>
     </ng-template>
-    <p class="mat-subheader">
-      Lista należności, faktury otrzymane przez nabywcę, termin płatności nie
-      został przekroczony.
-    </p>
-    <p>
-      Data jest określona jako data sprzedaży plus ilość dni z terminu
-      płatności. W przypadku faktur transportowych, termin płatności określony
-      jest jako data otrzymania potwierdzenia faktury (przez nabywcę)
-      powiększona o ilość dni z warunków płatności.
-    </p>
-    <ng-template
-      *ngTemplateOutlet="searchTemplate; context: { $implicit: unpaidSearch$ }"
-    ></ng-template>
 
-    <ng-container
-      *ngFor="
-        let g of unpaidFiltered;
-        index as index;
-        odd as isOdd;
-        even as isEven
-      "
-    >
-      <ng-container *ngTemplateOutlet="basicInfo; context: { $implicit: g }">
-      </ng-container>
-    </ng-container>
+    <div *matTabContent>
+      <p class="mat-subheader">
+        Lista należności, faktury otrzymane przez nabywcę, termin płatności nie
+        został przekroczony.
+      </p>
+      <p>
+        Data jest określona jako data sprzedaży plus ilość dni z terminu
+        płatności. W przypadku faktur transportowych, termin płatności określony
+        jest jako data otrzymania potwierdzenia faktury (przez nabywcę)
+        powiększona o ilość dni z warunków płatności.
+      </p>
+      <ng-template
+        *ngTemplateOutlet="
+          searchTemplate;
+          context: { $implicit: unpaidSearch$ }
+        "
+      ></ng-template>
+
+      <cdk-virtual-scroll-viewport
+        #viewport
+        [itemSize]="itemSize"
+        [style.minHeight.px]="itemSize * itemsOnViewport"
+      >
+        <ng-container
+          *cdkVirtualFor="
+            let g of unpaidFiltered;
+            index as index;
+            odd as isOdd;
+            even as isEven
+          "
+          cdkVirtualForTemplateCacheSize="0"
+        >
+          <ng-container
+            [style.min-height.px]="itemSize"
+            *ngTemplateOutlet="
+              basicInfo;
+              context: { data: g, itemSize: itemSize }
+            "
+          ></ng-container>
+        </ng-container>
+      </cdk-virtual-scroll-viewport>
+    </div>
   </mat-tab>
 
   <mat-tab>
@@ -71,34 +99,47 @@
       >
     </ng-template>
 
-    <p class="mat-subheader">
-      Lista należności przeterminowanych, faktury otrzymane przez nabywcę,
-      termin płatności został PRZEKROCZONY.
-    </p>
-    <p>
-      Data jest określona jako data sprzedaży plus ilość dni z terminu
-      płatności. W przypadku faktur transportowych, termin płatności określony
-      jest jako data otrzymania potwierdzenia faktury (przez nabywcę)
-      powiększona o ilość dni z warunków płatności.
-    </p>
-    <ng-template
-      *ngTemplateOutlet="
-        searchTemplate;
-        context: { $implicit: unpaidOverdueSearch$ }
-      "
-    ></ng-template>
+    <div *matTabContent>
+      <p class="mat-subheader">
+        Lista należności przeterminowanych, faktury otrzymane przez nabywcę,
+        termin płatności został PRZEKROCZONY.
+      </p>
+      <p>
+        Data jest określona jako data sprzedaży plus ilość dni z terminu
+        płatności. W przypadku faktur transportowych, termin płatności określony
+        jest jako data otrzymania potwierdzenia faktury (przez nabywcę)
+        powiększona o ilość dni z warunków płatności.
+      </p>
+      <ng-template
+        *ngTemplateOutlet="
+          searchTemplate;
+          context: { $implicit: unpaidOverdueSearch$ }
+        "
+      ></ng-template>
 
-    <ng-container
-      *ngFor="
-        let g of unpaidOverdueFiltered;
-        index as index;
-        odd as isOdd;
-        even as isEven
-      "
-    >
-      <ng-container *ngTemplateOutlet="basicInfo; context: { $implicit: g }">
-      </ng-container>
-    </ng-container>
+      <cdk-virtual-scroll-viewport
+        [itemSize]="itemSize"
+        [style.minHeight.px]="itemSize * itemsOnViewport"
+      >
+        <ng-container
+          *cdkVirtualFor="
+            let g of unpaidOverdueFiltered;
+            index as index;
+            odd as isOdd;
+            even as isEven
+          "
+          cdkVirtualForTemplateCacheSize="0"
+        >
+          <ng-container
+            [style.min-height.px]="itemSize"
+            *ngTemplateOutlet="
+              basicInfo;
+              context: { data: g, itemSize: itemSize }
+            "
+          ></ng-container>
+        </ng-container>
+      </cdk-virtual-scroll-viewport>
+    </div>
   </mat-tab>
 
   <mat-tab label="Statystyki">
@@ -153,14 +194,17 @@
         even as isEven
       "
     >
-      <ng-container *ngTemplateOutlet="basicInfo; context: { $implicit: g }">
+      <ng-container
+        *ngTemplateOutlet="basicInfo; context: { data: g, itemSize: itemSize }"
+      >
       </ng-container>
     </ng-container>
   </mat-tab>
 </mat-tab-group>
 
-<ng-template #basicInfo let-g>
+<ng-template #basicInfo let-g="data" , let-itemSize="itemSize">
   <div
+    [style.min-height.px]="itemSize"
     fxLayout
     fxLayoutAlign="space-between center"
     class="basic-info-container"
@@ -308,12 +352,12 @@
   </div>
 </ng-template>
 
-<ng-template #stats let-notConfirmedStats let-title="title">
+<ng-template #stats let-data let-title="title">
   <div fxFlex="100" fxFlex.gt-xs="45" class="stats-card">
     <mat-card>
       <mat-card-title> {{ title }} </mat-card-title>
       <mat-card-content>
-        <div *ngFor="let curr of notConfirmedStats; last as isLast">
+        <div *ngFor="let curr of data; last as isLast">
           <h4 class="mat-h4">
             <small>
               <i>

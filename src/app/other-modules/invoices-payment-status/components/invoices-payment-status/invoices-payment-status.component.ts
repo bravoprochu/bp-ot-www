@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { empty, merge, Subject } from "rxjs";
 import { FormControl } from "@angular/forms";
@@ -23,6 +23,7 @@ import { IInvoicesPaymentStatusConfirmDialogDataReturn } from "../../interfaces/
 import { IInvoiceStatusConfirmation } from "../../interfaces/i-invoice-status-confirmation";
 import { InvoiceStatusConfirmationType } from "../../interfaces/invoice-status-confirmation-type";
 import { IInvoicePaymentStatusInfoStats } from "../../interfaces/i-invoice-payment-status-info-stats";
+import { CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
 
 @Component({
   selector: "app-invoices-payment-status",
@@ -30,8 +31,12 @@ import { IInvoicePaymentStatusInfoStats } from "../../interfaces/i-invoice-payme
   styleUrls: ["./invoices-payment-status.component.css"],
 })
 export class InvoicesPaymentStatusComponent implements OnInit, OnDestroy {
+  @ViewChild("viewport") viewport?: CdkVirtualScrollViewport;
   isDestroyed$ = new Subject() as Subject<boolean>;
   isPending: boolean;
+
+  itemSize = 130;
+  itemsOnViewport = 5;
 
   confirmations = [] as IInvoicePaymentStatusInfo[];
   confirmationsChanged$ = new Subject() as Subject<boolean>;
