@@ -23,11 +23,13 @@ import {
 } from "@angular/material-moment-adapter";
 import { InvoicesPaymentStatusComponent } from "./components/invoices-payment-status/invoices-payment-status.component";
 import { FlexLayoutModule } from "@angular/flex-layout";
+import { MatBadgeModule } from "@angular/material/badge";
 
 const IMPORT_EXPORT_MODULES = [
   FlexLayoutModule,
   FormsModule,
   MatButtonModule,
+  MatBadgeModule,
   MatCardModule,
   MatDatepickerModule,
   MatDialogModule,

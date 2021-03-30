@@ -1,24 +1,23 @@
 <app-pending [isPending]="isPending"></app-pending>
 <mat-tab-group>
-  <mat-tab label="Oczekujące">
+  <mat-tab>
+    <ng-template matTabLabel>
+      <span [matBadge]="notConfirmed?.length"
+        >&nbsp;Oczekujące&nbsp;&nbsp;</span
+      >
+    </ng-template>
+
     <p class="mat-subheader">
       Na liście znajdują się wszystkie faktury sprzedaży, które nie mają statusu
       potwierdzony odbiór przez nabywcę
     </p>
-    <div fxLayout="column" fxLayoutGap="15px">
-      <div class="mat-body">
-        {{ notConfirmedFilterInfo }}
-      </div>
-      <mat-form-field>
-        <mat-icon matPrefix>search</mat-icon>
-        <input
-          type="search"
-          [formControl]="notConfirmedSearch$"
-          matInput
-          placeholder="Wyszukaj płatność"
-        />
-      </mat-form-field>
-    </div>
+
+    <ng-template
+      *ngTemplateOutlet="
+        searchTemplate;
+        context: { $implicit: notConfirmedSearch$ }
+      "
+    ></ng-template>
 
     <ng-container
       *ngFor="
@@ -34,7 +33,10 @@
     </ng-container>
   </mat-tab>
 
-  <mat-tab label="Należności">
+  <mat-tab>
+    <ng-template matTabLabel>
+      <span [matBadge]="unpaid?.length">&nbsp;Należności&nbsp;</span>
+    </ng-template>
     <p class="mat-subheader">
       Lista należności, faktury otrzymane przez nabywcę, termin płatności nie
       został przekroczony.
@@ -45,16 +47,9 @@
       jest jako data otrzymania potwierdzenia faktury (przez nabywcę)
       powiększona o ilość dni z warunków płatności.
     </p>
-    <mat-form-field>
-      <mat-icon matPrefix>search</mat-icon>
-      <input
-        type="search"
-        [formControl]="unpaidSearch$"
-        matInput
-        placeholder="Wyszukaj płatność"
-      />
-    </mat-form-field>
-    {{ unpaidFilterInfo }}
+    <ng-template
+      *ngTemplateOutlet="searchTemplate; context: { $implicit: unpaidSearch$ }"
+    ></ng-template>
 
     <ng-container
       *ngFor="
@@ -69,7 +64,13 @@
     </ng-container>
   </mat-tab>
 
-  <mat-tab label="Należności przeterminowane">
+  <mat-tab>
+    <ng-template matTabLabel>
+      <span [matBadge]="unpaidOverdue?.length"
+        >&nbsp;Należności przeterminowane&nbsp;</span
+      >
+    </ng-template>
+
     <p class="mat-subheader">
       Lista należności przeterminowanych, faktury otrzymane przez nabywcę,
       termin płatności został PRZEKROCZONY.
@@ -80,16 +81,12 @@
       jest jako data otrzymania potwierdzenia faktury (przez nabywcę)
       powiększona o ilość dni z warunków płatności.
     </p>
-    <mat-form-field>
-      <mat-icon matPrefix>search</mat-icon>
-      <input
-        type="search"
-        [formControl]="unpaidOverdueSearch$"
-        matInput
-        placeholder="Wyszukaj płatność"
-      />
-    </mat-form-field>
-    {{ unpaidOverdueFilterInfo }}
+    <ng-template
+      *ngTemplateOutlet="
+        searchTemplate;
+        context: { $implicit: unpaidOverdueSearch$ }
+      "
+    ></ng-template>
 
     <ng-container
       *ngFor="
@@ -105,86 +102,60 @@
   </mat-tab>
 
   <mat-tab label="Statystyki">
-    <div fxLayout="row wrap">
-      <mat-card fxFlex="50" fxFlex.xs="100">
-        <mat-card-title> Oczekujące </mat-card-title>
-        <mat-card-content>
-          <div *ngFor="let curr of notConfirmedStats">
-            <h4 class="mat-h4">
-              <small>
-                <i>
-                  {{ curr.total.total_netto | number: "1.2-2" }} (vat:
-                  {{ curr.total.total_tax | number: "1.2-2" }})&nbsp;&nbsp;
-                </i>
-              </small>
-              <strong>{{ curr.total.total_brutto | number: "1.2-2" }}</strong>
-              {{ curr.currency.name }}
-              <span
-                [style.color]="'red'"
-                *ngIf="curr.total.total_brutto != curr.invoiceValue"
-                >({{ curr.invoiceValue | number: "1.2-2" }})</span
-              >
-            </h4>
-            <mat-divider></mat-divider>
-            <div>&nbsp;</div>
-          </div>
-        </mat-card-content>
-      </mat-card>
+    <div fxLayout="row wrap" fxLayoutGap="15px">
+      <ng-container
+        *ngTemplateOutlet="
+          stats;
+          context: { $implicit: notConfirmedStats, title: 'Oczekujące' }
+        "
+      ></ng-container>
 
-      <mat-card fxFlex="50" fxFlex.xs="100">
-        <mat-card-title> Należności </mat-card-title>
-        <mat-card-content>
-          <div *ngFor="let curr of unpaidStats">
-            <h4 class="mat-h4">
-              <small>
-                <i>
-                  {{ curr.total.total_netto | number: "1.2-2" }} (vat:
-                  {{ curr.total.total_tax | number: "1.2-2" }})&nbsp;&nbsp;
-                </i>
-              </small>
-              <strong>{{ curr.total.total_brutto | number: "1.2-2" }}</strong>
-              {{ curr.currency.name }}
-              <span
-                [style.color]="'red'"
-                *ngIf="curr.total.total_brutto != curr.invoiceValue"
-                >({{ curr.invoiceValue | number: "1.2-2" }})</span
-              >
-            </h4>
-            <mat-divider></mat-divider>
-            <div>&nbsp;</div>
-          </div>
-        </mat-card-content>
-      </mat-card>
+      <ng-container
+        *ngTemplateOutlet="
+          stats;
+          context: { $implicit: unpaidStats, title: 'Należności' }
+        "
+      ></ng-container>
 
-      <mat-card fxFlex="50" fxFlex.xs="100">
-        <mat-card-title> Należności - przeterminowane </mat-card-title>
-        <mat-card-content>
-          <div *ngFor="let curr of unpaidOverdueStats">
-            <h4 class="mat-h4">
-              <small>
-                <i>
-                  {{ curr.total.total_netto | number: "1.2-2" }} (vat:
-                  {{ curr.total.total_tax | number: "1.2-2" }})&nbsp;&nbsp;
-                </i>
-              </small>
-              <strong>{{ curr.total.total_brutto | number: "1.2-2" }}</strong>
-              {{ curr.currency.name }}
-              <span
-                [style.color]="'red'"
-                *ngIf="curr.total.total_brutto != curr.invoiceValue"
-                >({{ curr.invoiceValue | number: "1.2-2" }})</span
-              >
-            </h4>
-            <mat-divider></mat-divider>
-            <div>&nbsp;</div>
-          </div>
-        </mat-card-content>
-      </mat-card>
+      <ng-container
+        *ngTemplateOutlet="
+          stats;
+          context: {
+            $implicit: unpaidOverdueStats,
+            title: 'Należności  przeterminowane'
+          }
+        "
+      ></ng-container>
 
-      <mat-card fxFlex="50" fxFlex.xs="100">
-        <button (click)="initData()" mat-raised-button>Odśwież dane</button>
-      </mat-card>
+      <div class="stats-card">
+        <button (click)="initData()" mat-raised-button color="accent">
+          Odśwież dane
+        </button>
+      </div>
     </div>
+  </mat-tab>
+
+  <mat-tab label="Potwierdzenia">
+    <p>Wyszukiwanie spośród wszystkich płatności</p>
+
+    <ng-container
+      *ngTemplateOutlet="
+        searchTemplate;
+        context: { $implicit: confirmationSearch$ }
+      "
+    ></ng-container>
+
+    <ng-container
+      *ngFor="
+        let g of confirmationsFiltered;
+        index as index;
+        odd as isOdd;
+        even as isEven
+      "
+    >
+      <ng-container *ngTemplateOutlet="basicInfo; context: { $implicit: g }">
+      </ng-container>
+    </ng-container>
   </mat-tab>
 </mat-tab-group>
 
@@ -217,6 +188,7 @@
             <strong>
               {{ g.company.shortName }}
             </strong>
+            &nbsp;({{ g.company.vatId }})
           </small>
         </div>
         <h3 class="mat-h3">
@@ -321,3 +293,46 @@
 <ng-template #invReceivedConfirmed>
   <div class="color-ok">FV odebrana, OK!</div></ng-template
 >
+
+<ng-template #searchTemplate let-searchFormControl>
+  <div class="search-container">
+    <mat-form-field>
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        type="search"
+        [formControl]="searchFormControl"
+        matInput
+        placeholder="Wyszukaj kontrahenta"
+      />
+    </mat-form-field>
+  </div>
+</ng-template>
+
+<ng-template #stats let-notConfirmedStats let-title="title">
+  <div fxFlex="100" fxFlex.gt-xs="45" class="stats-card">
+    <mat-card>
+      <mat-card-title> {{ title }} </mat-card-title>
+      <mat-card-content>
+        <div *ngFor="let curr of notConfirmedStats; last as isLast">
+          <h4 class="mat-h4">
+            <small>
+              <i>
+                {{ curr.total.total_netto | number: "1.2-2" }} (vat:
+                {{ curr.total.total_tax | number: "1.2-2" }})&nbsp;&nbsp;
+              </i>
+            </small>
+            <strong>{{ curr.total.total_brutto | number: "1.2-2" }}</strong>
+            {{ curr.currency.name }}
+            <span
+              [style.color]="'red'"
+              *ngIf="curr.total.total_brutto != curr.invoiceValue"
+              >({{ curr.invoiceValue | number: "1.2-2" }})</span
+            >
+          </h4>
+          <mat-divider *ngIf="!isLast"></mat-divider>
+          <div>&nbsp;</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</ng-template>

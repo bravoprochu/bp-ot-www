@@ -1,10 +1,20 @@
 import { Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { empty, Subject } from "rxjs";
+import { empty, merge, Subject } from "rxjs";
 import { FormControl } from "@angular/forms";
 import { OnDestroy } from "@angular/core";
 import { PaymentRemindDialogComponent } from "../payment-remind-dialog/payment-remind-dialog.component";
-import { finalize, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import {
+  debounceTime,
+  distinctUntilChanged,
+  finalize,
+  map,
+  startWith,
+  switchMap,
+  take,
+  takeUntil,
+  tap,
+} from "rxjs/operators";
 import { InvoicesPaymentStatusService } from "../../services/invoices-payment-status.service";
 import { IInvoicePaymentStatusInfo } from "../../interfaces/i-invoice-payment-status-info";
 import { IInvoicePaymentStatus } from "../../interfaces/i-invoice-payment-status";
@@ -12,6 +22,7 @@ import { IInvoicesPaymentStatusConfirmDialogData } from "../../interfaces/i-invo
 import { IInvoicesPaymentStatusConfirmDialogDataReturn } from "../../interfaces/i-invoices-payment-status-confirm-dialog-data-return";
 import { IInvoiceStatusConfirmation } from "../../interfaces/i-invoice-status-confirmation";
 import { InvoiceStatusConfirmationType } from "../../interfaces/invoice-status-confirmation-type";
+import { IInvoicePaymentStatusInfoStats } from "../../interfaces/i-invoice-payment-status-info-stats";
 
 @Component({
   selector: "app-invoices-payment-status",
@@ -19,27 +30,28 @@ import { InvoiceStatusConfirmationType } from "../../interfaces/invoice-status-c
   styleUrls: ["./invoices-payment-status.component.css"],
 })
 export class InvoicesPaymentStatusComponent implements OnInit, OnDestroy {
-  isAlive: Boolean;
   isDestroyed$ = new Subject() as Subject<boolean>;
   isPending: boolean;
 
-  unpaid: any[];
-  unpaidFilterInfo: string;
-  unpaidFiltered: any[];
-  unpaidSearch$: FormControl;
-  unpaidStats: any[];
+  confirmations = [] as IInvoicePaymentStatusInfo[];
+  confirmationsChanged$ = new Subject() as Subject<boolean>;
+  confirmationsFiltered = [] as IInvoicePaymentStatusInfo[];
+  confirmationSearch$ = new FormControl();
 
-  unpaidOverdue: any[];
-  unpaidOverdueFilterInfo: string;
-  unpaidOverdueFiltered: any[];
-  unpaidOverdueSearch$: FormControl;
-  unpaidOverdueStats: any[];
+  unpaid = [] as IInvoicePaymentStatusInfo[];
+  unpaidFiltered = [] as IInvoicePaymentStatusInfo[];
+  unpaidSearch$ = new FormControl() as FormControl;
+  unpaidStats: IInvoicePaymentStatusInfoStats[];
 
-  notConfirmed: any[];
-  notConfirmedFiltered: any[];
-  notConfirmedFilterInfo: string;
-  notConfirmedSearch$: FormControl;
-  notConfirmedStats: any[];
+  unpaidOverdue = [] as IInvoicePaymentStatusInfo[];
+  unpaidOverdueFiltered = [] as IInvoicePaymentStatusInfo[];
+  unpaidOverdueSearch$ = new FormControl() as FormControl;
+  unpaidOverdueStats: IInvoicePaymentStatusInfoStats[];
+
+  notConfirmed = [] as IInvoicePaymentStatusInfo[];
+  notConfirmedFiltered = [] as IInvoicePaymentStatusInfo[];
+  notConfirmedSearch$ = new FormControl() as FormControl;
+  notConfirmedStats: IInvoicePaymentStatusInfoStats[];
 
   constructor(
     private invoicePaymentStatusService: InvoicesPaymentStatusService,
@@ -54,12 +66,8 @@ export class InvoicesPaymentStatusComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isPending = true;
-    this.unpaidSearch$ = new FormControl();
-    this.unpaidOverdueSearch$ = new FormControl();
-    this.notConfirmedSearch$ = new FormControl();
     this.initData();
-    this.initForm();
-    this.isAlive = true;
+    this.initObservables();
   }
 
   confirmCommon(
@@ -179,44 +187,70 @@ export class InvoicesPaymentStatusComponent implements OnInit, OnDestroy {
       });
   }
 
-  initForm() {
+  initObservables() {
     this.unpaidSearch$.valueChanges
-      .pipe(takeUntil(this.isDestroyed$))
+      .pipe(
+        debounceTime(750),
+        distinctUntilChanged(),
+        takeUntil(this.isDestroyed$)
+      )
       .subscribe((s) => {
         this.unpaidFiltered = this.filterArr(s, this.unpaid);
-        this.unpaidFilterInfo =
-          s.length > 0
-            ? `Zastosowano filtr, znaleziono: ${this.unpaidFiltered.length}`
-            : "";
       });
 
     this.unpaidOverdueSearch$.valueChanges
-      .pipe(takeUntil(this.isDestroyed$))
-
+      .pipe(
+        debounceTime(750),
+        distinctUntilChanged(),
+        takeUntil(this.isDestroyed$)
+      )
       .subscribe((s) => {
         this.unpaidOverdueFiltered = this.filterArr(s, this.unpaidOverdue);
-        this.unpaidOverdueFilterInfo =
-          s.length > 0
-            ? `Zastosowano filtr, znaleziono: ${this.unpaidOverdueFiltered.length}`
-            : "";
       });
 
     this.notConfirmedSearch$.valueChanges
-      .pipe(takeUntil(this.isDestroyed$))
-
+      .pipe(
+        debounceTime(750),
+        distinctUntilChanged(),
+        takeUntil(this.isDestroyed$)
+      )
       .subscribe((s) => {
         this.notConfirmedFiltered = this.filterArr(s, this.notConfirmed);
-        this.notConfirmedFilterInfo =
-          s.length > 0
-            ? `Zastosowano filtr, znaleziono: ${this.notConfirmedFiltered.length}`
-            : "";
       });
+
+    const CONFIRMATION_FORM_CONTROL = (initSearchValue) =>
+      this.confirmationSearch$.valueChanges.pipe(
+        startWith(initSearchValue),
+        debounceTime(750),
+        distinctUntilChanged(),
+        map((search: string) => {
+          return search && search.length > 2 ? search : null;
+        }),
+        takeUntil(this.isDestroyed$)
+      );
+
+    this.confirmationsChanged$
+      .pipe(
+        switchMap(() =>
+          CONFIRMATION_FORM_CONTROL(this.confirmationSearch$.value)
+        ),
+        takeUntil(this.isDestroyed$)
+      )
+      .subscribe(
+        (confirmationSearch: string) => {
+          this.confirmationsFiltered = confirmationSearch
+            ? this.filterArr(confirmationSearch, this.confirmations)
+            : [];
+        },
+        (error) => console.log("confirmationSearch error", error),
+        () => console.log("confirmationSearch completed..")
+      );
   }
 
   prepData(paymentStatus: IInvoicePaymentStatus) {
     this.unpaid = paymentStatus.unpaid;
     this.unpaidFiltered = paymentStatus.unpaid;
-    this.unpaidStats = paymentStatus.unpaidOverdueStats;
+    this.unpaidStats = paymentStatus.unpaidStats;
 
     this.unpaidOverdue = paymentStatus.unpaidOverdue;
     this.unpaidOverdueFiltered = [...paymentStatus.unpaidOverdue];
@@ -225,9 +259,18 @@ export class InvoicesPaymentStatusComponent implements OnInit, OnDestroy {
     this.notConfirmed = paymentStatus.notConfirmed;
     this.notConfirmedFiltered = paymentStatus.notConfirmed;
     this.notConfirmedStats = paymentStatus.notConfirmedStats;
+    this.confirmations = [
+      ...this.unpaid,
+      ...this.unpaidOverdue,
+      ...this.notConfirmed,
+    ];
+    this.confirmationsChanged$.next(true);
   }
 
-  private filterArr(str: string, arr: any[]): any[] {
+  private filterArr(
+    str: string,
+    arr: IInvoicePaymentStatusInfo[]
+  ): IInvoicePaymentStatusInfo[] {
     if (arr == undefined || arr.length == 0 || str == undefined) {
       return [];
     }

@@ -26,18 +26,6 @@ mat-list {
   font-size: xx-large;
 }
 
-.overdue {
-  color: red;
-}
-
-.pointer {
-  cursor: pointer;
-}
-
-.small-indicators {
-  font-size: small;
-}
-
 .color-ok {
   color: green;
   font-weight: 200;
@@ -46,4 +34,25 @@ mat-list {
 .color-warn {
   color: red;
   font-weight: 300;
+}
+
+.overdue {
+  color: red;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.search-container {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.small-indicators {
+  font-size: small;
+}
+
+.stats-card {
+  padding: 10px;
 }
