@@ -16,6 +16,7 @@ import { CurrencyCommonService } from "app/other-modules/currency/currency-commo
 import { ICurrencyNbp } from "app/other-modules/currency/interfaces/i-currency-nbp";
 
 import {
+  IInvoiceExtraInfoChecked,
   IInvoiceLineGroup,
   IInvoiceSell,
 } from "../../interfaces/iinvoice-sell";
@@ -324,16 +325,49 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
 
   printInvoice(): void {
     this.isPending = true;
-    this.df
-      .printInvoice(this.rForm.value)
+
+    this.dialogTakNie
+      .open(DialogTakNieComponent, {
+        data: {
+          question:
+            "Czy zaktualizować status - potwierdzenie wysłania faktury ? UWAGA: Aktualizacja NIE zostaje automatycznie zapisana w bazie",
+          title: "Wydruk faktury",
+        } as IDialogTakNieInfo,
+      })
+      .afterClosed()
       .pipe(
-        map((res) => {
-          return new Blob([res, "application/pdf"], {
-            type: "application/pdf",
-          });
-        }),
-        takeUntil(this.isDestroyed$),
-        finalize(() => (this.isPending = false))
+        switchMap((takNie: boolean) => {
+          if (takNie === true) {
+            if (
+              this.isTransportOffer &&
+              this.extraInfoCheckedCmr.value &&
+              this.extraInfoCheckedCmr.value.checked !== true
+            ) {
+              this.extraInfoCheckedCmr.patchValue({
+                checked: true,
+                date: this.momentService.getToday(),
+                info: "auto print faktury",
+              } as IInvoiceExtraInfoChecked);
+            }
+
+            this.extraInfoCheckedSent.patchValue({
+              checked: true,
+              date: this.momentService.getToday(),
+              info: "auto print faktury",
+            } as IInvoiceExtraInfoChecked);
+
+            this.rForm.markAsDirty();
+          }
+          return this.df.printInvoice(this.rForm.value).pipe(
+            map((res) => {
+              return new Blob([res, "application/pdf"], {
+                type: "application/pdf",
+              });
+            }),
+            takeUntil(this.isDestroyed$),
+            finalize(() => (this.isPending = false))
+          );
+        })
       )
       .subscribe((s) => {
         saveAs(s, `Faktura.pdf`);
