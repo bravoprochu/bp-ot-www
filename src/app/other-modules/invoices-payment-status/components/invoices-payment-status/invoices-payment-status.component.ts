@@ -283,11 +283,12 @@ export class InvoicesPaymentStatusComponent implements OnInit, OnDestroy {
     return arr.filter((f: IInvoicePaymentStatusInfo) => {
       const address = f.company.address.toLowerCase();
       const vat = f.company.vatId;
+      const invNo = f.invoiceNo;
       const contact = f.company.contact.toLowerCase();
       const shortName = f.company.shortName.toLowerCase();
       const curr = f.currency.name.toLowerCase();
 
-      const res = address + vat + contact + shortName + curr;
+      const res = address + vat + contact + invNo + shortName + curr;
       return res.includes(str);
     });
   }
