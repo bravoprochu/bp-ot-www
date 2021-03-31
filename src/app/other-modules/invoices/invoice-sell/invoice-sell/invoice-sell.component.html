@@ -34,7 +34,7 @@
             mat-mini-fab
             matTooltip="Przejdź do utworzonej korekty"
             *ngIf="correctionId.value"
-            routerLink="/fakturaSprzedazy/{{ correctionId.value }}"
+            routerLink="/invoices/fakturaSprzedazy/{{ correctionId.value }}"
           >
             <mat-icon> warning </mat-icon>
           </button>
@@ -43,7 +43,7 @@
           class="mat-body-1"
           *ngIf="baseInvoiceId.value"
           [style.cursor]="'pointer'"
-          routerLink="/fakturaSprzedazy/{{ baseInvoiceId.value }}"
+          routerLink="/invoices/fakturaSprzedazy/{{ baseInvoiceId.value }}"
         >
           (dotyczy: {{ invoiceOriginalNo.value }})
         </div>
@@ -59,7 +59,9 @@
           class="mat-body-1"
           *ngIf="extraInfo.value.transportOfferId"
           [style.cursor]="'pointer'"
-          routerLink="/transport/{{ extraInfo.value.transportOfferId }}"
+          routerLink="/transport/transport/{{
+            extraInfo.value.transportOfferId
+          }}"
         >
           (dotyczy zlecenia: {{ extraInfo.value.transportOfferNo }})
         </div>
