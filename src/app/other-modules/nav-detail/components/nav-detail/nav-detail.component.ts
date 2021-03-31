@@ -13,7 +13,7 @@ import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { Location } from "@angular/common";
 import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
-import { IDialogConfTakNieInfo } from "@bpCommonInterfaces/idialog-tak-nie-info";
+import { IDialogTakNie } from "app/other-modules/dialog-confirmations/interfaces/i-dialog-tak-nie";
 
 @Component({
   selector: "app-nav-detail",
@@ -87,7 +87,7 @@ export class NavDetailComponent implements OnInit, OnDestroy {
   }
 
   openDialog() {
-    const data = {} as IDialogConfTakNieInfo;
+    const data = {} as IDialogTakNie;
     this.dialogConfirmationService
       .getTakNieDialog(data)
       .pipe(takeUntil(this.isDestroyed$))

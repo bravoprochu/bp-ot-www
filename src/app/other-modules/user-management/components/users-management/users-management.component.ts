@@ -5,7 +5,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { IDetailObj } from "../../../../shared/idetail-obj";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { UsersManagementService } from "app/services/users-management/users-management.service";
-import { IDialogConfTakNieInfo } from "app/shared/interfaces/idialog-tak-nie-info";
+import { IDialogTakNie } from "app/other-modules/dialog-confirmations/interfaces/i-dialog-tak-nie";
 import { FormControl } from "@angular/forms";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";

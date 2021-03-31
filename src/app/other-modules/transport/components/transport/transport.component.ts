@@ -5,7 +5,7 @@ import { IDetailObj } from "app/shared/idetail-obj";
 import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
 import { FormGroup } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { IDialogConfTakNieInfo } from "app/shared/interfaces/idialog-tak-nie-info";
+import { IDialogTakNie } from "app/other-modules/dialog-confirmations/interfaces/i-dialog-tak-nie";
 import { empty, Subject, of } from "rxjs";
 import * as moment from "moment";
 import { ICurrency } from "app/other-modules/currency/interfaces/i-currency";
@@ -107,7 +107,7 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
       const data = {
         question: `Czy na pewno potwierdzić dostarczenie ładunku do ${this.unloadPlace.value} ? (automatycznie zostanie utworzona faktura sprzedaży)`,
         title: "Transport - potwierdzenie dostarczenia",
-      } as IDialogConfTakNieInfo;
+      } as IDialogTakNie;
 
       this.dialogConfirmationService
         .getTakNieDialog(data)
@@ -120,7 +120,7 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
                 const data2 = {
                   title: "Waluta faktury",
                   question: `UWAGA, sprawdź regulamin zlecenia.  Zlecenie jest w ${actCurr.description}, czy faktura ma być przeliczona i wystawiona w walucie PLN ?`,
-                } as IDialogConfTakNieInfo;
+                } as IDialogTakNie;
 
                 return this.dialogConfirmationService.getTakNieDialog(data2);
               }
@@ -172,7 +172,7 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
       title: "Zlecenia transportowe",
       question:
         "Czy na pewno chcesz usunąć to zlecenie, dane zostaną całkowicie usunięte z serwera ?",
-    } as IDialogConfTakNieInfo;
+    } as IDialogTakNie;
 
     this.dialogConfirmationService
       .getTakNieDialog(data)

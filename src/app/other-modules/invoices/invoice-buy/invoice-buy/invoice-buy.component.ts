@@ -10,7 +10,7 @@ import { IDetailObj } from "../../../../shared/idetail-obj";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
 import { ActivatedRoute } from "@angular/router";
-import { IDialogConfTakNieInfo } from "app/shared/interfaces/idialog-tak-nie-info";
+import { IDialogTakNie } from "app/other-modules/dialog-confirmations/interfaces/i-dialog-tak-nie";
 import { empty } from "rxjs";
 import { IInvoiceBuy } from "../../interfaces/iinvoice-buy";
 import { InvoiceCommonFunctionsService } from "../../common/invoice-common-functions.service";
@@ -105,7 +105,7 @@ export class InvoiceBuyComponent implements OnInit, OnDestroy, IDetailObj {
     const data = {
       title: "Faktura zakupu",
       question: `Czy na pewno usunąć dokument nr: ${this.rForm.value.invoiceNo} ? \n Dokumnet zostanie trwale usunięty z bazy bez możliwośći jego przywrcenia`,
-    } as IDialogConfTakNieInfo;
+    } as IDialogTakNie;
 
     this.dialogConfirmationService
       .getTakNieDialog(data)

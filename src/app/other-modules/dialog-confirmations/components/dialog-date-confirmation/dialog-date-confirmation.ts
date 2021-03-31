@@ -6,22 +6,22 @@ import {
   Validators,
 } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
-import { IInvoicesPaymentStatusConfirmDialogData } from "../../interfaces/i-invoices-payment-status-confirm-dialog-data";
-import { IInvoicesPaymentStatusConfirmDialogDataReturn } from "../../interfaces/i-invoices-payment-status-confirm-dialog-data-return";
+import { IDialogDateConfirmation } from "../../interfaces/i-dialog-date-confirmation";
+import { IDialogDateConfirmationReturn } from "../../interfaces/i-dialog-date-confirmation-return";
 
 @Component({
   selector: "app-payment-remind-dialog",
-  templateUrl: "./payment-remind-dialog.component.html",
-  styleUrls: ["./payment-remind-dialog.component.css"],
+  templateUrl: "./dialog-date-confirmation.html",
+  styleUrls: ["./dialog-date-confirmation.css"],
 })
-export class PaymentRemindDialogComponent implements OnInit {
+export class DialogDateConfirmationComponent implements OnInit {
   rForm$ = {} as FormGroup;
 
   constructor(
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<PaymentRemindDialogComponent>,
+    private dialogRef: MatDialogRef<DialogDateConfirmationComponent>,
     @Inject(MAT_DIALOG_DATA)
-    public data: IInvoicesPaymentStatusConfirmDialogData
+    public data: IDialogDateConfirmation
   ) {}
 
   ngOnInit() {
@@ -41,9 +41,7 @@ export class PaymentRemindDialogComponent implements OnInit {
 
   onYesClick() {
     if (this.rForm$.valid) {
-      this.dialogRef.close(
-        this.rForm$.value as IInvoicesPaymentStatusConfirmDialogDataReturn
-      );
+      this.dialogRef.close(this.rForm$.value as IDialogDateConfirmationReturn);
     }
   }
 

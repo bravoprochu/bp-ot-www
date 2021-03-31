@@ -20,7 +20,7 @@ import { InvoiceSellComponent } from "./invoice-sell/invoice-sell/invoice-sell.c
 import { ExtraInfoCheckedComponent } from "./common/extra-info-checked/extra-info-checked.component";
 import { CurrencyModule } from "app/other-modules/currency/currency.module";
 import { InvoiceSellListComponent } from "./invoice-sell/invoice-sell-list/invoice-sell-list.component";
-import { PaymentRemindDialogComponent } from "../invoices-payment-status/components/payment-remind-dialog/payment-remind-dialog.component";
+import { DialogDateConfirmationComponent } from "../dialog-confirmations/components/dialog-date-confirmation/dialog-date-confirmation";
 import { PaymentTermsModule } from "app/other-modules/payment-terms/payment-terms.module";
 import { ContractorsModule } from "../contractors/contractors.module";
 import { DragDropOptionsModule } from "../drag-drop-options/drag-drop-options.module";
@@ -79,7 +79,6 @@ const IMPORT_EXPORT_MODULES = [
     InvoiceSellComponent,
     InvoiceSellListComponent,
   ],
-  entryComponents: [PaymentRemindDialogComponent],
   exports: [IMPORT_EXPORT_MODULES],
   imports: [CommonModule, InvoicesRoutingModule, IMPORT_EXPORT_MODULES],
   providers: [

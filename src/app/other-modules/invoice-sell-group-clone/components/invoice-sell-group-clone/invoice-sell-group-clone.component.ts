@@ -6,7 +6,7 @@ import {
   transferArrayItem,
 } from "@angular/cdk/drag-drop";
 import { FormGroup, FormControl } from "@angular/forms";
-import { IDialogConfTakNieInfo } from "@bpCommonInterfaces/idialog-tak-nie-info";
+import { IDialogTakNie } from "app/other-modules/dialog-confirmations/interfaces/i-dialog-tak-nie";
 import { empty, Subject } from "rxjs";
 import { take, switchMap, takeUntil, startWith } from "rxjs/operators";
 import { IInvoiceSellLineList } from "../../../invoices/interfaces/i-invoice-line-list";
@@ -85,7 +85,7 @@ export class InvoiceSellGroupCloneComponent implements OnInit, OnDestroy {
     const data = {
       title: "Faktura sprzedaży, klonowanie grupowe",
       question: `Czy na pewno utworzyć klony ${invoiceList.length} faktur ?`,
-    } as IDialogConfTakNieInfo;
+    } as IDialogTakNie;
 
     this.dialogConfirmationService
       .getTakNieDialog(data)

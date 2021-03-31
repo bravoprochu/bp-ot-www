@@ -1,7 +1,7 @@
 import { InvoiceStatusConfirmationType } from "./invoice-status-confirmation-type";
-import { IInvoicesPaymentStatusConfirmDialogDataReturn } from "./i-invoices-payment-status-confirm-dialog-data-return";
+import { IDialogDateConfirmationReturn } from "../../dialog-confirmations/interfaces/i-dialog-date-confirmation-return";
 
 export interface IInvoiceStatusConfirmation
-  extends IInvoicesPaymentStatusConfirmDialogDataReturn {
+  extends IDialogDateConfirmationReturn {
   confirmationType: InvoiceStatusConfirmationType;
 }

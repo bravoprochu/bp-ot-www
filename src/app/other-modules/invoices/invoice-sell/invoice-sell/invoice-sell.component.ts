@@ -3,7 +3,6 @@ import { IDetailObj } from "../../../../shared/idetail-obj";
 import { INavDetailInfo } from "../../../../shared/interfaces/inav-detail-info";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { IBasicActions } from "app/shared/ibasic-actions";
 import { FormControl } from "@angular/forms";
@@ -32,7 +31,7 @@ import { ToastMakeService } from "app/other-modules/toast-make/toast-make.servic
 import { Location } from "@angular/common";
 import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
-import { IDialogConfTakNieInfo } from "@bpCommonInterfaces/idialog-tak-nie-info";
+import { IDialogTakNie } from "app/other-modules/dialog-confirmations/interfaces/i-dialog-tak-nie";
 
 @Component({
   selector: "app-invoice-sell",
@@ -198,7 +197,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
     const data = {
       title: "Faktura sprzedaży",
       question: `Czy na pewno usunąć dokument nr: ${this.rForm.value.invoiceNo} ? \n Dokumnet zostanie trwale usunięty z bazy bez możliwośći jego przywrcenia`,
-    } as IDialogConfTakNieInfo;
+    } as IDialogTakNie;
 
     this.dialogConfirmationService
       .getTakNieDialog(data)
@@ -284,7 +283,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
     const data = {
       title: "Faktura sprzedaży klonik",
       question: "Czy skopiować dane do nowotworzonej faktury ?",
-    } as IDialogConfTakNieInfo;
+    } as IDialogTakNie;
 
     this.dialogConfirmationService
       .getTakNieDialog(data)
@@ -329,7 +328,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
       question:
         "Czy zaktualizować status - potwierdzenie wysłania faktury ? UWAGA: Aktualizacja NIE zostaje automatycznie zapisana w bazie",
       title: "Wydruk faktury",
-    } as IDialogConfTakNieInfo;
+    } as IDialogTakNie;
 
     this.dialogConfirmationService
       .getTakNieDialog(data)

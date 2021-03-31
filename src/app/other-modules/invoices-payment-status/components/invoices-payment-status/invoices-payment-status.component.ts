@@ -1,9 +1,7 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
-import { empty, merge, Subject } from "rxjs";
+import { empty, Subject } from "rxjs";
 import { FormControl } from "@angular/forms";
 import { OnDestroy } from "@angular/core";
-import { PaymentRemindDialogComponent } from "../payment-remind-dialog/payment-remind-dialog.component";
 import {
   debounceTime,
   distinctUntilChanged,
@@ -18,12 +16,13 @@ import {
 import { InvoicesPaymentStatusService } from "../../services/invoices-payment-status.service";
 import { IInvoicePaymentStatusInfo } from "../../interfaces/i-invoice-payment-status-info";
 import { IInvoicePaymentStatus } from "../../interfaces/i-invoice-payment-status";
-import { IInvoicesPaymentStatusConfirmDialogData } from "../../interfaces/i-invoices-payment-status-confirm-dialog-data";
-import { IInvoicesPaymentStatusConfirmDialogDataReturn } from "../../interfaces/i-invoices-payment-status-confirm-dialog-data-return";
+import { IDialogDateConfirmationReturn } from "../../../dialog-confirmations/interfaces/i-dialog-date-confirmation-return";
 import { IInvoiceStatusConfirmation } from "../../interfaces/i-invoice-status-confirmation";
 import { InvoiceStatusConfirmationType } from "../../interfaces/invoice-status-confirmation-type";
 import { IInvoicePaymentStatusInfoStats } from "../../interfaces/i-invoice-payment-status-info-stats";
 import { CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
+import { IDialogDateConfirmation } from "app/other-modules/dialog-confirmations/interfaces/i-dialog-date-confirmation";
+import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
 
 @Component({
   selector: "app-invoices-payment-status",
@@ -59,8 +58,8 @@ export class InvoicesPaymentStatusComponent implements OnInit, OnDestroy {
   notConfirmedStats: IInvoicePaymentStatusInfoStats[];
 
   constructor(
-    private invoicePaymentStatusService: InvoicesPaymentStatusService,
-    private dialog: MatDialog
+    private dialogConfirmationService: DialogConfirmationsService,
+    private invoicePaymentStatusService: InvoicesPaymentStatusService
   ) {}
 
   ngOnDestroy(): void {
@@ -77,31 +76,23 @@ export class InvoicesPaymentStatusComponent implements OnInit, OnDestroy {
 
   confirmCommon(
     g: IInvoicePaymentStatusInfo,
-    dialogData: IInvoicesPaymentStatusConfirmDialogData,
+    dialogData: IDialogDateConfirmation,
     confirmType: InvoiceStatusConfirmationType
   ) {
-    return this.dialog
-      .open(PaymentRemindDialogComponent, { data: dialogData })
-      .afterClosed()
+    return this.dialogConfirmationService
+      .getDateConfirmationDialog(dialogData)
       .pipe(
         tap(() => (this.isPending = true)),
-        switchMap(
-          (
-            dialogResponse: IInvoicesPaymentStatusConfirmDialogDataReturn | null
-          ) => {
-            if (dialogResponse) {
-              return this.invoicePaymentStatusService.confirmation(
-                g.invoiceId,
-                {
-                  ...(dialogResponse as IInvoicesPaymentStatusConfirmDialogDataReturn),
-                  confirmationType: confirmType,
-                } as IInvoiceStatusConfirmation
-              );
-            } else {
-              return empty();
-            }
+        switchMap((dialogResponse: IDialogDateConfirmationReturn | null) => {
+          if (dialogResponse) {
+            return this.invoicePaymentStatusService.confirmation(g.invoiceId, {
+              ...(dialogResponse as IDialogDateConfirmationReturn),
+              confirmationType: confirmType,
+            } as IInvoiceStatusConfirmation);
+          } else {
+            return empty();
           }
-        ),
+        }),
         take(1),
         takeUntil(this.isDestroyed$),
         map((updatedPaymentStatus: IInvoicePaymentStatus) => {
@@ -122,7 +113,7 @@ export class InvoicesPaymentStatusComponent implements OnInit, OnDestroy {
       isInfo: true,
       title: "CMR - potwierdzenie odebrania dokumentu.",
       subtitle: this.confirmDefaultSubtitle(g),
-    } as IInvoicesPaymentStatusConfirmDialogData;
+    } as IDialogDateConfirmation;
 
     this.confirmCommon(g, dialogData, "Cmr").subscribe(
       (cmrSent: any) => {
@@ -138,7 +129,7 @@ export class InvoicesPaymentStatusComponent implements OnInit, OnDestroy {
       isInfo: true,
       title: "FV - potwierdzenie nadania dokumentu.",
       subtitle: this.confirmDefaultSubtitle(g),
-    } as IInvoicesPaymentStatusConfirmDialogData;
+    } as IDialogDateConfirmation;
 
     this.confirmCommon(g, dialogData, "InvoiceSent").subscribe(
       (cmrSent: any) => {
@@ -154,7 +145,7 @@ export class InvoicesPaymentStatusComponent implements OnInit, OnDestroy {
       isInfo: true,
       title: "FV - potwierdzenie otrzymania dokumentu.",
       subtitle: this.confirmDefaultSubtitle(g),
-    } as IInvoicesPaymentStatusConfirmDialogData;
+    } as IDialogDateConfirmation;
 
     this.confirmCommon(g, dialogData, "InvoiceReceived").subscribe(
       (cmrSent: any) => {
@@ -170,7 +161,7 @@ export class InvoicesPaymentStatusComponent implements OnInit, OnDestroy {
       isInfo: false,
       title: "Potwierdzenie opłacenia faktury",
       subtitle: this.confirmDefaultSubtitle(g),
-    } as IInvoicesPaymentStatusConfirmDialogData;
+    } as IDialogDateConfirmation;
 
     this.confirmCommon(g, dialogData, "Payment").subscribe(
       (cmrSent: any) => {

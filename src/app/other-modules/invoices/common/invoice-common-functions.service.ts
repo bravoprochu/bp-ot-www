@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { IDialogConfTakNieInfo } from "../../../shared/interfaces/idialog-tak-nie-info";
+import { IDialogTakNie } from "../../dialog-confirmations/interfaces/i-dialog-tak-nie";
 import { Subject } from "rxjs";
 import { IInvoicePos } from "../interfaces/iinvoice-pos";
 import { IInvoiceBuy } from "../interfaces/iinvoice-buy";
@@ -454,7 +454,7 @@ export class InvoiceCommonFunctionsService {
     const data = {
       title: "Faktury",
       question: "Czy na pewno usunąć tą pozycję ?",
-    } as IDialogConfTakNieInfo;
+    } as IDialogTakNie;
 
     this.dialogConfirmationService
       .getTakNieDialog(data)

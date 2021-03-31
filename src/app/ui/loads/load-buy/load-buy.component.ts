@@ -1,7 +1,7 @@
 import { ActivatedRoute } from "@angular/router";
 import { LoadService } from "../services/load.service";
 import { IDetailObj } from "../../../shared/idetail-obj";
-import { IDialogConfTakNieInfo } from "../../../shared/interfaces/idialog-tak-nie-info";
+import { IDialogTakNie } from "../../../other-modules/dialog-confirmations/interfaces/i-dialog-tak-nie";
 import { CommonFunctionsService } from "../../../services/common-functions.service";
 import { ILoad } from "../../../shared/interfaces/iload";
 import { IValueViewValue } from "../../../shared/interfaces/ivalue-view-value";
@@ -115,7 +115,7 @@ export class LoadBuyComponent implements OnInit, OnDestroy, IDetailObj {
     const data = {
       title: "Ładunek",
       question: "Czy na pewno usunąć adres " + groupName + " ?",
-    } as IDialogConfTakNieInfo;
+    } as IDialogTakNie;
 
     this.dialogConfirmationService
       .getTakNieDialog(data)

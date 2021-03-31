@@ -8,7 +8,7 @@ import {
   MatDialogRef,
 } from "@angular/material/dialog";
 import { IDetailObj } from "app/shared/idetail-obj";
-import { IDialogConfTakNieInfo } from "../../../../shared/interfaces/idialog-tak-nie-info";
+import { IDialogTakNie } from "../../../dialog-confirmations/interfaces/i-dialog-tak-nie";
 import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
 import { ContractorService as ContractorService } from "../../services/contractor.service";
 import { FormControl } from "@angular/forms";
@@ -86,7 +86,7 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
     const data = {
       title: "Kontrahent",
       question: "Czy na pewno usunąć dane konta bankowego ?",
-    } as IDialogConfTakNieInfo;
+    } as IDialogTakNie;
 
     this.dialogConfirmationService.getTakNieDialog(data).subscribe((s) => {
       if (s) {
@@ -103,7 +103,7 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
     const data = {
       title: "Kontrahent",
       question: "Czy na pewno usunąć tego użytkownika ?",
-    } as IDialogConfTakNieInfo;
+    } as IDialogTakNie;
 
     this.dialogConfirmationService
       .getTakNieDialog(data)
@@ -173,7 +173,7 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
     const data = {
       question: `Czy na pewno usunąć kontrahenta ${this.companyName.value} ?`,
       title: "Kontrahent - usuń dane",
-    } as IDialogConfTakNieInfo;
+    } as IDialogTakNie;
 
     this.dialogConfirmationService
       .getTakNieDialog(data)
