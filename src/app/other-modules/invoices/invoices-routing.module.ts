@@ -3,6 +3,7 @@ import { Routes, RouterModule } from "@angular/router";
 import { UserRolesEnum } from "@bpShared/enums/user-roles.enum";
 import { IdentGuard } from "app/ui/guards/ident.guard";
 import { InvoiceBuyListComponent } from "./invoice-buy/invoice-buy-list/invoice-buy-list.component";
+import { InvoiceBuyComponent } from "./invoice-buy/invoice-buy/invoice-buy.component";
 import { InvoiceSellListComponent } from "./invoice-sell/invoice-sell-list/invoice-sell-list.component";
 import { InvoiceSellComponent } from "./invoice-sell/invoice-sell/invoice-sell.component";
 
@@ -27,7 +28,7 @@ const routes: Routes = [
   },
   {
     path: "fakturaZakupu/:id",
-    component: InvoiceSellComponent,
+    component: InvoiceBuyComponent,
     canActivate: [IdentGuard],
     data: { allowed: UserRolesEnum.Finanse },
   },
