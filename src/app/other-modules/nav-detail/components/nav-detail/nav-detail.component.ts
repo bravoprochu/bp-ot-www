@@ -6,14 +6,14 @@ import {
   OnInit,
   Output,
 } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
-import { DialogTakNieComponent } from "app/other-modules/dialog-tak-nie/components/dialog-tak-nie/dialog-tak-nie.component";
 import { FormGroup } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { Location } from "@angular/common";
+import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
+import { IDialogConfTakNieInfo } from "@bpCommonInterfaces/idialog-tak-nie-info";
 
 @Component({
   selector: "app-nav-detail",
@@ -36,7 +36,7 @@ export class NavDetailComponent implements OnInit, OnDestroy {
   @Output() navDialogCancel = new EventEmitter();
 
   constructor(
-    public dialog: MatDialog,
+    private dialogConfirmationService: DialogConfirmationsService,
     private activeRoute: ActivatedRoute,
     private location: Location
   ) {}
@@ -87,12 +87,9 @@ export class NavDetailComponent implements OnInit, OnDestroy {
   }
 
   openDialog() {
-    let dialogRef = this.dialog.open(DialogTakNieComponent, {
-      width: "100%",
-      height: "100%",
-    });
-    dialogRef
-      .afterClosed()
+    const data = {} as IDialogConfTakNieInfo;
+    this.dialogConfirmationService
+      .getTakNieDialog(data)
       .pipe(takeUntil(this.isDestroyed$))
       .subscribe((s) => console.log(s));
   }

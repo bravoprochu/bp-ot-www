@@ -1,4 +1,4 @@
-export interface IDialogTakNieInfo {
-    title: string,
-    question: string
+export interface IDialogConfTakNieInfo {
+  title: string;
+  question: string;
 }

@@ -1,8 +1,6 @@
 import { InvoiceSellService } from "../services/invoice-sell.service";
 import { IDetailObj } from "../../../../shared/idetail-obj";
 import { INavDetailInfo } from "../../../../shared/interfaces/inav-detail-info";
-import { DialogTakNieComponent } from "../../../dialog-tak-nie/components/dialog-tak-nie/dialog-tak-nie.component";
-import { IDialogTakNieInfo } from "../../../../shared/interfaces/idialog-tak-nie-info";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
@@ -33,6 +31,8 @@ import { IInvoicePos } from "../../interfaces/iinvoice-pos";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 import { Location } from "@angular/common";
 import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
+import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
+import { IDialogConfTakNieInfo } from "@bpCommonInterfaces/idialog-tak-nie-info";
 
 @Component({
   selector: "app-invoice-sell",
@@ -53,8 +53,8 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
     private actRoute: ActivatedRoute,
     private df: InvoiceSellService,
     private currService: CurrencyCommonService,
+    private dialogConfirmationService: DialogConfirmationsService,
     private momentService: MomentCommonService,
-    private dialogTakNie: MatDialog,
     private icf: InvoiceCommonFunctionsService,
     public fb: FormBuilder,
     private location: Location,
@@ -195,14 +195,13 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
   public navDelete(): void {
-    this.dialogTakNie
-      .open(DialogTakNieComponent, {
-        data: <IDialogTakNieInfo>{
-          title: "Faktura sprzedaży",
-          question: `Czy na pewno usunąć dokument nr: ${this.rForm.value.invoiceNo} ? \n Dokumnet zostanie trwale usunięty z bazy bez możliwośći jego przywrcenia`,
-        },
-      })
-      .afterClosed()
+    const data = {
+      title: "Faktura sprzedaży",
+      question: `Czy na pewno usunąć dokument nr: ${this.rForm.value.invoiceNo} ? \n Dokumnet zostanie trwale usunięty z bazy bez możliwośći jego przywrcenia`,
+    } as IDialogConfTakNieInfo;
+
+    this.dialogConfirmationService
+      .getTakNieDialog(data)
       .pipe(
         switchMap((dialogResponse) => {
           if (dialogResponse) {
@@ -282,14 +281,14 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
   invoiceClone(): void {
-    this.dialogTakNie
-      .open(DialogTakNieComponent, {
-        data: <IDialogTakNieInfo>{
-          title: "Faktura sprzedaży klonik",
-          question: "Czy skopiować dane do nowotworzonej faktury ?",
-        },
-      })
-      .afterClosed()
+    const data = {
+      title: "Faktura sprzedaży klonik",
+      question: "Czy skopiować dane do nowotworzonej faktury ?",
+    } as IDialogConfTakNieInfo;
+
+    this.dialogConfirmationService
+      .getTakNieDialog(data)
+      .pipe(takeUntil(this.isDestroyed$))
       .subscribe((s) => {
         if (s) {
           this.invoiceSellId.setValue(0);
@@ -326,15 +325,14 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   printInvoice(): void {
     this.isPending = true;
 
-    this.dialogTakNie
-      .open(DialogTakNieComponent, {
-        data: {
-          question:
-            "Czy zaktualizować status - potwierdzenie wysłania faktury ? UWAGA: Aktualizacja NIE zostaje automatycznie zapisana w bazie",
-          title: "Wydruk faktury",
-        } as IDialogTakNieInfo,
-      })
-      .afterClosed()
+    const data = {
+      question:
+        "Czy zaktualizować status - potwierdzenie wysłania faktury ? UWAGA: Aktualizacja NIE zostaje automatycznie zapisana w bazie",
+      title: "Wydruk faktury",
+    } as IDialogConfTakNieInfo;
+
+    this.dialogConfirmationService
+      .getTakNieDialog(data)
       .pipe(
         switchMap((takNie: boolean) => {
           if (takNie === true) {

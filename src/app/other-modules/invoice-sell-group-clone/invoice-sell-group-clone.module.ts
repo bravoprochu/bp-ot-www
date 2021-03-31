@@ -10,13 +10,13 @@ import { MatDatepickerModule } from "@angular/material/datepicker";
 import { DragDropModule } from "@angular/cdk/drag-drop";
 import { MomentCommonModule } from "../moment-common/moment-common.module";
 import { ToastMakeModule } from "../toast-make/toast-make.module";
-import { DialogTakNieModule } from "../dialog-tak-nie/dialog-tak-nie.module";
+import { DialogConfirmations } from "../dialog-confirmations/dialog-confirmations.module";
 import { ReactiveFormsModule } from "@angular/forms";
 import { InvoiceSellGroupCloneService } from "./services/invoice-sell-group-clone.service";
 
 const IMPORT_EXPORT_MODULES = [
   DragDropModule,
-  DialogTakNieModule,
+  DialogConfirmations,
   FlexLayoutModule,
   MatCardModule,
   MatDatepickerModule,

@@ -1,8 +1,6 @@
 import { Injectable } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { DialogTakNieComponent } from "../../dialog-tak-nie/components/dialog-tak-nie/dialog-tak-nie.component";
-import { IDialogTakNieInfo } from "../../../shared/interfaces/idialog-tak-nie-info";
-import { MatDialog } from "@angular/material/dialog";
+import { IDialogConfTakNieInfo } from "../../../shared/interfaces/idialog-tak-nie-info";
 import { Subject } from "rxjs";
 import { IInvoicePos } from "../interfaces/iinvoice-pos";
 import { IInvoiceBuy } from "../interfaces/iinvoice-buy";
@@ -23,11 +21,12 @@ import { IDateRange } from "@bpCommonInterfaces/i-date-range";
 import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 import { PaymentTermsService } from "app/other-modules/payment-terms/services/payment-terms.service";
 import { takeUntil } from "rxjs/operators";
+import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
 
 @Injectable()
 export class InvoiceCommonFunctionsService {
   constructor(
-    private dialogTakNie: MatDialog,
+    private dialogConfirmationService: DialogConfirmationsService,
     private momentService: MomentCommonService,
     private pTermsService: PaymentTermsService,
     private currService: CurrencyCommonService,
@@ -452,13 +451,13 @@ export class InvoiceCommonFunctionsService {
     invoiceLines: FormArray,
     isDestroyed$: Subject<boolean>
   ) {
-    let d = this.dialogTakNie.open(DialogTakNieComponent, {
-      data: <IDialogTakNieInfo>{
-        title: "Faktury",
-        question: "Czy na pewno usunąć tą pozycję ?",
-      },
-    });
-    d.afterClosed()
+    const data = {
+      title: "Faktury",
+      question: "Czy na pewno usunąć tą pozycję ?",
+    } as IDialogConfTakNieInfo;
+
+    this.dialogConfirmationService
+      .getTakNieDialog(data)
       .pipe(takeUntil(isDestroyed$))
       .subscribe((s: boolean) => {
         if (s === true) {

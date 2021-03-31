@@ -6,9 +6,7 @@ import {
   transferArrayItem,
 } from "@angular/cdk/drag-drop";
 import { FormGroup, FormControl } from "@angular/forms";
-import { DialogTakNieComponent } from "app/other-modules/dialog-tak-nie/components/dialog-tak-nie/dialog-tak-nie.component";
-import { MatDialog } from "@angular/material/dialog";
-import { IDialogTakNieInfo } from "@bpCommonInterfaces/idialog-tak-nie-info";
+import { IDialogConfTakNieInfo } from "@bpCommonInterfaces/idialog-tak-nie-info";
 import { empty, Subject } from "rxjs";
 import { take, switchMap, takeUntil, startWith } from "rxjs/operators";
 import { IInvoiceSellLineList } from "../../../invoices/interfaces/i-invoice-line-list";
@@ -16,6 +14,7 @@ import { IInvoiceSellGroupClone } from "../../../invoices/interfaces/i-invoice-s
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 import { InvoiceSellGroupCloneService } from "../../services/invoice-sell-group-clone.service";
+import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
 
 @Component({
   selector: "app-invoice-sell-group-clone",
@@ -34,9 +33,9 @@ export class InvoiceSellGroupCloneComponent implements OnInit, OnDestroy {
   monthsAgo: FormControl;
 
   constructor(
+    private dialogConfirmationService: DialogConfirmationsService,
     private invoiceGroupCloneService: InvoiceSellGroupCloneService,
     private toastService: ToastMakeService,
-    private dialogTakNie: MatDialog,
     private momentService: MomentCommonService
   ) {}
 
@@ -83,14 +82,13 @@ export class InvoiceSellGroupCloneComponent implements OnInit, OnDestroy {
 
     this.isPending = true;
 
-    this.dialogTakNie
-      .open(DialogTakNieComponent, {
-        data: <IDialogTakNieInfo>{
-          title: "Faktura sprzedaży, klonowanie grupowe",
-          question: `Czy na pewno utworzyć klony ${invoiceList.length} faktur ?`,
-        },
-      })
-      .afterClosed()
+    const data = {
+      title: "Faktura sprzedaży, klonowanie grupowe",
+      question: `Czy na pewno utworzyć klony ${invoiceList.length} faktur ?`,
+    } as IDialogConfTakNieInfo;
+
+    this.dialogConfirmationService
+      .getTakNieDialog(data)
       .pipe(
         switchMap((dialogResponse) => {
           this.toastService.toastMake("Zapisuję dane", "navDelete");

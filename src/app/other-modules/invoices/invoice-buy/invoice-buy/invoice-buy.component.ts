@@ -1,5 +1,4 @@
 import { InvoiceBuyService } from "../services/invoice-buy.service";
-import { DialogTakNieComponent } from "../../../dialog-tak-nie/components/dialog-tak-nie/dialog-tak-nie.component";
 import {
   FormBuilder,
   FormGroup,
@@ -10,10 +9,9 @@ import {
 import { IDetailObj } from "../../../../shared/idetail-obj";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
-import { ActivatedRoute, Router } from "@angular/router";
-import { MatDialog } from "@angular/material/dialog";
-import { IDialogTakNieInfo } from "app/shared/interfaces/idialog-tak-nie-info";
-import { empty, Observable } from "rxjs";
+import { ActivatedRoute } from "@angular/router";
+import { IDialogConfTakNieInfo } from "app/shared/interfaces/idialog-tak-nie-info";
+import { empty } from "rxjs";
 import { IInvoiceBuy } from "../../interfaces/iinvoice-buy";
 import { InvoiceCommonFunctionsService } from "../../common/invoice-common-functions.service";
 import { Subject } from "rxjs";
@@ -21,6 +19,7 @@ import { CurrencyCommonService } from "app/other-modules/currency/currency-commo
 import { switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { Location } from "@angular/common";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
+import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
 
 @Component({
   selector: "app-invoice-sell-buy",
@@ -35,8 +34,8 @@ export class InvoiceBuyComponent implements OnInit, OnDestroy, IDetailObj {
     private currencyService: CurrencyCommonService,
     private icf: InvoiceCommonFunctionsService,
     private df: InvoiceBuyService,
-    private dialogTakNie: MatDialog,
-    public fb: FormBuilder,
+    private dialogConfirmationService: DialogConfirmationsService,
+    private fb: FormBuilder,
     private location: Location,
     private actRoute: ActivatedRoute,
     private toastService: ToastMakeService
@@ -68,78 +67,6 @@ export class InvoiceBuyComponent implements OnInit, OnDestroy, IDetailObj {
   isPending: boolean;
   rForm: FormGroup;
   routeId: number;
-
-  //#region getters
-
-  get creationInfo(): FormGroup {
-    return <FormGroup>this.rForm.get("creationInfo");
-  }
-  get companySeller(): FormGroup {
-    return <FormGroup>this.rForm.get("companySeller");
-  }
-  get companySellerShortName(): FormControl {
-    return <FormControl>this.rForm.get("companySeller.short_name");
-  }
-
-  get currency(): FormGroup {
-    return <FormGroup>this.rForm.get("currency");
-  }
-
-  get dateOfIssue(): FormControl {
-    return <FormControl>this.rForm.get("dateOfIssue");
-  }
-
-  get dateOfSell(): FormControl {
-    return <FormControl>this.rForm.get("dateOfSell");
-  }
-
-  get isInvoiceReceived(): FormControl {
-    return <FormControl>this.rForm.get("isInvoiceReceived");
-  }
-
-  get invoiceReceivedDate(): FormControl {
-    return <FormControl>this.rForm.get("invoiceReceivedDate");
-  }
-
-  get invoiceLines(): FormArray {
-    return <FormArray>this.rForm.get("invoiceLines");
-  }
-
-  get invoiceTotal(): FormGroup {
-    return <FormGroup>this.rForm.get("invoiceTotal");
-  }
-
-  get invoiceTotalCurrent(): FormGroup {
-    return <FormGroup>this.rForm.get("invoiceTotal.current");
-  }
-
-  get isCorrection(): FormControl {
-    return <FormControl>this.rForm.get("isCorrection");
-  }
-  get paymentIsDone(): FormControl {
-    return <FormControl>this.rForm.get("paymentIsDone");
-  }
-
-  get paymentDate(): FormControl {
-    return <FormControl>this.rForm.get("paymentDate");
-  }
-
-  get paymentTerms(): FormGroup {
-    return <FormGroup>this.rForm.get("paymentTerms");
-  }
-
-  get paymentTermsDay0(): FormControl {
-    return <FormControl>this.rForm.get("paymentTerms.day0");
-  }
-  get paymentTermsPaymentDays(): FormControl {
-    return <FormControl>this.rForm.get("paymentTerms.paymentDays");
-  }
-
-  get rates(): FormArray {
-    return <FormArray>this.rForm.get("rates");
-  }
-
-  //#endregion
 
   public initRouteId(): void {
     this.actRoute.paramMap.pipe(takeUntil(this.isDestroyed$)).subscribe((s) => {
@@ -175,14 +102,13 @@ export class InvoiceBuyComponent implements OnInit, OnDestroy, IDetailObj {
     throw new Error("Method not implemented.");
   }
   public navDelete(): void {
-    this.dialogTakNie
-      .open(DialogTakNieComponent, {
-        data: <IDialogTakNieInfo>{
-          title: "Faktura zakupu",
-          question: `Czy na pewno usunąć dokument nr: ${this.rForm.value.invoiceNo} ? \n Dokumnet zostanie trwale usunięty z bazy bez możliwośći jego przywrcenia`,
-        },
-      })
-      .afterClosed()
+    const data = {
+      title: "Faktura zakupu",
+      question: `Czy na pewno usunąć dokument nr: ${this.rForm.value.invoiceNo} ? \n Dokumnet zostanie trwale usunięty z bazy bez możliwośći jego przywrcenia`,
+    } as IDialogConfTakNieInfo;
+
+    this.dialogConfirmationService
+      .getTakNieDialog(data)
       .pipe(
         switchMap((dialogResponse) => {
           this.toastService.toastMake("Usuwam dane", "navDelete");
@@ -283,4 +209,75 @@ export class InvoiceBuyComponent implements OnInit, OnDestroy, IDetailObj {
   invoicePosRemove(idx: number) {
     this.icf.lineRemove(idx, this.rForm, this.invoiceLines, this.isDestroyed$);
   }
+
+  //#region getters
+  get creationInfo(): FormGroup {
+    return <FormGroup>this.rForm.get("creationInfo");
+  }
+  get companySeller(): FormGroup {
+    return <FormGroup>this.rForm.get("companySeller");
+  }
+  get companySellerShortName(): FormControl {
+    return <FormControl>this.rForm.get("companySeller.short_name");
+  }
+
+  get currency(): FormGroup {
+    return <FormGroup>this.rForm.get("currency");
+  }
+
+  get dateOfIssue(): FormControl {
+    return <FormControl>this.rForm.get("dateOfIssue");
+  }
+
+  get dateOfSell(): FormControl {
+    return <FormControl>this.rForm.get("dateOfSell");
+  }
+
+  get isInvoiceReceived(): FormControl {
+    return <FormControl>this.rForm.get("isInvoiceReceived");
+  }
+
+  get invoiceReceivedDate(): FormControl {
+    return <FormControl>this.rForm.get("invoiceReceivedDate");
+  }
+
+  get invoiceLines(): FormArray {
+    return <FormArray>this.rForm.get("invoiceLines");
+  }
+
+  get invoiceTotal(): FormGroup {
+    return <FormGroup>this.rForm.get("invoiceTotal");
+  }
+
+  get invoiceTotalCurrent(): FormGroup {
+    return <FormGroup>this.rForm.get("invoiceTotal.current");
+  }
+
+  get isCorrection(): FormControl {
+    return <FormControl>this.rForm.get("isCorrection");
+  }
+  get paymentIsDone(): FormControl {
+    return <FormControl>this.rForm.get("paymentIsDone");
+  }
+
+  get paymentDate(): FormControl {
+    return <FormControl>this.rForm.get("paymentDate");
+  }
+
+  get paymentTerms(): FormGroup {
+    return <FormGroup>this.rForm.get("paymentTerms");
+  }
+
+  get paymentTermsDay0(): FormControl {
+    return <FormControl>this.rForm.get("paymentTerms.day0");
+  }
+  get paymentTermsPaymentDays(): FormControl {
+    return <FormControl>this.rForm.get("paymentTerms.paymentDays");
+  }
+
+  get rates(): FormArray {
+    return <FormArray>this.rForm.get("rates");
+  }
+
+  //#endregion
 }

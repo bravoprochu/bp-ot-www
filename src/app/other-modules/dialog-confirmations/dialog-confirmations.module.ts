@@ -17,4 +17,4 @@ const IMPORT_EXPORT_MODULES = [
   exports: [IMPORT_EXPORT_MODULES, DialogTakNieComponent],
   imports: [CommonModule, IMPORT_EXPORT_MODULES],
 })
-export class DialogTakNieModule {}
+export class DialogConfirmations {}

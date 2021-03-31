@@ -5,12 +5,11 @@ import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { IDetailObj } from "../../../../shared/idetail-obj";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { UsersManagementService } from "app/services/users-management/users-management.service";
-import { MatDialog } from "@angular/material/dialog";
-import { DialogTakNieComponent } from "app/other-modules/dialog-tak-nie/components/dialog-tak-nie/dialog-tak-nie.component";
-import { IDialogTakNieInfo } from "app/shared/interfaces/idialog-tak-nie-info";
+import { IDialogConfTakNieInfo } from "app/shared/interfaces/idialog-tak-nie-info";
 import { FormControl } from "@angular/forms";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
 
 @Component({
   selector: "app-users-management",
@@ -52,7 +51,7 @@ export class UsersManagementComponent implements OnInit, OnDestroy, IDetailObj {
 
   constructor(
     private df: UsersManagementService,
-    private dialog: MatDialog,
+    private dialogConfirmationService: DialogConfirmationsService,
     private fb: FormBuilder
   ) {}
 
@@ -142,21 +141,18 @@ export class UsersManagementComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
   removeAccount(user: FormControl) {
-    let userName = user.get("userName").value;
-    this.dialog
-      .open(DialogTakNieComponent, {
-        data: <IDialogTakNieInfo>{
-          title: `Zarządzanie użytkownikami`,
-          question: `Czy na pewno usunąć konto użytkownika ${userName}`,
-        },
-      })
-      .afterClosed()
-      .subscribe((s) => {
-        if (s) {
-          user.get("status").setValue(3, { emitEvent: false });
-          this.rForm.markAsDirty();
-        }
-      });
+    const userName = user.get("userName").value;
+    const data = {
+      title: `Zarządzanie użytkownikami`,
+      question: `Czy na pewno usunąć konto użytkownika ${userName}`,
+    };
+
+    this.dialogConfirmationService.getTakNieDialog(data).subscribe((s) => {
+      if (s) {
+        user.get("status").setValue(3, { emitEvent: false });
+        this.rForm.markAsDirty();
+      }
+    });
   }
 
   private userFG(): FormGroup {

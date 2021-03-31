@@ -8,8 +8,7 @@ import {
   MatDialogRef,
 } from "@angular/material/dialog";
 import { IDetailObj } from "app/shared/idetail-obj";
-import { IDialogTakNieInfo } from "../../../../shared/interfaces/idialog-tak-nie-info";
-import { DialogTakNieComponent } from "app/other-modules/dialog-tak-nie/components/dialog-tak-nie/dialog-tak-nie.component";
+import { IDialogConfTakNieInfo } from "../../../../shared/interfaces/idialog-tak-nie-info";
 import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
 import { ContractorService as ContractorService } from "../../services/contractor.service";
 import { FormControl } from "@angular/forms";
@@ -17,6 +16,7 @@ import { finalize, switchMap, take, takeUntil } from "rxjs/operators";
 import { ICompany } from "../../interfaces/icompany";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 import { IContrahentDialogCloseData } from "../../interfaces/i-contrahent-dialog-close-data";
+import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
 
 @Component({
   selector: "app-company",
@@ -41,11 +41,10 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
   routeId: number;
 
   constructor(
-    private dialog: MatDialog,
-    private fb: FormBuilder,
-    private contractorService: ContractorService,
-    // private transEuService: TranseuService,
     private companyDialogRef: MatDialogRef<CompanyComponent>,
+    private contractorService: ContractorService,
+    private dialogConfirmationService: DialogConfirmationsService,
+    private fb: FormBuilder,
     private toastService: ToastMakeService,
 
     @Inject(MAT_DIALOG_DATA) public dialogData: IDialogData
@@ -84,19 +83,16 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
   accountRemove(idx: number): void {
-    this.dialog
-      .open(DialogTakNieComponent, {
-        data: <IDialogTakNieInfo>{
-          title: "Kontrahent",
-          question: "Czy na pewno usunąć dane konta bankowego ?",
-        },
-      })
-      .afterClosed()
-      .subscribe((s) => {
-        if (s) {
-          this.bankAccountList.removeAt(idx);
-        }
-      });
+    const data = {
+      title: "Kontrahent",
+      question: "Czy na pewno usunąć dane konta bankowego ?",
+    } as IDialogConfTakNieInfo;
+
+    this.dialogConfirmationService.getTakNieDialog(data).subscribe((s) => {
+      if (s) {
+        this.bankAccountList.removeAt(idx);
+      }
+    });
   }
 
   employeeAdd(): void {
@@ -104,13 +100,13 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
   employeeRemove(idx: number): void {
-    let d = this.dialog.open(DialogTakNieComponent, {
-      data: <IDialogTakNieInfo>{
-        title: "Kontrahent",
-        question: "Czy na pewno usunąć tego użytkownika ?",
-      },
-    });
-    d.afterClosed()
+    const data = {
+      title: "Kontrahent",
+      question: "Czy na pewno usunąć tego użytkownika ?",
+    } as IDialogConfTakNieInfo;
+
+    this.dialogConfirmationService
+      .getTakNieDialog(data)
       .pipe(takeUntil(this.isDestroyed$))
       .subscribe((s: boolean) => {
         if (s == true) {
@@ -174,14 +170,13 @@ export class CompanyComponent implements OnInit, OnDestroy, IDetailObj {
   navDelete(): void {
     this.isPending = true;
 
-    this.dialog
-      .open(DialogTakNieComponent, {
-        data: {
-          question: `Czy na pewno usunąć kontrahenta ${this.companyName.value} ?`,
-          title: "Kontrahent - usuń dane",
-        } as IDialogTakNieInfo,
-      })
-      .afterClosed()
+    const data = {
+      question: `Czy na pewno usunąć kontrahenta ${this.companyName.value} ?`,
+      title: "Kontrahent - usuń dane",
+    } as IDialogConfTakNieInfo;
+
+    this.dialogConfirmationService
+      .getTakNieDialog(data)
       .pipe(
         switchMap((isOK: boolean) => {
           if (isOK === true) {

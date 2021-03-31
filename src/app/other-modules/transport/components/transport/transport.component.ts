@@ -5,9 +5,7 @@ import { IDetailObj } from "app/shared/idetail-obj";
 import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
 import { FormGroup } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { MatDialog } from "@angular/material/dialog";
-import { DialogTakNieComponent } from "app/other-modules/dialog-tak-nie/components/dialog-tak-nie/dialog-tak-nie.component";
-import { IDialogTakNieInfo } from "app/shared/interfaces/idialog-tak-nie-info";
+import { IDialogConfTakNieInfo } from "app/shared/interfaces/idialog-tak-nie-info";
 import { empty, Subject, of } from "rxjs";
 import * as moment from "moment";
 import { ICurrency } from "app/other-modules/currency/interfaces/i-currency";
@@ -15,6 +13,7 @@ import { finalize, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { TransportService } from "../../services/transport.service";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
+import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
 
 @Component({
   selector: "app-transport",
@@ -39,7 +38,7 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
   constructor(
     private actRoute: ActivatedRoute,
     private df: TransportService,
-    private dialogTakNie: MatDialog,
+    private dialogConfirmationService: DialogConfirmationsService,
     private momentService: MomentCommonService,
     private router: Router,
     private toastService: ToastMakeService
@@ -105,28 +104,25 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
     let actCurr: ICurrency = <ICurrency>this.currency.value;
 
     if (!this.invoiceSellId.value) {
-      this.dialogTakNie
-        .open(DialogTakNieComponent, {
-          data: <IDialogTakNieInfo>{
-            question: `Czy na pewno potwierdzić dostarczenie ładunku do ${this.unloadPlace.value} ? (automatycznie zostanie utworzona faktura sprzedaży)`,
-            title: "Transport - potwierdzenie dostarczenia",
-          },
-        })
-        .afterClosed()
+      const data = {
+        question: `Czy na pewno potwierdzić dostarczenie ładunku do ${this.unloadPlace.value} ? (automatycznie zostanie utworzona faktura sprzedaży)`,
+        title: "Transport - potwierdzenie dostarczenia",
+      } as IDialogConfTakNieInfo;
+
+      this.dialogConfirmationService
+        .getTakNieDialog(data)
         .pipe(
           switchMap((czyPLN) => {
             if (czyPLN) {
               if (actCurr.name == "PLN") {
                 return of(true);
               } else {
-                return this.dialogTakNie
-                  .open(DialogTakNieComponent, {
-                    data: <IDialogTakNieInfo>{
-                      title: "Waluta faktury",
-                      question: `UWAGA, sprawdź regulamin zlecenia.  Zlecenie jest w ${actCurr.description}, czy faktura ma być przeliczona i wystawiona w walucie PLN ?`,
-                    },
-                  })
-                  .afterClosed();
+                const data2 = {
+                  title: "Waluta faktury",
+                  question: `UWAGA, sprawdź regulamin zlecenia.  Zlecenie jest w ${actCurr.description}, czy faktura ma być przeliczona i wystawiona w walucie PLN ?`,
+                } as IDialogConfTakNieInfo;
+
+                return this.dialogConfirmationService.getTakNieDialog(data2);
               }
             } else {
               this.isPending = false;
@@ -172,15 +168,14 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
       return;
     }
 
-    this.dialogTakNie
-      .open(DialogTakNieComponent, {
-        data: <IDialogTakNieInfo>{
-          title: "Zlecenia transportowe",
-          question:
-            "Czy na pewno chcesz usunąć to zlecenie, dane zostaną całkowicie usunięte z serwera ?",
-        },
-      })
-      .afterClosed()
+    const data = {
+      title: "Zlecenia transportowe",
+      question:
+        "Czy na pewno chcesz usunąć to zlecenie, dane zostaną całkowicie usunięte z serwera ?",
+    } as IDialogConfTakNieInfo;
+
+    this.dialogConfirmationService
+      .getTakNieDialog(data)
       .pipe(
         switchMap((sw) => {
           if (sw) {
