@@ -20,7 +20,6 @@ import { InvoiceSellComponent } from "./invoice-sell/invoice-sell/invoice-sell.c
 import { ExtraInfoCheckedComponent } from "./common/extra-info-checked/extra-info-checked.component";
 import { CurrencyModule } from "app/other-modules/currency/currency.module";
 import { InvoiceSellListComponent } from "./invoice-sell/invoice-sell-list/invoice-sell-list.component";
-import { DialogDateConfirmationComponent } from "../dialog-confirmations/components/dialog-date-confirmation/dialog-date-confirmation";
 import { PaymentTermsModule } from "app/other-modules/payment-terms/payment-terms.module";
 import { ContractorsModule } from "../contractors/contractors.module";
 import { DragDropOptionsModule } from "../drag-drop-options/drag-drop-options.module";
