@@ -16,7 +16,6 @@ import { IInvoiceRate } from "../interfaces/iinvoice-rate";
 import { ICreationInfo } from "@bpCommonInterfaces/i-creation-info";
 import { CurrencyCommonService } from "app/other-modules/currency/currency-common.service";
 import { ContractorService } from "app/other-modules/contractors/services/contractor.service";
-import * as moment from "moment";
 import { IDateRange } from "@bpCommonInterfaces/i-date-range";
 import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 import { PaymentTermsService } from "app/other-modules/payment-terms/services/payment-terms.service";
@@ -78,15 +77,15 @@ export class InvoiceCommonFunctionsService {
 
   dateRangeActiveMonth(): IDateRange {
     return <IDateRange>{
-      dateStart: moment().date(1),
-      dateEnd: moment(),
+      dateStart: this.momentService.getToday().date(1),
+      dateEnd: this.momentService.getToday(),
     };
   }
 
   dateRangeLastQuarter(): IDateRange {
     return <IDateRange>{
-      dateStart: moment().subtract(3, "month").date(1),
-      dateEnd: moment(),
+      dateStart: this.momentService.getToday().subtract(3, "month").date(1),
+      dateEnd: this.momentService.getToday(),
     };
   }
 
@@ -496,8 +495,12 @@ export class InvoiceCommonFunctionsService {
   }
 
   patchCreationInfo(info: ICreationInfo, rForm: FormGroup) {
-    info.createdDateTime = this.setFormatedDateTime(info.createdDateTime);
-    info.modifyDateTime = this.setFormatedDateTime(info.modifyDateTime);
+    info.createdDateTime = this.momentService.setFormatedDateTime(
+      info.createdDateTime
+    );
+    info.modifyDateTime = this.momentService.setFormatedDateTime(
+      info.modifyDateTime
+    );
     rForm.patchValue(info, { emitEvent: false });
   }
 
@@ -655,12 +658,5 @@ export class InvoiceCommonFunctionsService {
       return 0;
     }
     return Math.round(v * 100) / 100;
-  }
-
-  setFormatedDateTime(date: any): string {
-    if (date == null || !moment(date).isValid) {
-      return null;
-    }
-    return moment(date).utc(false).format(this.dateTimeLocaleFormat());
   }
 }
