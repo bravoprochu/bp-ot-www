@@ -45,13 +45,15 @@
 
   <mat-tab>
     <ng-template matTabLabel>
-      <span [matBadge]="unpaid?.length">&nbsp;Należności&nbsp;</span>
+      <span [matBadge]="unpaid?.length"
+        >&nbsp;Należności niewymagalne&nbsp;</span
+      >
     </ng-template>
 
     <div *matTabContent>
       <p class="mat-subheader">
         Lista należności, faktury otrzymane przez nabywcę, termin płatności nie
-        został przekroczony.
+        został przekroczony <strong>niewymaglane</strong>
       </p>
       <p>
         Data jest określona jako data sprzedaży plus ilość dni z terminu
@@ -154,7 +156,10 @@
       <ng-container
         *ngTemplateOutlet="
           stats;
-          context: { $implicit: unpaidStats, title: 'Należności' }
+          context: {
+            $implicit: unpaidStats,
+            title: 'Należności niewymagalne'
+          }
         "
       ></ng-container>
 
