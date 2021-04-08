@@ -65,10 +65,10 @@ export class CompanyCardComponent implements OnInit, OnDestroy, AfterViewInit {
         .subscribe((s) => {
           this.companyService.patchCompanyData(
             <ICompany>s.option.value,
-            this.rForm,
+            this.rForm!,
             this.fb
           );
-          this.rForm.markAsDirty();
+          this.rForm?.markAsDirty();
         });
     }, 0);
   }
@@ -89,10 +89,10 @@ export class CompanyCardComponent implements OnInit, OnDestroy, AfterViewInit {
         ) {
           this.companyService.patchCompanyData(
             dialogData.contractor,
-            this.rForm,
+            this.rForm!,
             this.fb
           );
-          this.rForm.markAsDirty();
+          this.rForm?.markAsDirty();
         }
       });
   }
@@ -104,7 +104,7 @@ export class CompanyCardComponent implements OnInit, OnDestroy, AfterViewInit {
   initData() {}
 
   initForm() {
-    <FormArray>this.rForm.get("addressList");
+    <FormArray>this.rForm?.get("addressList");
 
     this.data$ = this.search$.valueChanges.pipe(
       debounceTime(750),
@@ -121,23 +121,23 @@ export class CompanyCardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   get addressList(): FormArray {
-    return <FormArray>this.rForm.get("addressList");
+    return <FormArray>this.rForm?.get("addressList");
   }
 
   get bankAccountList(): FormArray {
-    return <FormArray>this.rForm.get("bankAccountList");
+    return <FormArray>this.rForm?.get("bankAccountList");
   }
 
   get email(): FormControl {
-    return this.rForm.get("email") as FormControl;
+    return this.rForm?.get("email") as FormControl;
   }
 
   get employeeList(): FormArray {
-    return <FormArray>this.rForm.get("employeeList");
+    return <FormArray>this.rForm?.get("employeeList");
   }
 
   get fax(): FormControl {
-    return this.rForm.get("fax") as FormControl;
+    return this.rForm?.get("fax") as FormControl;
   }
 
   get firstAddres(): FormGroup {
@@ -145,14 +145,14 @@ export class CompanyCardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   get vatId(): FormControl {
-    return this.rForm.get("vat_id") as FormControl;
+    return this.rForm?.get("vat_id") as FormControl;
   }
 
   get telephone(): FormControl {
-    return this.rForm.get("telephone") as FormControl;
+    return this.rForm?.get("telephone") as FormControl;
   }
 
   get url(): FormControl {
-    return this.rForm.get("url") as FormControl;
+    return this.rForm?.get("url") as FormControl;
   }
 }

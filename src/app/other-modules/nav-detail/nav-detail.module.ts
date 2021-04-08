@@ -7,11 +7,11 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { RouterModule } from "@angular/router";
-import { DialogConfirmations } from "../dialog-confirmations/dialog-confirmations.module";
+import { DialogConfirmationsModule } from "../dialog-confirmations/dialog-confirmations.module";
 import { ReactiveFormsModule } from "@angular/forms";
 
 const IMPORT_EXPORT_MODULES = [
-  DialogConfirmations,
+  DialogConfirmationsModule,
   FlexLayoutModule,
   MatButtonModule,
   MatDialogModule,

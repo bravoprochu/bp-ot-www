@@ -1,10 +1,15 @@
 <mat-form-field>
-  <input matInput [matAutocomplete]="currSearch" placeholder="znajdź walutę" [formControl]="search$">
-  <mat-hint align="end">{{rForm.value["description"]}}</mat-hint>
+  <input
+    matInput
+    [matAutocomplete]="currSearch"
+    placeholder="znajdź walutę"
+    [formControl]="search$"
+  />
+  <mat-hint align="end">{{ rForm?.value["description"] }}</mat-hint>
 </mat-form-field>
 
 <mat-autocomplete #currSearch [displayWith]="displayWith" autoActiveFirstOption>
   <mat-option *ngFor="let curr of currencyList" [value]="curr">
-    {{curr.name}}
+    {{ curr.name }}
   </mat-option>
 </mat-autocomplete>

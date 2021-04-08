@@ -20,8 +20,8 @@
   <div fxLayout="column" fxLayoutAlign="center center" class="mat-headline">
     <div>
       Faktura nr: {{ rForm.get("invoiceNo").value }}
-      <small *ngIf="rForm.value.loadId">{{
-        rForm.value.isInvoiceReceived == true ? "(potwierdzona)" : "(!)"
+      <small *ngIf="rForm?.value?.loadId">{{
+        rForm?.value?.isInvoiceReceived === true ? "(potwierdzona)" : "(!)"
       }}</small>
     </div>
     <small
@@ -90,7 +90,7 @@
             <mat-datepicker #dpIssue></mat-datepicker>
           </mat-form-field>
 
-          <mat-form-field *ngIf="isInvoiceReceived.value">
+          <mat-form-field *ngIf="isInvoiceReceived?.value">
             <input
               matInput
               placeholder="Data otrzymania"
@@ -103,10 +103,6 @@
             ></mat-datepicker-toggle>
             <mat-datepicker #dpReceived></mat-datepicker>
           </mat-form-field>
-
-          <!-- <mat-form-field *ngIf="isInvoiceReceived.value">
-                    <input matInput placeholder="Data otrzymania" type="date" formControlName="invoiceReceivedDate">
-                </mat-form-field> -->
         </div>
         <app-currency-list [rForm]="currency"></app-currency-list>
         <app-payment-terms [rForm]="paymentTerms"></app-payment-terms>

@@ -6,7 +6,7 @@ import {
   FormControl,
 } from "@angular/forms";
 import * as moment from "moment";
-import { Subject, of, empty, combineLatest } from "rxjs";
+import { Subject, of, empty } from "rxjs";
 import { merge, takeUntil, tap, map, debounceTime } from "rxjs/operators";
 import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 import { IPaymentTerm } from "../interfaces/i-payment-term";
@@ -56,22 +56,17 @@ export class PaymentTermsService {
       combined: [paymentDay],
       day0: [this.mc.getToday()],
       description: [null],
-      paymentTerm: fb.control({
-        paymentTermId: 3,
-        name: "przelew",
-        isDescription: false,
-        isPaymentDate: true,
-      }),
+      paymentTerm: fb.control(this.getPaymentTerms()[2]),
       paymentDate: [this.mc.getToday().add(60, "day"), Validators.required],
       paymentDays: [60, Validators.required],
     });
 
-    let combined: FormControl = <FormControl>res.get("combined");
-    let day0: FormControl = <FormControl>res.get("day0");
-    let description: FormControl = <FormControl>res.get("description");
-    let paymentDate: FormControl = <FormControl>res.get("paymentDate");
-    let paymentDays: FormControl = <FormControl>res.get("paymentDays");
-    let paymentTerm: FormControl = <FormControl>res.get("paymentTerm");
+    const combined = res.get("combined") as FormControl;
+    const day0 = res.get("day0") as FormControl;
+    const description = res.get("description") as FormControl;
+    const paymentDate = res.get("paymentDate") as FormControl;
+    const paymentDays = res.get("paymentDays") as FormControl;
+    const paymentTerm = res.get("paymentTerm") as FormControl;
 
     //
     // private function for update
@@ -187,8 +182,8 @@ export class PaymentTermsService {
 
     of()
       .pipe(
-        takeUntil(isDestroyed$),
-        merge(day0$, paymentDate$, paymentDays$, paymentTerm$)
+        merge(day0$, paymentDate$, paymentDays$, paymentTerm$),
+        takeUntil(isDestroyed$)
       )
       .subscribe((_data: any) => {
         prepCombine();

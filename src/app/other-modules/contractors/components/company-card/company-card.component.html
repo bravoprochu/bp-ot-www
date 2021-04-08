@@ -28,19 +28,19 @@
   <div fxLayout="column" fxLayoutAlign="start center">
     <div fxLayout="column" fxLayoutAlign="start center">
       <div class="mat-h2">
-        {{ rForm.value.legal_name }}
-        <small *ngIf="rForm.value.short_name"
-          >({{ rForm.value.short_name }})</small
+        {{ rForm?.value?.legal_name }}
+        <small *ngIf="rForm?.value?.short_name"
+          >({{ rForm?.value?.short_name }})</small
         >
       </div>
-      <div class="mat-h3" *ngIf="addressList.length > 0">
+      <div class="mat-h3" *ngIf="addressList?.length > 0">
         <!-- <span>{{addressList.at(0).get('address_type').value}}</span> -->
-        <span>{{ firstAddres.get("country").value }}&nbsp;</span>
-        <span>{{ firstAddres.get("locality").value }}&nbsp;</span>
-        <span>{{ firstAddres.get("street_address").value }}&nbsp;</span>
-        <span>{{ firstAddres.get("street_number").value }}</span>
+        <span>{{ firstAddres.get("country")?.value }}&nbsp;</span>
+        <span>{{ firstAddres.get("locality")?.value }}&nbsp;</span>
+        <span>{{ firstAddres.get("street_address")?.value }}&nbsp;</span>
+        <span>{{ firstAddres.get("street_number")?.value }}</span>
       </div>
-      <div class="mat-h4">{{ vatId.value }}</div>
+      <div class="mat-h4">{{ vatId?.value }}</div>
       <div
         fxLayout
         fxLayout.xs="column"
@@ -48,22 +48,22 @@
         fxLayoutAlign="space-between start"
       >
         <div fxFlex="50" fxFlex.xs="100">
-          <div class="mat-h5" *ngIf="telephone.value">
-            Tel: <strong>{{ telephone.value }}</strong>
+          <div class="mat-h5" *ngIf="telephone?.value">
+            Tel: <strong>{{ telephone?.value }}</strong>
           </div>
-          <div class="mat-h5" *ngIf="fax.value">
-            Fax: <strong>{{ fax.value }}</strong>
+          <div class="mat-h5" *ngIf="fax?.value">
+            Fax: <strong>{{ fax?.value }}</strong>
           </div>
         </div>
         <div class="mat-h5">
           <strong
-            ><a [attr.href]="'mailto:' + email.value">{{
-              email.value
+            ><a [attr.href]="'mailto:' + email?.value">{{
+              email?.value
             }}</a></strong
           >
         </div>
       </div>
-      <div fxFill class="mat-h5">{{ url.value }}</div>
+      <div fxFill class="mat-h5">{{ url?.value }}</div>
     </div>
   </div>
 </div>

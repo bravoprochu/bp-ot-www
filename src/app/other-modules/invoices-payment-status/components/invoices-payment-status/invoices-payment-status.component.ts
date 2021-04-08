@@ -175,7 +175,7 @@ export class InvoicesPaymentStatusComponent implements OnInit, OnDestroy {
   initData() {
     this.isPending = true;
     this.invoicePaymentStatusService
-      .paymentRemind()
+      .paymentRemind()!
       .pipe(take(1))
       .subscribe((s: IInvoicePaymentStatus) => {
         this.prepData(s);
@@ -249,7 +249,7 @@ export class InvoicesPaymentStatusComponent implements OnInit, OnDestroy {
     this.unpaidStats = paymentStatus.unpaidStats;
 
     this.unpaidOverdue = paymentStatus.unpaidOverdue;
-    this.unpaidOverdueFiltered = [...paymentStatus.unpaidOverdue];
+    this.unpaidOverdueFiltered = [...paymentStatus?.unpaidOverdue];
     this.unpaidOverdueStats = paymentStatus.unpaidOverdueStats;
 
     this.notConfirmed = paymentStatus.notConfirmed;

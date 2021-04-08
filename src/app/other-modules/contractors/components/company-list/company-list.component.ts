@@ -38,16 +38,17 @@ export class CompanyListComponent implements OnInit, OnDestroy, IListObj {
     title: "Firma",
   };
 
-  ngOnDestroy(): void {
-    this.isDestroyed$.next(true);
-    this.isDestroyed$.complete();
-    this.isDestroyed$.unsubscribe();
-  }
   constructor(
     private contractorService: ContractorService,
     private dialog: MatDialog,
     private toastService: ToastMakeService
   ) {}
+
+  ngOnDestroy(): void {
+    this.isDestroyed$.next(true);
+    this.isDestroyed$.complete();
+    this.isDestroyed$.unsubscribe();
+  }
 
   ngOnInit() {
     this.isDestroyed$ = new Subject<boolean>();

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
+import { FormBuilder, FormControl, FormGroup } from "@angular/forms";
 import { Subject } from "rxjs";
 import { CurrencyCommonService } from "app/other-modules/currency/currency-common.service";
 import { Moment } from "moment";
@@ -12,12 +12,14 @@ import { MomentCommonService } from "app/other-modules/moment-common/services/mo
   styleUrls: ["./currency-nbp.component.css"],
 })
 export class CurrencyNbpComponent implements OnInit, OnDestroy {
-  @Input() rForm: FormGroup;
-  @Input() placeholder: string;
   isDestroyed$ = new Subject<boolean>() as Subject<boolean>;
+  @Input() rForm = this.cf.getCurrencyNbpGroup(this.fb, this.isDestroyed$);
+  @Input() placeholder: string;
+
   maxDate: Moment;
 
   constructor(
+    private fb: FormBuilder,
     private cf: CurrencyCommonService,
     private momentService: MomentCommonService
   ) {}
@@ -35,27 +37,27 @@ export class CurrencyNbpComponent implements OnInit, OnDestroy {
   //#region rForm getters
 
   get currency(): FormControl {
-    return <FormControl>this.rForm.get("currency");
+    return <FormControl>this.rForm?.get("currency");
   }
   get plnValue(): FormControl {
-    return <FormControl>this.rForm.get("plnValue");
+    return <FormControl>this.rForm?.get("plnValue");
   }
 
   get price(): FormControl {
-    return <FormControl>this.rForm.get("price");
+    return <FormControl>this.rForm?.get("price");
   }
   get rate(): FormControl {
-    return <FormControl>this.rForm.get("rate");
+    return <FormControl>this.rForm?.get("rate");
   }
 
   get rateDate(): FormControl {
-    return <FormControl>this.rForm.get("rateDate");
+    return <FormControl>this.rForm?.get("rateDate");
   }
   //#endregion
 
   refresh() {
     this.cf
-      .getNbpService$(this.rForm.value)
+      .getNbpService$(this.rForm?.value)
       .pipe(takeUntil(this.isDestroyed$))
       .subscribe((_data: any) => {
         this.cf.patchCurrencyNbpResult(_data, this.rForm);

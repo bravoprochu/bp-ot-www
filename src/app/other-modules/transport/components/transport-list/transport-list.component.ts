@@ -1,4 +1,4 @@
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { IListObj } from "app/shared/ilist-obj";
 import { ITitle } from "app/shared/ititle";

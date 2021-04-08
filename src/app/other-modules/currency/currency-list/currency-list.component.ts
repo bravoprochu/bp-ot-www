@@ -31,15 +31,15 @@ export class CurrencyListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isDestroyed$ = new Subject<boolean>();
-    this.search$ = new FormControl(this.rForm.value);
+    this.search$ = new FormControl(this.rForm?.value);
     this.currencyList = CURRENCY_LIST;
 
-    this.rForm.valueChanges
+    this.rForm?.valueChanges
       .pipe(takeUntil(this.isDestroyed$))
       .subscribe((_data: ICurrency) => {
         if (_data) {
           this.search$.setValue(_data, { emitEvent: false });
-          this.rForm.markAsDirty();
+          this.rForm?.markAsDirty();
         }
       });
 
@@ -55,7 +55,7 @@ export class CurrencyListComponent implements OnInit, OnDestroy {
             );
           });
         } else {
-          this.rForm.setValue(_data, { emitEvent: true });
+          this.rForm?.setValue(_data, { emitEvent: true });
         }
       });
   }

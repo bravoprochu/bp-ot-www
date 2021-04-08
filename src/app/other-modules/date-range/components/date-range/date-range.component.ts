@@ -9,23 +9,18 @@ import { IDateRange } from "app/shared/interfaces/i-date-range";
   styleUrls: ["./date-range.component.css"],
 })
 export class DateRangeComponent implements OnInit {
-  @Input() dateRange: IDateRange;
-  @Output() onGo: EventEmitter<IDateRange> = new EventEmitter();
-  @Output() isActive: EventEmitter<boolean> = new EventEmitter();
-  dateFrom: FormControl;
-  dateTo: FormControl;
-  showDateRange: boolean;
+  @Input() dateRange = this.momentService.getPreviousMonth() as IDateRange;
+  @Output() onGo = new EventEmitter<IDateRange>();
+  @Output() isActive = new EventEmitter<boolean>();
+  dateFrom = new FormControl(
+    this.momentService.getToday().subtract(3, "months")
+  );
+  dateTo = new FormControl(this.momentService.getToday());
+  showDateRange = false;
 
   constructor(private momentService: MomentCommonService) {}
 
-  ngOnInit(): void {
-    this.showDateRange = false;
-    this.dateRange ? this.dateRange : <IDateRange>{};
-    this.dateFrom = new FormControl(
-      this.momentService.getToday().subtract(3, "months")
-    );
-    this.dateTo = new FormControl(this.momentService.getToday());
-  }
+  ngOnInit(): void {}
 
   dateRangeIsActive(): void {
     this.showDateRange = !this.showDateRange;

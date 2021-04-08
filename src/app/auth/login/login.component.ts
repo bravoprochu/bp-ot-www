@@ -1,5 +1,5 @@
 import { IErrorObj } from "../interfaces/ierror-object";
-import { Router, ActivatedRoute } from "@angular/router";
+import { Router } from "@angular/router";
 import { Observable } from "rxjs";
 import { Component, OnInit } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
@@ -20,6 +20,15 @@ import { catchError, take, tap } from "rxjs/operators";
   styleUrls: ["./login.component.css"],
 })
 export class LoginComponent implements OnInit {
+  loginFormGroup: FormGroup;
+  registerFormGroup: FormGroup;
+
+  loginUserNameIsValid: boolean;
+  registerUserNameIsValid: boolean;
+
+  isPending: boolean;
+  errorObj: IErrorObj[];
+
   constructor(
     public dialogRef: MatDialogRef<LoginComponent>,
     private fb: FormBuilder,
@@ -32,15 +41,6 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     this.initForm();
   }
-
-  loginFormGroup: FormGroup;
-  registerFormGroup: FormGroup;
-
-  loginUserNameIsValid: boolean;
-  registerUserNameIsValid: boolean;
-
-  isPending: boolean;
-  errorObj: IErrorObj[];
 
   password() {
     return this.registerFormGroup.get("password");

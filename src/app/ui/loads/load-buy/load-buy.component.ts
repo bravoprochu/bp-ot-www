@@ -65,6 +65,8 @@ export class LoadBuyComponent implements OnInit, OnDestroy, IDetailObj {
     this.initData();
   }
 
+  compareWithValueViewValue(): void {}
+
   currencyChange($event: ICurrency) {
     this.rForm.get("buy.price_currency").setValue($event.name);
   }

@@ -16,11 +16,11 @@ import { InvoicesPaymentStatusComponent } from "./components/invoices-payment-st
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { MatBadgeModule } from "@angular/material/badge";
 import { ScrollingModule } from "@angular/cdk/scrolling";
-import { DialogConfirmations } from "../dialog-confirmations/dialog-confirmations.module";
+import { DialogConfirmationsModule } from "../dialog-confirmations/dialog-confirmations.module";
 
 const IMPORT_EXPORT_MODULES = [
   FlexLayoutModule,
-  DialogConfirmations,
+  DialogConfirmationsModule,
   FormsModule,
   MatButtonModule,
   MatBadgeModule,

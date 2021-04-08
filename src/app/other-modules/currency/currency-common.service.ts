@@ -14,16 +14,13 @@ import {
   map,
   merge,
   takeUntil,
-  tap,
   take,
   switchMap,
   debounceTime,
   distinctUntilChanged,
   catchError,
-  repeat,
   retry,
   delay,
-  distinctUntilKeyChanged,
 } from "rxjs/operators";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { ICurrencyNbpResultRate } from "app/other-modules/currency/interfaces/i-currency-nbp-result-rate";

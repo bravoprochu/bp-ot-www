@@ -5,7 +5,6 @@ import {
   CanActivate,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
-  Router,
 } from "@angular/router";
 import { Observable, of } from "rxjs";
 import { MatDialog } from "@angular/material/dialog";
@@ -13,11 +12,7 @@ import { switchMap } from "rxjs/operators";
 
 @Injectable()
 export class IdentGuard implements CanActivate {
-  constructor(
-    private tokenService: TokenService,
-    private router: Router,
-    private dialog: MatDialog
-  ) {}
+  constructor(private tokenService: TokenService, private dialog: MatDialog) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,

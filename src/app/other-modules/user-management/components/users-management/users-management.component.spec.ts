@@ -1,17 +1,30 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { HttpClientModule } from "@angular/common/http";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { DialogConfirmationsModule } from "app/other-modules/dialog-confirmations/dialog-confirmations.module";
+import { TokenService } from "app/services/token.service";
+import { UsersManagementService } from "app/services/users-management/users-management.service";
+import { of } from "rxjs";
 
-import { UsersManagementComponent } from './users-management.component';
+import { UsersManagementComponent } from "./users-management.component";
 
-describe('UsersManagementComponent', () => {
+describe("UsersManagementComponent", () => {
   let component: UsersManagementComponent;
   let fixture: ComponentFixture<UsersManagementComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ UsersManagementComponent ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [UsersManagementComponent],
+        imports: [
+          DialogConfirmationsModule,
+          HttpClientModule,
+          MatSnackBarModule,
+        ],
+        providers: [UsersManagementService, TokenService],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UsersManagementComponent);
@@ -19,7 +32,7 @@ describe('UsersManagementComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

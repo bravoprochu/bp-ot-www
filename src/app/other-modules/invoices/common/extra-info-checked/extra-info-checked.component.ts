@@ -27,19 +27,19 @@ export class ExtraInfoCheckedComponent implements OnInit, OnDestroy {
   }
 
   get checked(): FormControl {
-    return <FormControl>this.rForm.get("checked");
+    return <FormControl>this.rForm?.get("checked");
   }
 
   get date(): FormControl {
-    return <FormControl>this.rForm.get("date");
+    return <FormControl>this.rForm?.get("date");
   }
   get info(): FormControl {
-    return <FormControl>this.rForm.get("info");
+    return <FormControl>this.rForm?.get("info");
   }
 
   initForm() {
     this.rForm
-      .get("checked")
+      ?.get("checked")
       .valueChanges.pipe(startWith(false), takeUntil(this.isDestroyed$))
       .subscribe((s: boolean) => {
         if (s == true) {

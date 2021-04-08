@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { FormGroup } from "@angular/forms";
+import { FormBuilder, FormGroup } from "@angular/forms";
 
 @Component({
   selector: "app-creation-info",
@@ -7,25 +7,30 @@ import { FormGroup } from "@angular/forms";
   styleUrls: ["./creation-info.component.css"],
 })
 export class CreationInfoComponent implements OnInit {
-  @Input() rForm: FormGroup;
+  @Input() rForm = this.fb.group({
+    createdBy: [null],
+    createdDateTime: [null],
+    modifyBy: [null],
+    modifyDateTime: [null],
+  });
 
-  constructor() {}
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit() {}
 
   get createdBy(): string {
-    return this.rForm.get("createdBy").value;
+    return this.rForm?.get("createdBy").value;
   }
 
   get createdDateTime(): string {
-    return this.rForm.get("createdDateTime").value;
+    return this.rForm?.get("createdDateTime").value;
   }
 
   get modifyBy(): string {
-    return this.rForm.get("modifyBy").value;
+    return this.rForm?.get("modifyBy").value;
   }
 
   get modifyDateTime(): string {
-    return this.rForm.get("modifyDateTime").value;
+    return this.rForm?.get("modifyDateTime").value;
   }
 }

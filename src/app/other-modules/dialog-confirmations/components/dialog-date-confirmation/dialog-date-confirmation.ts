@@ -15,7 +15,7 @@ import { IDialogDateConfirmationReturn } from "../../interfaces/i-dialog-date-co
   styleUrls: ["./dialog-date-confirmation.css"],
 })
 export class DialogDateConfirmationComponent implements OnInit {
-  rForm$ = {} as FormGroup;
+  rForm$?: FormGroup;
 
   constructor(
     private fb: FormBuilder,

@@ -67,7 +67,6 @@ export class RouteListComponent implements OnInit, OnDestroy {
   }
 
   routesListPrep() {
-    let userRoles = this.tokenService.getToken().rolesList;
     this.routesData = [];
 
     this.routesData = ROUTES_LIST_DATA;

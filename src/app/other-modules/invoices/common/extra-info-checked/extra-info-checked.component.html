@@ -1,13 +1,23 @@
 <div [formGroup]="rForm" fxLayout="column">
-  <mat-checkbox formControlName="checked">{{placeholder}}</mat-checkbox>
-  <div *ngIf="checked.value" fxLayout fxLayout.xs="column" fxLayoutAlign.gt-xs="start end">
-      <mat-form-field fxFlex="30">
-          <input [matDatepicker]="dpData" matInput formControlName="date" placeholder="Data">
-          <mat-datepicker-toggle matSuffix [for]="dpData"></mat-datepicker-toggle>
-          <mat-datepicker #dpData></mat-datepicker>
-        </mat-form-field>
-        <mat-form-field fxFlex="70">
-            <input type="info" matInput formControlName="info" placeholder="Info">
-        </mat-form-field>
+  <mat-checkbox formControlName="checked">{{ placeholder }}</mat-checkbox>
+  <div
+    *ngIf="checked?.value"
+    fxLayout
+    fxLayout.xs="column"
+    fxLayoutAlign.gt-xs="start end"
+  >
+    <mat-form-field fxFlex="30">
+      <input
+        [matDatepicker]="dpData"
+        matInput
+        formControlName="date"
+        placeholder="Data"
+      />
+      <mat-datepicker-toggle matSuffix [for]="dpData"></mat-datepicker-toggle>
+      <mat-datepicker #dpData></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field fxFlex="70">
+      <input type="info" matInput formControlName="info" placeholder="Info" />
+    </mat-form-field>
   </div>
 </div>

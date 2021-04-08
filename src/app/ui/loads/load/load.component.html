@@ -1,4 +1,3 @@
-<app-pending [isPending]="isPending"></app-pending>
 <app-nav-detail
   *ngIf="!isPending"
   [navDetailInfo]="navDetailInfo"
@@ -15,7 +14,7 @@
     <mat-card-title>
       <div>
         Informacje dotyczące ładunku nr:
-        <strong>{{ rForm.value.loadNo }}</strong>
+        <strong>{{ rForm?.value?.loadNo }}</strong>
       </div>
       <div fxFlex></div>
       <div>
@@ -31,7 +30,7 @@
             <div>Zakup</div>
             <div fxFlex></div>
             <mat-checkbox
-              [checked]="rForm.value.loadId"
+              [checked]="rForm?.value?.loadId"
               [disabled]="true"
             ></mat-checkbox>
           </mat-list-item>
@@ -39,7 +38,7 @@
             <div>TransEu (baza)</div>
             <div fxFlex></div>
             <mat-checkbox
-              [checked]="rForm.value.transEu.loadTransEuId"
+              [checked]="rForm?.value?.transEu.loadTransEuId"
               [disabled]="true"
             ></mat-checkbox>
           </mat-list-item>
@@ -47,7 +46,7 @@
             <div>TransEu (oferta)</div>
             <div fxFlex></div>
             <mat-checkbox
-              [checked]="rForm.value.transEu.transEuId"
+              [checked]="rForm?.value?.transEu.transEuId"
               [disabled]="true"
             ></mat-checkbox>
           </mat-list-item>
@@ -55,35 +54,35 @@
             <div>Sprzedaż</div>
             <div fxFlex></div>
             <mat-checkbox
-              [checked]="rForm.value.sell?.loadSellId"
+              [checked]="rForm?.value?.sell?.loadSellId"
               [disabled]="true"
             ></mat-checkbox>
           </mat-list-item>
         </mat-list>
 
         <mat-list fxFlex="50" fxFlex.xs="100" fxFlex.gt-md="33">
-          <mat-list-item *ngIf="rForm.value.sell.loadSellId">
+          <mat-list-item *ngIf="rForm?.value?.sell.loadSellId">
             <div>Wartość sprzedaży</div>
             <div fxFlex></div>
             <div>
               PLN
               <strong>{{
-                buyingInfoPrice.value.pln_value -
-                  sellingInfoPrice.value.pln_value | number: "1.2"
+                buyingInfoPrice?.value?.pln_value -
+                  sellingInfoPrice?.value?.pln_value | number: "1.2"
               }}</strong>
             </div>
           </mat-list-item>
-          <mat-list-item *ngIf="loadExtraInfo.value.invoiceBuyId">
+          <mat-list-item *ngIf="loadExtraInfo?.value?.invoiceBuyId">
             <div>Faktura zakupu</div>
             <div fxFlex></div>
             <div>
               <strong
                 [style.cursor]="'pointer'"
                 routerLink="/fakturaZakupu/{{
-                  loadExtraInfo.value.invoiceBuyId
+                  loadExtraInfo?.value?.invoiceBuyId
                 }}"
-                >{{ loadExtraInfo.value.invoiceBuyNo }} ({{
-                  loadExtraInfo.value.invoiceBuyRecived ? "OK" : "!"
+                >{{ loadExtraInfo?.value?.invoiceBuyNo }} ({{
+                  loadExtraInfo?.value?.invoiceBuyRecived ? "OK" : "!"
                 }})</strong
               >
             </div>
@@ -95,13 +94,13 @@
               <strong
                 [style.cursor]="'pointer'"
                 routerLink="/fakturaSprzedazy/{{
-                  loadExtraInfo.value.invoiceSellId
+                  loadExtraInfo?.value?.invoiceSellId
                 }}"
-                >{{ loadExtraInfo.value.invoiceSellNo }}</strong
+                >{{ loadExtraInfo?.value?.invoiceSellNo }}</strong
               >
               <button
                 (click)="invoiceSellGen()"
-                *ngIf="!loadExtraInfo.value.invoiceSellId"
+                *ngIf="!loadExtraInfo?.value?.invoiceSellId"
                 mat-mini-fab
                 matTooltip="generuj numer faktury"
               >
@@ -109,14 +108,14 @@
               </button>
             </div>
           </mat-list-item>
-          <mat-list-item *ngIf="loadExtraInfo.value.cmrRecived">
+          <mat-list-item *ngIf="loadExtraInfo?.value?.cmrRecived">
             <div>CMR</div>
             <div fxFlex></div>
             <div>
               <strong
-                >{{ loadExtraInfo.value.cmrName }},
+                >{{ loadExtraInfo?.value?.cmrName }},
                 {{
-                  loadExtraInfo.value.cmrRecivedDate | date: "yyyy-MM-dd"
+                  loadExtraInfo?.value?.cmrRecivedDate | date: "yyyy-MM-dd"
                 }}</strong
               >
             </div>
@@ -129,7 +128,7 @@
         <div>Generuj zlecenie (pdf)</div>
         <div fxFlex></div>
         <button
-          *ngIf="rForm.value.sell?.loadSellId && rForm.pristine"
+          *ngIf="rForm?.value?.sell?.loadSellId && rForm.pristine"
           mat-mini-fab
           (click)="offerGenPdf()"
         >
@@ -152,7 +151,7 @@
 
     <mat-step [stepControl]="transEu">
       <ng-template matStepLabel>TransEU</ng-template>
-      <div *ngIf="buyId.value">
+      <div *ngIf="buyId?.value">
         <app-load-trans-eu [rForm]="rForm" [fb]="fb"></app-load-trans-eu>
       </div>
     </mat-step>

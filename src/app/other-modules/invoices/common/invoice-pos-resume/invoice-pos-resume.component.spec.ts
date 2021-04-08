@@ -1,17 +1,20 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { ReactiveFormsModule } from "@angular/forms";
 
-import { InvoicePosResumeComponent } from './invoice-pos-resume.component';
+import { InvoicePosResumeComponent } from "./invoice-pos-resume.component";
 
-describe('InvoicePosResumeComponent', () => {
+describe("InvoicePosResumeComponent", () => {
   let component: InvoicePosResumeComponent;
   let fixture: ComponentFixture<InvoicePosResumeComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ InvoicePosResumeComponent ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [InvoicePosResumeComponent],
+        imports: [ReactiveFormsModule],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(InvoicePosResumeComponent);
@@ -19,7 +22,7 @@ describe('InvoicePosResumeComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     expect(component).toBeTruthy();
   });
 });

@@ -1,8 +1,14 @@
 import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { ReactiveFormsModule } from "@angular/forms";
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from "@angular/material/dialog";
 
 import { DialogDateConfirmationComponent } from "./dialog-date-confirmation";
 
-describe("PaymentRemindDialogComponent", () => {
+describe("DialogDateConfirmationComponent", () => {
   let component: DialogDateConfirmationComponent;
   let fixture: ComponentFixture<DialogDateConfirmationComponent>;
 
@@ -10,6 +16,12 @@ describe("PaymentRemindDialogComponent", () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [DialogDateConfirmationComponent],
+        imports: [ReactiveFormsModule],
+        providers: [
+          { provide: MatDialog, useValue: {} },
+          { provide: MatDialogRef, useValue: {} },
+          { provide: MAT_DIALOG_DATA, useValue: {} },
+        ],
       }).compileComponents();
     })
   );

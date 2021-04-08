@@ -1,47 +1,75 @@
 <mat-toolbar>
-    <div>Sprzedaż ładunku</div>
-    <div fxFlex></div>
-    <div>
-      <button mat-mini-fab (click)="navSave()" matTooltip="Zapisz dane w bazie" [disabled]="sell.invalid"><mat-icon>save</mat-icon></button>
-
-    </div>
-  </mat-toolbar>
+  <div>Sprzedaż ładunku</div>
+  <div fxFlex></div>
+  <div>
+    <button
+      mat-mini-fab
+      (click)="navSave()"
+      matTooltip="Zapisz dane w bazie"
+      [disabled]="sell?.invalid"
+    >
+      <mat-icon>save</mat-icon>
+    </button>
+  </div>
+</mat-toolbar>
 
 <mat-accordion>
-<!-- Zleceniodawca, dane firmy, osoba kontaktowa  -->
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-                Zleceniodawca, dane firmy, osoby do kontaktu
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <app-company-card [rForm]="principal" [fb]="fb" [placeholder]="'Sprzedawca'"></app-company-card>
+  <!-- Zleceniodawca, dane firmy, osoba kontaktowa  -->
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Zleceniodawca, dane firmy, osoby do kontaktu
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <app-company-card
+      [rForm]="principal"
+      [fb]="fb"
+      [placeholder]="'Sprzedawca'"
+    ></app-company-card>
 
-          <mat-form-field fxFill>
-            <mat-select #sel placeholder="Osoba do kontaktu" [(ngModel)]="contact" multiple [compareWith]="compareWith">
-              <mat-option *ngFor="let person of principalEmployeeList.value" [value]="person">
-                  {{person.given_name}} {{person.family_name}} ({{person.trans_id}})
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-
-        </mat-expansion-panel>
-    <!-- Zleceniobiorca. cena, data zakupu  -->
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-          <mat-panel-title fxLayout fxLayoutAlign="space-between center">
-              <div>
-                Zleceniobiorca. cena, data zakupu
-              </div>
-              <!-- <mat-icon *ngIf="sellSellingInfo.invalid" color="warn">info</mat-icon> -->
-            </mat-panel-title>
-      </mat-expansion-panel-header>
-      <mat-form-field [formGroup]="sellingInfo">
-        <input type="date" matInput formControlName="date" placeholder="Data sprzedaży">
-      </mat-form-field>
-      <app-currency-nbp [rForm]="sellingPrice" [placeholder]="'Cena sprzedaży'"></app-currency-nbp>
-      <app-company-card [rForm]="sellingCompany" [placeholder]="'Nabywca, wyszukaj dane'" [fb]="fb"></app-company-card>
-      <app-payment-terms [rForm]="sellingPaymentTerms"></app-payment-terms>
-    </mat-expansion-panel>
-  </mat-accordion>
+    <mat-form-field fxFill>
+      <mat-select
+        #sel
+        placeholder="Osoba do kontaktu"
+        [(ngModel)]="contact"
+        multiple
+        [compareWith]="compareWith"
+      >
+        <mat-option
+          *ngFor="let person of principalEmployeeList?.value"
+          [value]="person"
+        >
+          {{ person.given_name }} {{ person.family_name }} ({{
+            person.trans_id
+          }})
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </mat-expansion-panel>
+  <!-- Zleceniobiorca. cena, data zakupu  -->
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title fxLayout fxLayoutAlign="space-between center">
+        <div>Zleceniobiorca. cena, data zakupu</div>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-form-field [formGroup]="sellingInfo">
+      <input
+        type="date"
+        matInput
+        formControlName="date"
+        placeholder="Data sprzedaży"
+      />
+    </mat-form-field>
+    <app-currency-nbp
+      [rForm]="sellingPrice"
+      [placeholder]="'Cena sprzedaży'"
+    ></app-currency-nbp>
+    <app-company-card
+      [rForm]="sellingCompany"
+      [placeholder]="'Nabywca, wyszukaj dane'"
+      [fb]="fb"
+    ></app-company-card>
+    <app-payment-terms [rForm]="sellingPaymentTerms"></app-payment-terms>
+  </mat-expansion-panel>
+</mat-accordion>

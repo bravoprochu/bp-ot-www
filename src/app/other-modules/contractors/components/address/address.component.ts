@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from "@angular/core";
-import { FormGroup } from "@angular/forms";
+import { FormBuilder } from "@angular/forms";
+import { ContractorService } from "../../services/contractor.service";
 
 @Component({
   selector: "app-address",
@@ -7,13 +8,16 @@ import { FormGroup } from "@angular/forms";
   styleUrls: ["./address.component.css"],
 })
 export class AddressComponent implements OnInit {
-  @Input() formGroup: FormGroup;
+  @Input() formGroup = this.contractorService.formAddressGroup(this.fb);
 
-  constructor() {}
+  constructor(
+    private fb: FormBuilder,
+    private contractorService: ContractorService
+  ) {}
 
   ngOnInit() {
     let country = this.formGroup.get("country");
-    country.valueChanges.subscribe((s) => {
+    country?.valueChanges.subscribe((s) => {
       if (s != null && s != s.toUpperCase()) {
         country.patchValue(s.toUpperCase());
       }

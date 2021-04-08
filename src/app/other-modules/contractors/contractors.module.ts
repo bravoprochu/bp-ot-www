@@ -23,11 +23,11 @@ import { PendingIndicatorModule } from "../pending-indicator/pending-indicator.m
 import { ContractorsRoutingModule } from "./contractors-routing.module";
 import { ContractorService } from "./services/contractor.service";
 import { DragDropOptionsModule } from "../drag-drop-options/drag-drop-options.module";
-import { DialogConfirmations } from "../dialog-confirmations/dialog-confirmations.module";
+import { DialogConfirmationsModule } from "../dialog-confirmations/dialog-confirmations.module";
 import { NavListModule } from "../nav-list/nav-list.module";
 
 const IMPORT_EXPORT_MODULES = [
-  DialogConfirmations,
+  DialogConfirmationsModule,
   DragDropOptionsModule,
   FlexLayoutModule,
   MatAutocompleteModule,

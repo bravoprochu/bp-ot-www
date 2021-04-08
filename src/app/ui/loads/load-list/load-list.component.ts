@@ -1,13 +1,18 @@
 import { LoadDataTableSource } from "../services/load-data-table-source";
 import { CommonFunctionsService } from "../../../services/common-functions.service";
 import { Subject } from "rxjs";
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { IListObj } from "app/shared/ilist-obj";
 import { ITitle } from "app/shared/ititle";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MatSlider } from "@angular/material/slider";
 import { LoadService } from "app/ui/loads/services/load.service";
-import { AfterViewInit } from "@angular/core/src/metadata/lifecycle_hooks";
 import { takeUntil } from "rxjs/operators";
 
 @Component({
@@ -30,12 +35,11 @@ export class LoadListComponent
     private df: LoadService,
     private cf: CommonFunctionsService
   ) {}
-
+  dataSource: LoadDataTableSource;
   navTitle: ITitle = {
     subtitle: "Lista zapisanych",
     title: "Ładunki",
   };
-
   isPending: boolean = true;
   dataObj = [];
   contrahentsIds: number[] = [];
@@ -59,8 +63,6 @@ export class LoadListComponent
     this.initData();
   }
 
-  dataSource: LoadDataTableSource;
-
   ngAfterViewInit(): void {}
 
   createNew() {
@@ -76,11 +78,6 @@ export class LoadListComponent
       .connect()
       .pipe(takeUntil(this.isDestroyed$))
       .subscribe((s) => {
-        this.cf.toastMake(
-          `Pobrano dane, razem: ${s.length}`,
-          "initData",
-          this.actRoute
-        );
         this.isPending = false;
       });
   }

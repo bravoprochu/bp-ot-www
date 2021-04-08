@@ -7,7 +7,7 @@ import {
   Output,
 } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
@@ -22,10 +22,9 @@ import { IDialogTakNie } from "app/other-modules/dialog-confirmations/interfaces
 })
 export class NavDetailComponent implements OnInit, OnDestroy {
   isDestroyed$ = new Subject<boolean>() as Subject<boolean>;
-
   @Input() dialogData?: any;
   @Input() isDisabled = false;
-  @Input() rForm: FormGroup;
+  @Input() rForm?: FormGroup;
   @Input() public navDetailInfo: INavDetailInfo;
   @Output() navGetCode = new EventEmitter();
   @Output() navCancel = new EventEmitter();
@@ -56,7 +55,7 @@ export class NavDetailComponent implements OnInit, OnDestroy {
   }
 
   getCode() {
-    console.log(JSON.stringify(this.rForm.value));
+    console.log(JSON.stringify(this.rForm?.value));
   }
 
   goBack() {
@@ -96,7 +95,7 @@ export class NavDetailComponent implements OnInit, OnDestroy {
 
   get dialogKeyValid(): boolean {
     if (this.dialogData && this.dialogData["componentKeyName"]) {
-      return this.rForm.get(this.dialogData["componentKeyName"]).value > 0;
+      return this.rForm?.get(this.dialogData["componentKeyName"]).value > 0;
     }
   }
 }

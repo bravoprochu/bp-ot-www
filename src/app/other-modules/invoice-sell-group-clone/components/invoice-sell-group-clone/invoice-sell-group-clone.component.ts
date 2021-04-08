@@ -22,15 +22,15 @@ import { DialogConfirmationsService } from "app/other-modules/dialog-confirmatio
   styleUrls: ["./invoice-sell-group-clone.component.css"],
 })
 export class InvoiceSellGroupCloneComponent implements OnInit, OnDestroy {
-  isDestroyed$: Subject<boolean>;
-  invoiceLine: FormGroup;
-  invoiceList: IInvoiceSellLineList[] = [];
-  invoiceListRest: IInvoiceSellLineList[] = [];
-  isPending: boolean = true;
+  isDestroyed$ = new Subject<boolean>();
+  invoiceLine = new FormGroup({});
+  invoiceList = [] as IInvoiceSellLineList[];
+  invoiceListRest = [] as IInvoiceSellLineList[];
+  isPending = true;
   productName = new FormControl(null);
   dateOfSell = new FormControl(this.momentService.getToday());
   dateOfIssue = new FormControl(this.momentService.getToday());
-  monthsAgo: FormControl;
+  monthsAgo = new FormControl(1);
 
   constructor(
     private dialogConfirmationService: DialogConfirmationsService,
@@ -46,8 +46,6 @@ export class InvoiceSellGroupCloneComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.isDestroyed$ = new Subject<boolean>();
-    this.monthsAgo = new FormControl(1);
     this.initData();
   }
 

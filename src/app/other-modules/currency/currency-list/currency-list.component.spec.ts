@@ -1,17 +1,24 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { HttpClientModule } from "@angular/common/http";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { MomentCommonModule } from "app/other-modules/moment-common/moment-common.module";
+import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
+import { CurrencyCommonService } from "../currency-common.service";
 
-import { CurrencyListComponent } from './currency-list.component';
+import { CurrencyListComponent } from "./currency-list.component";
 
-describe('CurrencyListComponent', () => {
+describe("CurrencyListComponent", () => {
   let component: CurrencyListComponent;
   let fixture: ComponentFixture<CurrencyListComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ CurrencyListComponent ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [CurrencyListComponent],
+        imports: [HttpClientModule, MomentCommonModule],
+        providers: [CurrencyCommonService, MomentCommonService],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CurrencyListComponent);
@@ -19,7 +26,7 @@ describe('CurrencyListComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

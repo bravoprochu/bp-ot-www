@@ -1,4 +1,9 @@
-import { FormControl, FormGroup, Validators } from "@angular/forms";
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from "@angular/forms";
 import {
   Component,
   Input,
@@ -16,7 +21,6 @@ import {
   filter,
 } from "rxjs/operators";
 import { Subject, empty } from "rxjs";
-import { ActivatedRoute } from "@angular/router";
 import { InvoiceSellService } from "../../invoice-sell/services/invoice-sell.service";
 import { IInvoicePos } from "../../interfaces/iinvoice-pos";
 import { InvoiceCommonFunctionsService } from "../invoice-common-functions.service";
@@ -28,7 +32,7 @@ import { ToastMakeService } from "app/other-modules/toast-make/toast-make.servic
   styleUrls: ["./invoice-pos.component.css"],
 })
 export class InvoicePosComponent implements OnInit, OnDestroy {
-  @Input() rForm: FormGroup;
+  @Input() rForm = this.invoiceCommonService.formInvoiceLineGroupGroup(this.fb);
   @Input() isCorrection: FormControl;
   @Output() remove = new EventEmitter();
   @Output() updated = new EventEmitter();
@@ -38,36 +42,36 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
   posName: FormControl;
   posPkwiu: FormControl;
 
+  constructor(
+    private invoiceCommonService: InvoiceCommonFunctionsService,
+    private df: InvoiceSellService,
+    private fb: FormBuilder,
+    private toastService: ToastMakeService
+  ) {}
+
   ngOnDestroy(): void {
     this.isDestroyed$.next(true);
     this.isDestroyed$.complete();
     this.isDestroyed$.unsubscribe();
   }
 
-  constructor(
-    private invoiceCommonService: InvoiceCommonFunctionsService,
-    private df: InvoiceSellService,
-    private actRoute: ActivatedRoute,
-    private toastService: ToastMakeService
-  ) {}
-
   ngOnInit() {
-    this.posName = new FormControl(this.rForm.get("current.name").value);
-    this.posPkwiu = new FormControl(this.rForm.get("current.pkwiu").value);
+    this.posName = new FormControl(this.rForm?.get("current.name")?.value);
+    this.posPkwiu = new FormControl(this.rForm?.get("current.pkwiu")?.value);
     this.initVatValueWatch();
 
-    this.currentQuantity.valueChanges
+    this.currentQuantity?.valueChanges
       .pipe(
         takeUntil(this.isDestroyed$),
         merge(
-          this.currentUnitPrice.valueChanges,
-          this.currentVatRate.valueChanges
+          this.currentUnitPrice?.valueChanges,
+          this.currentVatRate?.valueChanges
         ),
         debounceTime(1000),
         switchMap((sw) => {
-          if (this.rForm.valid) {
+          if (this.rForm?.valid) {
             return this.df
-              .calcLineGroup(this.rForm.value)
+              .calcLineGroup(this.rForm?.value)
               .pipe(takeUntil(this.isDestroyed$));
           } else {
             return empty();
@@ -76,15 +80,15 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
       )
       .subscribe(
         (_data: any) => {
-          this.rForm.setValue(_data, { emitEvent: false });
+          this.rForm?.setValue(_data, { emitEvent: false });
           this.updated.emit();
-          this.rForm.markAsDirty();
+          this.rForm?.markAsDirty();
         },
         (err) => console.log("posCalcGroup error", err),
         () => console.log("posCalcGroup finish..")
       );
 
-    this.posName.valueChanges
+    this.posName?.valueChanges
       .pipe(
         takeUntil(this.isDestroyed$),
         debounceTime(1000),
@@ -92,10 +96,10 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
       )
       .subscribe((_data: any) => {
         this.currentGroup.get("name").setValue(_data, { emitEvent: false });
-        this.rForm.markAsDirty();
+        this.rForm?.markAsDirty();
       });
 
-    this.posPkwiu.valueChanges
+    this.posPkwiu?.valueChanges
       .pipe(
         takeUntil(this.isDestroyed$),
         debounceTime(1000),
@@ -103,12 +107,12 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
       )
       .subscribe((_data: any) => {
         this.currentGroup.get("pkwiu").setValue(_data, { emitEvent: false });
-        this.rForm.markAsDirty();
+        this.rForm?.markAsDirty();
       });
   }
 
   initVatValueWatch() {
-    this.currentVatRate.valueChanges
+    this.currentVatRate?.valueChanges
       .pipe(
         takeUntil(this.isDestroyed$),
         debounceTime(200),
@@ -186,7 +190,7 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
       form.get("vat_value").setValue(null, { emitEvent: false });
       form.get("vat_unit_value").setValue(null, { emitEvent: false });
     }
-    this.rForm.markAsDirty();
+    this.rForm?.markAsDirty();
   }
 
   positionListCheckChanges(): void {
@@ -233,87 +237,87 @@ export class InvoicePosComponent implements OnInit, OnDestroy {
   //#region getters
 
   get correctionsGroup(): FormGroup {
-    return <FormGroup>this.rForm.get("corrections");
+    return this.rForm.get("corrections") as FormGroup;
   }
   get correctionsBruttoValue(): FormControl {
-    return <FormControl>this.rForm.get("corrections.brutto_value");
+    return this.rForm.get("corrections.brutto_value") as FormControl;
   }
   get correctionsNettoValue(): FormControl {
-    return <FormControl>this.rForm.get("corrections.netto_value");
+    return this.rForm.get("corrections.netto_value") as FormControl;
   }
   get correctionsQuantity(): FormControl {
-    return <FormControl>this.rForm.get("corrections.quantity");
+    return this.rForm.get("corrections.quantity") as FormControl;
   }
   get correctionsUnitPrice(): FormControl {
-    return <FormControl>this.rForm.get("corrections.unit_price");
+    return this.rForm.get("corrections.unit_price") as FormControl;
   }
   get correctionsVatUnitValue(): FormControl {
-    return <FormControl>this.rForm.get("corrections.vat_unit_value");
+    return this.rForm.get("corrections.vat_unit_value") as FormControl;
   }
 
   get correctionsVatValue(): FormControl {
-    return <FormControl>this.rForm.get("corrections.vat_value");
+    return this.rForm.get("corrections.vat_value") as FormControl;
   }
 
   get correctionInfo(): FormControl {
-    return <FormControl>this.rForm.get("current.correctionInfo");
+    return this.rForm.get("current.correctionInfo") as FormControl;
   }
 
   get currentGroup(): FormGroup {
-    return <FormGroup>this.rForm.get("current");
+    return this.rForm.get("current") as FormGroup;
   }
 
   get currentBruttoValue(): FormControl {
-    return <FormControl>this.rForm.get("current.brutto_value");
+    return this.rForm.get("current.brutto_value") as FormControl;
   }
 
   get currentIsCorrected(): FormControl {
-    return <FormControl>this.rForm.get("current.isCorrected");
+    return this.rForm.get("current.isCorrected") as FormControl;
   }
 
   get currentNettoValue(): FormControl {
-    return <FormControl>this.rForm.get("current.netto_value");
+    return this.rForm.get("current.netto_value") as FormControl;
   }
   get currentQuantity(): FormControl {
-    return <FormControl>this.rForm.get("current.quantity");
+    return this.rForm.get("current.quantity") as FormControl;
   }
   get currentUnitPrice(): FormControl {
-    return <FormControl>this.rForm.get("current.unit_price");
+    return this.rForm.get("current.unit_price") as FormControl;
   }
   get currentVatUnitValue(): FormControl {
-    return <FormControl>this.rForm.get("current.vat_unit_value");
+    return this.rForm.get("current.vat_unit_value") as FormControl;
   }
   get currentVatRate(): FormControl {
-    return <FormControl>this.rForm.get("current.vat_rate");
+    return this.rForm.get("current.vat_rate") as FormControl;
   }
   get currentVatValue(): FormControl {
-    return <FormControl>this.rForm.get("current.vat_value");
+    return this.rForm.get("current.vat_value") as FormControl;
   }
 
   get originalGroup(): FormGroup {
-    return <FormGroup>this.rForm.get("original");
+    return this.rForm.get("original") as FormGroup;
   }
 
   get originalBruttoValue(): FormControl {
-    return <FormControl>this.rForm.get("original.brutto_value");
+    return this.rForm.get("original.brutto_value") as FormControl;
   }
 
   get originalNettoValue(): FormControl {
-    return <FormControl>this.rForm.get("original.netto_value");
+    return this.rForm.get("original.netto_value") as FormControl;
   }
 
   get originalQuantity(): FormControl {
-    return <FormControl>this.rForm.get("original.quantity");
+    return this.rForm.get("original.quantity") as FormControl;
   }
   get originalUnitPrice(): FormControl {
-    return <FormControl>this.rForm.get("original.unit_price");
+    return this.rForm.get("original.unit_price") as FormControl;
   }
   get originalVatUnitValue(): FormControl {
-    return <FormControl>this.rForm.get("original.vat_unit_value");
+    return this.rForm.get("original.vat_unit_value") as FormControl;
   }
 
   get originalVatValue(): FormControl {
-    return <FormControl>this.rForm.get("original.vat_value");
+    return this.rForm.get("original.vat_value") as FormControl;
   }
 
   //#endregion

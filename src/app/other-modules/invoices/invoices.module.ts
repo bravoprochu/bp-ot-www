@@ -34,7 +34,7 @@ import { NavListModule } from "../nav-list/nav-list.module";
 import { InvoiceCommonFunctionsService } from "./common/invoice-common-functions.service";
 import { InvoiceBuyListComponent } from "./invoice-buy/invoice-buy-list/invoice-buy-list.component";
 import { InvoiceBuyComponent } from "./invoice-buy/invoice-buy/invoice-buy.component";
-import { DialogConfirmations } from "../dialog-confirmations/dialog-confirmations.module";
+import { DialogConfirmationsModule } from "../dialog-confirmations/dialog-confirmations.module";
 import { MomentCommonModule } from "../moment-common/moment-common.module";
 import { CreationInfoModule } from "../creation-info/creation-info.module";
 
@@ -43,7 +43,7 @@ const IMPORT_EXPORT_MODULES = [
   CreationInfoModule,
   CurrencyModule,
   DateRangeModule,
-  DialogConfirmations,
+  DialogConfirmationsModule,
   DragDropOptionsModule,
   FlexLayoutModule,
   FormsModule,

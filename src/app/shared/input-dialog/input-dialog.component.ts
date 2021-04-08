@@ -1,39 +1,39 @@
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from "@angular/forms";
+import { Component, Inject, OnInit } from "@angular/core";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 
 @Component({
-  selector: 'app-input-dialog',
-  templateUrl: './input-dialog.component.html',
-  styleUrls: ['./input-dialog.component.css']
+  selector: "app-input-dialog",
+  templateUrl: "./input-dialog.component.html",
+  styleUrls: ["./input-dialog.component.css"],
 })
 export class InputDialogComponent implements OnInit {
-  
-  
+  rForm: FormGroup;
+
   constructor(
     private dialogRef: MatDialogRef<InputDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder
-    ) { 
-      this.fb=new FormBuilder();
-    }
-
-  rForm:FormGroup
+  ) {
+    this.fb = new FormBuilder();
+  }
 
   ngOnInit() {
-    this.rForm=this.fb.group({
-      "inputValue":[null, Validators.required]
+    this.rForm = this.fb.group({
+      inputValue: [null, Validators.required],
     });
   }
 
-  onNoClick(){
+  onNoClick() {
     this.dialogRef.close();
   }
 
-  onYesClick(){
-    this.dialogRef.close(this.rForm.get('inputValue').value);
+  onYesClick() {
+    this.dialogRef.close(this.rForm.get("inputValue").value);
   }
-
-
-
 }

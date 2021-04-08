@@ -1,17 +1,26 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { ContractorService } from "app/other-modules/contractors/services/contractor.service";
+import { CommonFunctionsService } from "app/services/common-functions.service";
+import { LoadService } from "../services/load.service";
 
-import { LoadSellComponent } from './load-sell.component';
+import { LoadSellComponent } from "./load-sell.component";
 
-describe('LoadSellComponent', () => {
+describe("LoadSellComponent", () => {
   let component: LoadSellComponent;
   let fixture: ComponentFixture<LoadSellComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ LoadSellComponent ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [LoadSellComponent],
+        providers: [
+          { provide: CommonFunctionsService, useValue: {} },
+          { provide: LoadService, useValue: {} },
+          { provide: ContractorService, useValue: {} },
+        ],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LoadSellComponent);
@@ -19,7 +28,7 @@ describe('LoadSellComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

@@ -41,4 +41,4 @@ const IMPORT_EXPORT_MODULES = [
     DialogConfirmationsService,
   ],
 })
-export class DialogConfirmations {}
+export class DialogConfirmationsModule {}

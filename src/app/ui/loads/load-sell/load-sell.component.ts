@@ -46,20 +46,20 @@ export class LoadSellComponent implements OnInit, OnDestroy {
   }
 
   initForm() {
-    this.contact = this.rForm.value.sell.contactPersonsList;
-    this.sel.selectionChange
+    this.contact = this.rForm?.value.sell.contactPersonsList;
+    this.sel?.selectionChange
       .pipe(takeUntil(this.isDestroyed$))
       .subscribe((s) => {
         this.contactPersonsList.controls = [];
-        s.value.forEach((emp) => {
+        s?.value.forEach((emp) => {
           this.contactPersonsList.push(
             this.contractorService.formEmployeeGroup(this.fb)
           );
         });
-        this.contactPersonsList.patchValue(s.value, { emitEvent: true });
+        this.contactPersonsList.patchValue(s?.value, { emitEvent: true });
       });
 
-    this.rForm.valueChanges
+    this.rForm?.valueChanges
       .pipe(takeUntil(this.isDestroyed$))
       .subscribe((s: ILoad) => {
         this.contact = s.sell.contactPersonsList;
@@ -67,47 +67,47 @@ export class LoadSellComponent implements OnInit, OnDestroy {
   }
 
   navSave(): void {
-    let id = this.rForm.value.loadId != null ? this.rForm.value.loadId : 0;
+    let id = this.rForm?.value.loadId != null ? this.rForm?.value.loadId : 0;
     this.df
-      .updateSell(id, this.rForm.value)
+      .updateSell(id, this.rForm?.value)
       .pipe(
         switchMap((sw) => this.df.getById(id).pipe(take(1))),
         take(1)
       )
       .subscribe((s) => {
-        this.cf.patchLoad(s, this.rForm, this.fb, this.isDestroyed$);
+        this.cf.patchLoad(s, this.rForm!, this.fb, this.isDestroyed$);
       });
   }
 
   get contactPersonsList(): FormArray {
-    return <FormArray>this.rForm.get("sell.contactPersonsList");
+    return <FormArray>this.rForm?.get("sell.contactPersonsList");
   }
 
   get principal(): FormGroup {
-    return <FormGroup>this.rForm.get("sell.principal");
+    return <FormGroup>this.rForm?.get("sell.principal");
   }
 
   get principalEmployeeList(): FormArray {
-    return <FormArray>this.rForm.get("sell.principal.employeeList");
+    return <FormArray>this.rForm?.get("sell.principal.employeeList");
   }
 
   get sell(): FormGroup {
-    return <FormGroup>this.rForm.get("sell");
+    return <FormGroup>this.rForm?.get("sell");
   }
 
   get sellingCompany(): FormGroup {
-    return <FormGroup>this.rForm.get("sell.selling_info.company");
+    return <FormGroup>this.rForm?.get("sell.selling_info.company");
   }
 
   get sellingInfo(): FormGroup {
-    return <FormGroup>this.rForm.get("sell.selling_info");
+    return <FormGroup>this.rForm?.get("sell.selling_info");
   }
 
   get sellingPaymentTerms(): FormGroup {
-    return <FormGroup>this.rForm.get("sell.selling_info.paymentTerms");
+    return <FormGroup>this.rForm?.get("sell.selling_info.paymentTerms");
   }
 
   get sellingPrice() {
-    return this.rForm.get("sell.selling_info.price");
+    return this.rForm?.get("sell.selling_info.price");
   }
 }

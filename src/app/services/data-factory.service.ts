@@ -1,20 +1,17 @@
 import { TokenService } from "./token.service";
 import { Injectable } from "@angular/core";
-import { empty, EmptyError, Observable, of } from "rxjs";
+import { empty, Observable } from "rxjs";
 import {
   HttpClient,
   HttpErrorResponse,
   HttpHeaders,
-  HttpResponse,
 } from "@angular/common/http";
 import { IDateRange } from "app/shared/interfaces/i-date-range";
-import { catchError, map, take } from "rxjs/operators";
-import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
+import { catchError, take } from "rxjs/operators";
 
-@Injectable()
 export class DataFactoryService {
   constructor(
-    private url: string,
+    private url = " ",
     protected http: HttpClient,
     protected tokenService: TokenService
   ) {}

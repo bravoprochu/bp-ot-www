@@ -1,11 +1,16 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from "@angular/core/testing";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 
-import { ToastMakeService } from './toast-make.service';
+import { ToastMakeService } from "./toast-make.service";
 
-describe('ToastMakeService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+describe("ToastMakeService", () => {
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [MatSnackBarModule],
+    })
+  );
 
-  it('should be created', () => {
+  it("should be created", () => {
     const service: ToastMakeService = TestBed.get(ToastMakeService);
     expect(service).toBeTruthy();
   });

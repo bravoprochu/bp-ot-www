@@ -64,49 +64,49 @@ export class LoadComponent
   }
 
   get buy(): FormGroup {
-    return <FormGroup>this.rForm.get("buy");
+    return <FormGroup>this.rForm?.get("buy");
   }
 
   get buyId(): FormControl {
-    return <FormControl>this.rForm.get("buy.loadBuyId");
+    return <FormControl>this.rForm?.get("buy.loadBuyId");
   }
   get buyingInfoPrice() {
-    return this.rForm.get("buy.buying_info.price");
+    return this.rForm?.get("buy.buying_info.price");
   }
 
   get creationInfo(): FormControl {
-    return <FormControl>this.rForm.get("creationInfo");
+    return <FormControl>this.rForm?.get("creationInfo");
   }
   get isTransEu(): boolean {
-    return this.rForm.value.transEu;
+    return this.rForm?.value.transEu;
   }
 
   get isSell(): boolean {
-    return this.rForm.value.sell.loadSellId;
+    return this.rForm?.value.sell.loadSellId;
   }
 
   get isSellInvoiceSell(): boolean {
-    return this.rForm.value.sell;
+    return this.rForm?.value.sell;
   }
 
   get loadExtraInfo(): FormGroup {
-    return <FormGroup>this.rForm.get("loadExtraInfo");
+    return <FormGroup>this.rForm?.get("loadExtraInfo");
   }
 
   get sell(): FormGroup {
-    return <FormGroup>this.rForm.get("sell");
+    return <FormGroup>this.rForm?.get("sell");
   }
 
   get sellingInfoPrice() {
-    return this.rForm.get("sell.selling_info.price");
+    return this.rForm?.get("sell.selling_info.price");
   }
 
   get transEu(): FormGroup {
-    return <FormGroup>this.rForm.get("transEu");
+    return <FormGroup>this.rForm?.get("transEu");
   }
 
   get buyingPrice() {
-    return this.rForm.get("buy.buying_info.price");
+    return this.rForm?.get("buy.buying_info.price");
   }
 
   initForm(): void {
@@ -125,11 +125,6 @@ export class LoadComponent
         .getById(this.routeId)
         .pipe(take(1))
         .subscribe((s: ILoad) => {
-          this.cf.toastMake(
-            `Pobrano dane ${s.loadNo} [id: ${s.loadId}]`,
-            "initData",
-            this.actRoute
-          );
           this.cf.patchLoad(s, this.rForm, this.fb, this.isDestroyed$);
           this.isPending = false;
         });
@@ -140,7 +135,7 @@ export class LoadComponent
 
   invoiceSellGen() {
     this.isPending = true;
-    let id = this.rForm.value.loadId;
+    let id = this.rForm?.value.loadId;
     this.df
       .loadInvoiceSellGen(id)
       .pipe(
@@ -150,36 +145,31 @@ export class LoadComponent
       )
 
       .subscribe((s) => {
-        this.cf.toastMake(
-          `Utworzono fakturę sprzedaży`,
-          "invoiceSellGen",
-          this.actRoute
-        );
         this.cf.patchLoad(s, this.rForm, this.fb, this.isDestroyed$);
         this.isPending = false;
       });
   }
 
   public ngAfterViewInit(): void {
-    this.rForm.valueChanges
+    this.rForm?.valueChanges
       .pipe(
         delay(1000),
         debounceTime(1000),
-        takeWhile(() => this.isDestroyed$ && this.rForm.value.sell)
+        takeWhile(() => this.isDestroyed$ && this.rForm?.value.sell)
       )
 
       .subscribe(() => {
-        if (this.rForm.valid) {
+        if (this.rForm?.valid) {
         }
       });
   }
 
   formUpdate() {
-    this.rForm.markAsDirty();
+    this.rForm?.markAsDirty();
   }
 
   navGetCode(): void {
-    console.log(JSON.stringify(this.rForm.value));
+    console.log(JSON.stringify(this.rForm?.value));
   }
 
   navCancel(): void {}
@@ -193,7 +183,7 @@ export class LoadComponent
 
   offerGenPdf() {
     this.df
-      .genPdf(this.rForm.value)
+      .genPdf(this.rForm?.value)
       .pipe(
         map((res) => {
           return new Blob([res, "application/pdf"], {
@@ -206,7 +196,7 @@ export class LoadComponent
       .subscribe((s) => {
         saveAs(
           s,
-          "Zlecenie przewozowe nr " + this.rForm.get("loadNo").value + ".pdf"
+          "Zlecenie przewozowe nr " + this.rForm?.get("loadNo").value + ".pdf"
         );
       });
   }

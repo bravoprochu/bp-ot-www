@@ -23,12 +23,15 @@ import { ToastMakeService } from "app/other-modules/toast-make/toast-make.servic
 export class InvoiceBuyListComponent implements OnInit, OnDestroy, IListObj {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-
-  public ngOnDestroy(): void {
-    this.isDestroyed$.next(true);
-    this.isDestroyed$.complete();
-    this.isDestroyed$.unsubscribe();
-  }
+  navTitle: ITitle = <ITitle>{
+    subtitle: "Data sprzedaży ",
+    title: "Faktury zakupów",
+  };
+  dateRange: IDateRange;
+  isDestroyed$: Subject<boolean>;
+  isPending: boolean;
+  dataSource: any;
+  displayedColumns: string[];
 
   constructor(
     private invoiceCommonService: InvoiceCommonFunctionsService,
@@ -36,6 +39,12 @@ export class InvoiceBuyListComponent implements OnInit, OnDestroy, IListObj {
     private router: Router,
     private toastService: ToastMakeService
   ) {}
+
+  ngOnDestroy(): void {
+    this.isDestroyed$.next(true);
+    this.isDestroyed$.complete();
+    this.isDestroyed$.unsubscribe();
+  }
 
   ngOnInit() {
     this.dateRange = this.invoiceCommonService.dateRangeLastQuarter();
@@ -54,34 +63,24 @@ export class InvoiceBuyListComponent implements OnInit, OnDestroy, IListObj {
     ];
   }
 
-  public navTitle: ITitle = <ITitle>{
-    subtitle: "Data sprzedaży ",
-    title: "Faktury zakupów",
-  };
-  dateRange: IDateRange;
-  isDestroyed$: Subject<boolean>;
-  isPending: boolean;
-  dataSource: any;
-  displayedColumns: string[];
-
-  public createNew(): void {
+  createNew(): void {
     this.router.navigate(["/invoices/fakturaZakupu", 0]);
   }
-  public edit(id: number) {
+  edit(id: number) {
     this.router.navigate(["/invoices/fakturaZakupu", id]);
   }
 
-  public initData(dateRange: IDateRange): void {
+  initData(dateRange: IDateRange): void {
     this.df
       .getAll(dateRange)
       .pipe(takeUntil(this.isDestroyed$))
       .subscribe((s) => {
         this.dataSource = new MatTableDataSource(s);
         this.toastService.toastMake(
-          `Pobrano dane dla zakresu od ${(<Moment>dateRange.dateStart).format(
-            DEFAULT_APP_VALUES.dateLocalFormat
-          )} do ${(<Moment>dateRange.dateEnd).format(
-            DEFAULT_APP_VALUES.dateLocalFormat
+          `Pobrano dane dla zakresu od ${(<Moment>dateRange?.dateStart).format(
+            DEFAULT_APP_VALUES?.dateLocalFormat
+          )} do ${(<Moment>dateRange?.dateEnd).format(
+            DEFAULT_APP_VALUES?.dateLocalFormat
           )}, razem: ${s.length}`,
           "initData"
         );
