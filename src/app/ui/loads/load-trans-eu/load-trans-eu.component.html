@@ -2,28 +2,67 @@
   <div>Przesłanie danych ładunku do serwera TransEU</div>
   <div fxFlex></div>
   <div *ngIf="!sell.value.loadSellId">
-    <button mat-mini-fab (click)="navSave()" matTooltip="Zapisz dane w bazie" [disabled]="sellingCompany.invalid || price.invalid || contactPersonsList.controls.length==0"><mat-icon>save</mat-icon></button>
-    <button mat-mini-fab (click)="navPublish()" matTooltip="Wyślij dane do TransEu" [disabled]="sellingCompany.invalid || price.invalid || contactPersonsList.controls.length==0 || transEuId.value"><mat-icon>publish</mat-icon></button>
+    <button
+      mat-mini-fab
+      (click)="navSave()"
+      matTooltip="Zapisz dane w bazie"
+      [disabled]="
+        sellingCompany.invalid ||
+        price.invalid ||
+        contactPersonsList.controls.length == 0
+      "
+    >
+      <mat-icon>save</mat-icon>
+    </button>
+    <button
+      mat-mini-fab
+      (click)="navPublish()"
+      matTooltip="Wyślij dane do TransEu"
+      [disabled]="
+        sellingCompany.invalid ||
+        price.invalid ||
+        contactPersonsList.controls.length == 0 ||
+        transEuId.value
+      "
+    >
+      <mat-icon>publish</mat-icon>
+    </button>
   </div>
 </mat-toolbar>
 
-
 <!-- Dane przesłane do TransEU -->
-<!-- <div>Prześlij dane ładunku do serwera TransEU</div>  
+<!-- <div>Prześlij dane ładunku do serwera TransEU</div>
 <div>Dane przesłane do TransEU</div> -->
-<app-currency-nbp [rForm]="transEu.get('price')" [placeholder]="'Cena sprzedaży na TransEu'"></app-currency-nbp>
 
-<app-company-card [rForm]="sellingCompany" [fb]="fb" [placeholder]="'Sprzedawca'"></app-company-card>
+<app-company-card
+  [rForm]="sellingCompany"
+  [fb]="fb"
+  [placeholder]="'Sprzedawca'"
+></app-company-card>
 
-  <mat-form-field fxFill>
-    <mat-select #sel placeholder="Osoba do kontaktu" [(ngModel)]="contact" multiple [compareWith]="compareWith">
-      <mat-option *ngFor="let person of sellingCompany.get('employeeList').value" [value]="person">
-          {{person.given_name}} {{person.family_name}} ({{person.trans_id}})
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+<mat-form-field fxFill>
+  <mat-select
+    #sel
+    placeholder="Osoba do kontaktu"
+    [(ngModel)]="contact"
+    multiple
+    [compareWith]="compareWith"
+  >
+    <mat-option
+      *ngFor="let person of sellingCompany.get('employeeList').value"
+      [value]="person"
+    >
+      {{ person.given_name }} {{ person.family_name }} ({{ person.trans_id }})
+    </mat-option>
+  </mat-select>
+</mat-form-field>
 
-  <mat-form-field fxFill>
-      <textarea matInput matTextareaAutosize placeholder="Description" [ngModel]="loadTransEu.description"></textarea>
-  </mat-form-field>
-  <pre>{{loadTransEu | json}}</pre>
+<mat-form-field fxFill>
+  <textarea
+    matInput
+    matTextareaAutosize
+    placeholder="Description"
+    [ngModel]="loadTransEu.description"
+  ></textarea>
+</mat-form-field>
+<pre>{{ loadTransEu | json }}</pre>
