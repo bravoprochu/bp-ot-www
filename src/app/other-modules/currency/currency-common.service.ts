@@ -106,12 +106,9 @@ export class CurrencyCommonService {
 
   getCurrencyNbpGroup(fb: FormBuilder, initCurrencyName = "EUR"): FormGroup {
     const res = fb.group({
-      price: [
-        null,
-        Validators.compose([Validators.required, Validators.min(0)]),
-      ],
+      price: [0, Validators.compose([Validators.required, Validators.min(0)])],
       currency: this.getCurrencyListGroup(fb, initCurrencyName),
-      plnValue: [],
+      plnValue: [0],
       plnValueFormated: [],
       rate: [0],
       rateDate: [new Date()],
