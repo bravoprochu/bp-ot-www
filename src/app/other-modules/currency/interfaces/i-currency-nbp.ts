@@ -1,10 +1,11 @@
 import { ICurrency } from "./i-currency";
-import { Moment } from "moment";
 
-export interface ICurrencyNbp{
-    price:number,
-    currency: ICurrency,
-    plnValue:number
-    rate: number,
-    rateDate: Moment
+export interface ICurrencyNbp {
+  price: number;
+  currency: ICurrency;
+  plnValue: string;
+  rate: number;
+  rateDate: string;
+  table?: string;
+  no?: string;
 }

@@ -12,8 +12,19 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
 import { ReactiveFormsModule } from "@angular/forms";
+import {
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
+  MAT_NATIVE_DATE_FORMATS,
+  NativeDateAdapter,
+} from "@angular/material/core";
+import { Platform, PlatformModule } from "@angular/cdk/platform";
+import { CustomDateAdapterPl } from "./classes/custom-date-adapter-pl";
+import { DateTimeCommonModule } from "../date-time-common/date-time-common.module";
 
 const IMPORT_EXPORT_MODULES = [
+  DateTimeCommonModule,
   MatAutocompleteModule,
   MatButtonModule,
   MatDatepickerModule,
@@ -22,6 +33,7 @@ const IMPORT_EXPORT_MODULES = [
   MatInputModule,
   MatSelectModule,
   MomentCommonModule,
+  PlatformModule,
   ReactiveFormsModule,
 ];
 
@@ -29,6 +41,15 @@ const IMPORT_EXPORT_MODULES = [
   imports: [CommonModule, IMPORT_EXPORT_MODULES],
   declarations: [CurrencyListComponent, CurrencyNbpComponent],
   exports: [IMPORT_EXPORT_MODULES, CurrencyListComponent, CurrencyNbpComponent],
-  providers: [CurrencyCommonService],
+  providers: [
+    CurrencyCommonService,
+    { provide: MAT_DATE_LOCALE, useValue: "pl-PL" },
+    {
+      provide: DateAdapter,
+      useClass: CustomDateAdapterPl,
+      deps: [MAT_DATE_LOCALE, Platform],
+    },
+    { provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS },
+  ],
 })
 export class CurrencyModule {}

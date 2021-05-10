@@ -1,39 +1,45 @@
-<mat-form-field>
-  <input
-    matInput
-    type="number"
-    placeholder="{{ placeholder }}"
-    [formControl]="price"
-  />
-</mat-form-field>
+<ng-container>
+  <mat-form-field>
+    <input
+      matInput
+      type="number"
+      [placeholder]="placeholder"
+      [formControl]="price"
+      min="0"
+    />
+  </mat-form-field>
 
-<mat-form-field *ngIf="currency?.value.name != 'PLN'">
-  <input
-    matInput
-    placeholder="Data kursu"
-    [max]="maxDate"
-    [matDatepicker]="dp"
-    [formControl]="rateDate"
-  />
-  <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-  <mat-datepicker #dp="matDatepicker"></mat-datepicker>
-</mat-form-field>
+  <mat-form-field>
+    <input
+      matInput
+      placeholder="Data kursu"
+      [max]="maxDate"
+      [matDatepicker]="dp"
+      [formControl]="rateDate"
+    />
+    <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+    <mat-datepicker #dp="matDatepicker"></mat-datepicker>
+  </mat-form-field>
 
-<app-currency-list [rForm]="currency"></app-currency-list>
+  <app-currency-list [rForm]="currency!"></app-currency-list>
 
-<mat-form-field *ngIf="rate?.value > 0">
-  <input matInput disabled placeholder="kurs" value="{{ rate?.value }}" />
-</mat-form-field>
+  <mat-form-field *ngIf="rate?.value > 0">
+    <input matInput disabled placeholder="kurs" value="{{ rate?.value }}" />
+  </mat-form-field>
 
-<mat-form-field *ngIf="rate?.value > 0">
-  <input
-    matInput
-    disabled
-    placeholder="wartość PLN"
-    value="{{ plnValue?.value }}"
-  />
-</mat-form-field>
+  <mat-form-field *ngIf="rate?.value > 0">
+    <input
+      matInput
+      disabled
+      placeholder="wartość PLN"
+      [value]="plnValue?.value"
+    />
+  </mat-form-field>
 
-<button mat-mini-fab (click)="refresh()" *ngIf="rate?.value > 0">
-  <mat-icon>refresh</mat-icon>
-</button>
+  <button mat-mini-fab (click)="refresh()">
+    <mat-icon>refresh</mat-icon>
+  </button>
+  <p class="mat-caption">
+    <em>{{ combinedInfo$ | async }}</em>
+  </p>
+</ng-container>

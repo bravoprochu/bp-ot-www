@@ -1,10 +1,19 @@
 import { Component, OnInit, Input, OnDestroy } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup } from "@angular/forms";
-import { Subject } from "rxjs";
+import { combineLatest, empty, Observable, Subject } from "rxjs";
 import { CurrencyCommonService } from "app/other-modules/currency/currency-common.service";
-import { Moment } from "moment";
-import { takeUntil } from "rxjs/operators";
-import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
+import {
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  startWith,
+  switchMap,
+  takeUntil,
+  tap,
+} from "rxjs/operators";
+import { ICurrencyNbpResult } from "../interfaces/i-currency-nbp-result";
+import { ICurrencyNbp } from "../interfaces/i-currency-nbp";
+import { ICurrency } from "../interfaces/i-currency";
 
 @Component({
   selector: "app-currency-nbp",
@@ -12,26 +21,73 @@ import { MomentCommonService } from "app/other-modules/moment-common/services/mo
   styleUrls: ["./currency-nbp.component.css"],
 })
 export class CurrencyNbpComponent implements OnInit, OnDestroy {
+  combinedInfo$?: Observable<string>;
   isDestroyed$ = new Subject<boolean>() as Subject<boolean>;
-  @Input() rForm = this.cf.getCurrencyNbpGroup(this.fb, this.isDestroyed$);
-  @Input() placeholder: string;
-
-  maxDate: Moment;
+  currentNbpResult = {} as ICurrencyNbpResult;
+  @Input() rForm = this.currencyCommonService.getCurrencyNbpGroup(this.fb);
+  @Input() placeholder = "Wartość";
+  maxDate = new Date();
+  refreshData$ = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
-    private cf: CurrencyCommonService,
-    private momentService: MomentCommonService
+    private currencyCommonService: CurrencyCommonService
   ) {}
 
   ngOnDestroy(): void {
     this.isDestroyed$.next(true);
+    this.isDestroyed$.complete();
   }
 
   ngOnInit() {
-    this.maxDate = this.momentService.getNow();
-    this.placeholder =
-      this.placeholder !== undefined ? this.placeholder : "Wartość";
+    this.initObservables();
+  }
+
+  initObservables(): void {
+    const PRICE = this.price.valueChanges.pipe(
+      startWith(this.price.value),
+      debounceTime(750),
+      distinctUntilChanged()
+    );
+    const DATE = this.rateDate.valueChanges.pipe(
+      startWith(this.rateDate.value)
+    );
+    const CURRENCY = this.currency.valueChanges.pipe(
+      startWith(this.currency.value)
+    );
+
+    const NBP_RESPONSE$ = combineLatest([
+      PRICE,
+      DATE,
+      CURRENCY,
+      // this.refreshData$,
+    ]).pipe(
+      tap(() => this.rForm.updateValueAndValidity()),
+      switchMap(() => {
+        if (this.rForm.valid && !this.isCurrencyPLN()) {
+          return this.currencyCommonService.getExchangeFromNbpService$(
+            this.rForm.value
+          );
+        }
+        return empty();
+      })
+    );
+
+    this.combinedInfo$ = NBP_RESPONSE$.pipe(
+      map((currNBPRes: ICurrencyNbp) => {
+        this.currencyCommonService.patchCurrencyNbp(currNBPRes, this.rForm);
+        return this.currencyCommonService.prepCombinedInfoNbp(currNBPRes);
+      })
+    );
+  }
+
+  private isCurrencyPLN(): boolean {
+    return (this.currency.value as ICurrency).name === "PLN";
+  }
+
+  private prepCombinedInfo(currNBPRes: ICurrencyNbpResult): string {
+    const RATE = currNBPRes.rates[0];
+    return `Średni kurs dla ${currNBPRes.currency} (${currNBPRes.code}) z dnia ${RATE.effectiveDate} wynosi: ${RATE.mid} (tabela: ${RATE.no})`;
   }
 
   //#region rForm getters
@@ -56,12 +112,9 @@ export class CurrencyNbpComponent implements OnInit, OnDestroy {
   //#endregion
 
   refresh() {
-    this.cf
-      .getNbpService$(this.rForm?.value)
-      .pipe(takeUntil(this.isDestroyed$))
-      .subscribe((_data: any) => {
-        this.cf.patchCurrencyNbpResult(_data, this.rForm);
-        this.rForm.updateValueAndValidity();
-      });
+    if (!this.rForm.valid) {
+      return;
+    }
+    this.refreshData$.next(null);
   }
 }
