@@ -17,16 +17,18 @@ import { ICreationInfo } from "@bpCommonInterfaces/i-creation-info";
 import { CurrencyCommonService } from "app/other-modules/currency/currency-common.service";
 import { ContractorService } from "app/other-modules/contractors/services/contractor.service";
 import { IDateRange } from "@bpCommonInterfaces/i-date-range";
-import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 import { PaymentTermsService } from "app/other-modules/payment-terms/services/payment-terms.service";
 import { takeUntil } from "rxjs/operators";
 import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
+import { DateTimeCommonServiceService } from "app/other-modules/date-time-common/services/date-time-common-service.service";
+import { DateTime } from "luxon";
 
 @Injectable()
 export class InvoiceCommonFunctionsService {
   constructor(
     private dialogConfirmationService: DialogConfirmationsService,
-    private momentService: MomentCommonService,
+    private dateTimeService: DateTimeCommonServiceService,
+    //private momentService: MomentCommonService,
     private pTermsService: PaymentTermsService,
     private currService: CurrencyCommonService,
     private contractorService: ContractorService
@@ -77,15 +79,8 @@ export class InvoiceCommonFunctionsService {
 
   dateRangeActiveMonth(): IDateRange {
     return <IDateRange>{
-      dateStart: this.momentService.getToday().date(1),
-      dateEnd: this.momentService.getToday(),
-    };
-  }
-
-  dateRangeLastQuarter(): IDateRange {
-    return <IDateRange>{
-      dateStart: this.momentService.getToday().subtract(3, "month").date(1),
-      dateEnd: this.momentService.getToday(),
+      dateStart: new Date().toISOString(),
+      dateEnd: new Date().toISOString(),
     };
   }
 
@@ -102,7 +97,7 @@ export class InvoiceCommonFunctionsService {
     return fb.group({
       invoiceExtraInfoCheckedId: [],
       checked: [false],
-      date: [this.momentService.getTodayConstTimeMoment()],
+      date: [new Date(this.dateTimeService.getToday())],
       info: [],
     });
   }
@@ -112,13 +107,13 @@ export class InvoiceCommonFunctionsService {
       invoiceBuyId: [0],
       companySeller: this.contractorService.formCompanyGroup(fb),
       creationInfo: this.formCreationInfo(fb),
-      currency: this.currService.getCurrencyListGroup(fb, isDestroyed$),
+      currency: this.currService.getCurrencyListGroup(fb),
       dateOfIssue: [
-        this.momentService.getTodayConstTimeMoment(),
+        new Date(this.dateTimeService.getToday()),
         Validators.required,
       ],
       dateOfSell: [
-        this.momentService.getTodayConstTimeMoment(),
+        new Date(this.dateTimeService.getToday()),
         Validators.required,
       ],
       info: [null],
@@ -131,12 +126,12 @@ export class InvoiceCommonFunctionsService {
       }),
       isInvoiceReceived: [true],
       isCorrection: [false],
-      invoiceReceivedDate: [this.momentService.getToday()],
+      invoiceReceivedDate: [this.dateTimeService.getToday()],
       loadId: [null],
       loadNo: [null],
       paymentIsDone: [false],
-      paymentDate: [this.momentService.getToday()],
-      paymentTerms: this.pTermsService.getPaymentTermsGroup(fb, isDestroyed$),
+      paymentDate: [this.dateTimeService.getToday()],
+      paymentTerms: this.pTermsService.getPaymentTermsGroup$(),
       rates: fb.array([]),
     });
 
@@ -149,17 +144,17 @@ export class InvoiceCommonFunctionsService {
       baseInvoiceId: [0],
       companyBuyer: this.contractorService.formCompanyGroup(fb),
       correctionId: [null],
-      currency: this.currService.getCurrencyListGroup(fb, isDestroyed$),
+      currency: this.currService.getCurrencyListGroup(fb),
       dateOfIssue: [
-        this.momentService.getTodayConstTimeMoment(),
+        new Date(this.dateTimeService.getToday()),
         Validators.required,
       ],
       dateOfSell: [
-        this.momentService.getTodayConstTimeMoment(),
+        new Date(this.dateTimeService.getToday()),
         Validators.required,
       ],
       creationInfo: this.formCreationInfo(fb),
-      extraInfo: this.formInvoiceSellExtraInfoGroup(fb, isDestroyed$),
+      extraInfo: this.formInvoiceSellExtraInfoGroup(fb),
       getCorrectionPaymenntInfo: [null],
       getInvoiceValue: [null],
       correctionTotalInfo: [null],
@@ -176,7 +171,7 @@ export class InvoiceCommonFunctionsService {
       }),
       paymentIsDone: [false],
       paymentDate: [null],
-      paymentTerms: this.pTermsService.getPaymentTermsGroup(fb, isDestroyed$),
+      paymentTerms: this.pTermsService.getPaymentTermsGroup$(),
       rates: fb.array([]),
     });
 
@@ -208,15 +203,12 @@ export class InvoiceCommonFunctionsService {
     });
   }
 
-  formInvoiceSellExtraInfoGroup(
-    fb: FormBuilder,
-    isDestroyed$: Subject<boolean>
-  ) {
+  formInvoiceSellExtraInfoGroup(fb: FormBuilder) {
     return fb.group({
       cmr: this.formExtraInfoCheckedGroup(fb),
       recived: this.formExtraInfoCheckedGroup(fb),
       sent: this.formExtraInfoCheckedGroup(fb),
-      currencyNbp: this.currService.getCurrencyNbpGroup(fb, isDestroyed$),
+      currencyNbp: this.currService.getCurrencyNbpGroup(fb),
       invoiceBuyId: [],
       invoiceBuyNo: [],
       invoiceSellId: [],
@@ -495,12 +487,8 @@ export class InvoiceCommonFunctionsService {
   }
 
   patchCreationInfo(info: ICreationInfo, rForm: FormGroup) {
-    info.createdDateTime = this.momentService.setFormatedDateTime(
-      info.createdDateTime
-    );
-    info.modifyDateTime = this.momentService.setFormatedDateTime(
-      info.modifyDateTime
-    );
+    info.createdDateTime = new Date(info.createdDateTime).toISOString();
+    info.modifyDateTime = new Date(info.modifyDateTime).toISOString();
     rForm.patchValue(info, { emitEvent: false });
   }
 
@@ -518,16 +506,16 @@ export class InvoiceCommonFunctionsService {
 
     this.patchCreationInfo(<ICreationInfo>inv, creationInfo);
 
-    inv.invoiceReceivedDate = this.momentService.convertToConstTime(
+    inv.invoiceReceivedDate = this.dateTimeService.setISOTimeToMidnght(
       inv.invoiceReceivedDate
     );
     this.patchInvoiceLines(inv.invoiceLines, invoicePosList, fb);
     this.patchInvoiceRates(inv.rates, ratesValueList, fb);
-    this.pTermsService.patchPaymentTerms(inv.paymentTerms, paymentTerms);
+    // this.pTermsService.patchPaymentTerms(inv.paymentTerms, paymentTerms);
 
-    inv.dateOfIssue = this.momentService.convertToConstTime(inv.dateOfIssue);
-    inv.paymentDate = this.momentService.convertToConstTime(inv.paymentDate);
-    inv.dateOfSell = this.momentService.convertToConstTime(inv.dateOfSell);
+    inv.dateOfIssue = this.dateTimeService.setISOTimeToMidnght(inv.dateOfIssue);
+    inv.paymentDate = this.dateTimeService.setISOTimeToMidnght(inv.paymentDate);
+    inv.dateOfSell = this.dateTimeService.setISOTimeToMidnght(inv.dateOfSell);
     rForm.patchValue(inv, { emitEvent: false });
   }
 
@@ -553,18 +541,18 @@ export class InvoiceCommonFunctionsService {
     this.patchInvoiceRates(inv.rates, rates, fb);
 
     this.patchInvoiceTotal(inv.invoiceTotal, invTotal, fb);
-    inv.dateOfSell = this.momentService.convertToConstTime(inv.dateOfSell);
-    inv.dateOfIssue = this.momentService.convertToConstTime(inv.dateOfIssue);
+    inv.dateOfSell = this.dateTimeService.setISOTimeToMidnght(inv.dateOfSell);
+    inv.dateOfIssue = this.dateTimeService.setISOTimeToMidnght(inv.dateOfIssue);
 
     let pTerms = <FormGroup>rForm.get("paymentTerms");
-    this.pTermsService.patchPaymentTerms(inv.paymentTerms, pTerms);
+    //this.pTermsService.patchPaymentTerms(inv.paymentTerms, pTerms);
 
     //default settings for currencyNbp
     if (!inv.extraInfo.currencyNbp.currency) {
       inv.extraInfo.currencyNbp.currency = this.currService.findCurrencyByName(
         "eur"
       );
-      inv.extraInfo.currencyNbp.rateDate = this.momentService.getToday();
+      inv.extraInfo.currencyNbp.rateDate = new Date().toISOString();
     }
     this.patchInvoiceExtraInfo(
       inv.extraInfo,
@@ -619,7 +607,7 @@ export class InvoiceCommonFunctionsService {
     if (info == null) {
       return;
     }
-    info.date = this.momentService.convertToConstTime(info.date);
+    info.date = this.dateTimeService.setISOTimeToMidnght(info.date);
     rForm.patchValue(info, { emitEvent: false });
   }
 

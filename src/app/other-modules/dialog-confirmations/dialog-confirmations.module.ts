@@ -5,16 +5,19 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatDialogModule } from "@angular/material/dialog";
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { DialogConfirmationsService } from "./services/dialog-confirmations.service";
-import { MAT_DATE_LOCALE } from "@angular/material/core";
 import {
-  MatMomentDateModule,
-  MAT_MOMENT_DATE_ADAPTER_OPTIONS,
-} from "@angular/material-moment-adapter";
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
+  MAT_NATIVE_DATE_FORMATS,
+} from "@angular/material/core";
 import { DialogDateConfirmationComponent } from "./components/dialog-date-confirmation/dialog-date-confirmation";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { ReactiveFormsModule } from "@angular/forms";
+import { Platform } from "@angular/cdk/platform";
+import { CustomDateAdapterPl } from "app/common-functions/angular-datepicker/custom-date-adapter-pl";
 
 const IMPORT_EXPORT_MODULES = [
   FlexLayoutModule,
@@ -23,7 +26,6 @@ const IMPORT_EXPORT_MODULES = [
   MatDialogModule,
   MatFormFieldModule,
   MatInputModule,
-  MatMomentDateModule,
   ReactiveFormsModule,
 ];
 
@@ -36,9 +38,14 @@ const IMPORT_EXPORT_MODULES = [
   ],
   imports: [CommonModule, IMPORT_EXPORT_MODULES],
   providers: [
-    { provide: MAT_DATE_LOCALE, useValue: "pl-PL" },
-    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
     DialogConfirmationsService,
+    { provide: MAT_DATE_LOCALE, useValue: "pl-PL" },
+    {
+      provide: DateAdapter,
+      useClass: CustomDateAdapterPl,
+      deps: [MAT_DATE_LOCALE, Platform],
+    },
+    { provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS },
   ],
 })
 export class DialogConfirmationsModule {}

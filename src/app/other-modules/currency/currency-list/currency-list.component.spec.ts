@@ -1,7 +1,5 @@
 import { HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
-import { MomentCommonModule } from "app/other-modules/moment-common/moment-common.module";
-import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 import { CurrencyCommonService } from "../currency-common.service";
 
 import { CurrencyListComponent } from "./currency-list.component";
@@ -14,8 +12,8 @@ describe("CurrencyListComponent", () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [CurrencyListComponent],
-        imports: [HttpClientModule, MomentCommonModule],
-        providers: [CurrencyCommonService, MomentCommonService],
+        imports: [HttpClientModule],
+        providers: [CurrencyCommonService],
       }).compileComponents();
     })
   );

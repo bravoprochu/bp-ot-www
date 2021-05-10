@@ -1,29 +1,45 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { PaymentTermsComponent } from "./payment-terms/payment-terms.component";
-import { MomentCommonModule } from "app/other-modules/moment-common/moment-common.module";
-import { FlexLayoutModule } from "@angular/flex-layout";
-import { ReactiveFormsModule } from "@angular/forms";
-import { MatDatepickerModule } from "@angular/material/datepicker";
-import { MatIconModule } from "@angular/material/icon";
-import { MatInputModule } from "@angular/material/input";
-import { MatSelectModule } from "@angular/material/select";
 import { PaymentTermsService } from "./services/payment-terms.service";
+import { PaymentTermsComponent } from "./components/payment-terms/payment-terms.component";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { ReactiveFormsModule } from "@angular/forms";
+import { MatSelectModule } from "@angular/material/select";
+import {
+  DateAdapter,
+  MatNativeDateModule,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
+  MAT_NATIVE_DATE_FORMATS,
+} from "@angular/material/core";
+import { Platform, PlatformModule } from "@angular/cdk/platform";
+import { CustomDateAdapterPl } from "app/common-functions/angular-datepicker/custom-date-adapter-pl";
 
 const IMPORT_EXPORT_MODULES = [
-  FlexLayoutModule,
   MatDatepickerModule,
+  MatFormFieldModule,
   MatInputModule,
-  MatIconModule,
+  MatNativeDateModule,
   MatSelectModule,
-  MomentCommonModule,
+  PlatformModule,
   ReactiveFormsModule,
 ];
 
 @NgModule({
-  imports: [CommonModule, IMPORT_EXPORT_MODULES],
   declarations: [PaymentTermsComponent],
   exports: [IMPORT_EXPORT_MODULES, PaymentTermsComponent],
-  providers: [PaymentTermsService],
+  imports: [CommonModule, IMPORT_EXPORT_MODULES],
+  providers: [
+    PaymentTermsService,
+    { provide: MAT_DATE_LOCALE, useValue: "pl-PL" },
+    {
+      provide: DateAdapter,
+      useClass: CustomDateAdapterPl,
+      deps: [MAT_DATE_LOCALE, Platform],
+    },
+    { provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS },
+  ],
 })
 export class PaymentTermsModule {}

@@ -4,7 +4,6 @@ import {
   IInvoiceRateGroup,
 } from "../interfaces/iinvoice-sell";
 import { ICreationInfo } from "../../../shared/interfaces/i-creation-info";
-import { Moment } from "moment";
 import { ICurrency } from "app/other-modules/currency/interfaces/i-currency";
 import { ICompany } from "app/other-modules/contractors/interfaces/icompany";
 import { IPaymentTerms } from "app/other-modules/payment-terms/interfaces/i-payment-terms";
@@ -14,8 +13,8 @@ export interface IInvoiceCommon extends ICreationInfo {
   companySeller: ICompany;
   currency: ICurrency;
 
-  dateOfIssue: Moment;
-  dateOfSell: Moment;
+  dateOfIssue: string;
+  dateOfSell: string;
 
   info: string;
   isCorrection: boolean;

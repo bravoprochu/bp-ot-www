@@ -35,8 +35,15 @@ import { InvoiceCommonFunctionsService } from "./common/invoice-common-functions
 import { InvoiceBuyListComponent } from "./invoice-buy/invoice-buy-list/invoice-buy-list.component";
 import { InvoiceBuyComponent } from "./invoice-buy/invoice-buy/invoice-buy.component";
 import { DialogConfirmationsModule } from "../dialog-confirmations/dialog-confirmations.module";
-import { MomentCommonModule } from "../moment-common/moment-common.module";
 import { CreationInfoModule } from "../creation-info/creation-info.module";
+import { Platform } from "@angular/cdk/platform";
+import {
+  MAT_DATE_LOCALE,
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_NATIVE_DATE_FORMATS,
+} from "@angular/material/core";
+import { CustomDateAdapterPl } from "app/common-functions/angular-datepicker/custom-date-adapter-pl";
 
 const IMPORT_EXPORT_MODULES = [
   ContractorsModule,
@@ -59,7 +66,6 @@ const IMPORT_EXPORT_MODULES = [
   MatPaginatorModule,
   MatTabsModule,
   MatTableModule,
-  MomentCommonModule,
   NavDetailModule,
   NavListModule,
   PendingIndicatorModule,
@@ -84,6 +90,13 @@ const IMPORT_EXPORT_MODULES = [
     InvoiceCommonFunctionsService,
     InvoiceSellService,
     InvoiceBuyService,
+    { provide: MAT_DATE_LOCALE, useValue: "pl-PL" },
+    {
+      provide: DateAdapter,
+      useClass: CustomDateAdapterPl,
+      deps: [MAT_DATE_LOCALE, Platform],
+    },
+    { provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS },
   ],
 })
 export class InvoicesModule {}

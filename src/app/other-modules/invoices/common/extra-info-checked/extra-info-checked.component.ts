@@ -2,7 +2,7 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Component, OnInit, Input, OnDestroy } from "@angular/core";
 import { startWith, takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
-import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
+import { DateTimeCommonServiceService } from "app/other-modules/date-time-common/services/date-time-common-service.service";
 
 @Component({
   selector: "app-extra-info-checked",
@@ -14,7 +14,7 @@ export class ExtraInfoCheckedComponent implements OnInit, OnDestroy {
   @Input() placeholder: string;
   isDestroyed$ = new Subject() as Subject<boolean>;
 
-  constructor(private momentService: MomentCommonService) {}
+  constructor(private dateTimeService: DateTimeCommonServiceService) {}
 
   ngOnDestroy(): void {
     this.isDestroyed$.next(true);
@@ -45,7 +45,7 @@ export class ExtraInfoCheckedComponent implements OnInit, OnDestroy {
         if (s == true) {
           this.date.setValidators(Validators.required);
           if (this.date.value == null) {
-            this.date.setValue(this.momentService.getToday());
+            this.date.setValue(this.dateTimeService.getToday());
           }
         } else {
           this.date.clearValidators();

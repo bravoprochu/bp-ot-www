@@ -1,0 +1,48 @@
+<ng-container *ngIf="isFormReady; else loading">
+  <form [formGroup]="rForm!">
+    <mat-form-field>
+      <mat-label>Forma płatności</mat-label>
+      <mat-select
+        formControlName="paymentTerm"
+        [compareWith]="payTermCompare"
+        required
+      >
+        <mat-option
+          *ngFor="let term of paymentTermsOptions$ | async"
+          [value]="term"
+        >
+          {{ term.name }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="paymentTerm$.hasError('required')"
+        >Please choose an payment term</mat-error
+      >
+    </mat-form-field>
+
+    <ng-container *ngIf="isPaymentDate">
+      <mat-form-field>
+        <mat-label>Ile dni</mat-label>
+        <input matInput min="0" formControlName="paymentDays" type="number" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Termin płatności</mat-label>
+        <input
+          matInput
+          [min]="day0$.value"
+          [matDatepicker]="picker"
+          [matDatepickerFilter]="filterWeekends"
+          formControlName="paymentDate"
+        />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </ng-container>
+
+    <mat-form-field *ngIf="isDescription">
+      <mat-label>Opis</mat-label>
+      <input matInput formControlName="description" type="text" />
+    </mat-form-field>
+  </form>
+</ng-container>
+<ng-template #loading> Zainicjuj formularz ! </ng-template>

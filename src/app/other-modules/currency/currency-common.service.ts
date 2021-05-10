@@ -8,28 +8,9 @@ import {
   FormControl,
   Validators,
 } from "@angular/forms";
-import { Subject, empty, of, Observable, throwError } from "rxjs";
-import * as moment from "moment";
-import {
-  map,
-  merge,
-  takeUntil,
-  take,
-  switchMap,
-  debounceTime,
-  distinctUntilChanged,
-  catchError,
-  retry,
-  retryWhen,
-  delay,
-  takeWhile,
-  finalize,
-  tap,
-} from "rxjs/operators";
+import { Observable, throwError } from "rxjs";
+import { map, take, catchError, retry } from "rxjs/operators";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
-import { ICurrencyNbpResultRate } from "app/other-modules/currency/interfaces/i-currency-nbp-result-rate";
-import { INbpTableCurrencyDateRateResponse } from "./interfaces/i-nbp-table-currency-date-rate-response";
-import { DateTime } from "luxon";
 import { DateTimeCommonServiceService } from "../date-time-common/services/date-time-common-service.service";
 import { CHECK_IF_CURRENCY_NOT_PLN_VALIDATOR } from "./form-validators/check-if-currency-pln";
 

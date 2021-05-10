@@ -12,15 +12,12 @@ import { CurrencyCommonService } from "app/other-modules/currency/currency-commo
 import { CurrencyModule } from "app/other-modules/currency/currency.module";
 import { DialogConfirmationsModule } from "app/other-modules/dialog-confirmations/dialog-confirmations.module";
 import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
-import { MomentCommonModule } from "app/other-modules/moment-common/moment-common.module";
-import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 import { PaymentTermsModule } from "app/other-modules/payment-terms/payment-terms.module";
 import { PaymentTermsService } from "app/other-modules/payment-terms/services/payment-terms.service";
 import { PendingComponent } from "app/other-modules/pending-indicator/components/pending/pending.component";
 import { ToastMakeModule } from "app/other-modules/toast-make/toast-make.module";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 import { TokenService } from "app/services/token.service";
-import { of } from "rxjs";
 import { InvoiceCommonFunctionsService } from "../../common/invoice-common-functions.service";
 import { InvoiceBuyService } from "../services/invoice-buy.service";
 
@@ -47,7 +44,6 @@ describe("InvoiceBuyListComponent", () => {
           MatTableModule,
           MatSortModule,
           MatPaginatorModule,
-          MomentCommonModule,
           PaymentTermsModule,
           RouterModule.forRoot([]),
           ToastMakeModule,
@@ -56,7 +52,6 @@ describe("InvoiceBuyListComponent", () => {
           ContractorService,
           CurrencyCommonService,
           DialogConfirmationsService,
-          MomentCommonService,
           ToastMakeService,
           InvoiceBuyService,
           InvoiceCommonFunctionsService,

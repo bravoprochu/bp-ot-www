@@ -27,11 +27,9 @@ export class DataFactoryService {
   getAll(dateRange?: IDateRange): Observable<any> {
     if (dateRange) {
       return this.http
-        .get(
-          this.url +
-            `/GetAll/${dateRange.dateStart.toISOString()}/${dateRange.dateEnd.toISOString()}`,
-          { headers: this.bearerHeader() }
-        )
+        .get(this.url + `/GetAll/${dateRange.dateStart}/${dateRange.dateEnd}`, {
+          headers: this.bearerHeader(),
+        })
         .pipe(take(1), catchError(this.errorHandler));
     } else {
       return this.http

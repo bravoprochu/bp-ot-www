@@ -39,7 +39,8 @@
           />
         </mat-form-field>
         <div class="mat-body-2">
-          Pobrana lista dostępnych faktur dotyczy miesiąca: {{ getMonthAgo() }}
+          Pobrana lista dostępnych faktur dotyczy miesiąca:
+          <strong>{{ getMonthAgo | date: "MMMM" | uppercase }}</strong>
         </div>
       </div>
       <mat-divider></mat-divider>

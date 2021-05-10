@@ -8,13 +8,22 @@ import { MatInputModule } from "@angular/material/input";
 import { MatDividerModule } from "@angular/material/divider";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { DragDropModule } from "@angular/cdk/drag-drop";
-import { MomentCommonModule } from "../moment-common/moment-common.module";
 import { ToastMakeModule } from "../toast-make/toast-make.module";
 import { DialogConfirmationsModule } from "../dialog-confirmations/dialog-confirmations.module";
 import { ReactiveFormsModule } from "@angular/forms";
 import { InvoiceSellGroupCloneService } from "./services/invoice-sell-group-clone.service";
+import { DateTimeCommonModule } from "../date-time-common/date-time-common.module";
+import { Platform } from "@angular/cdk/platform";
+import {
+  MAT_DATE_LOCALE,
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_NATIVE_DATE_FORMATS,
+} from "@angular/material/core";
+import { CustomDateAdapterPl } from "app/common-functions/angular-datepicker/custom-date-adapter-pl";
 
 const IMPORT_EXPORT_MODULES = [
+  DateTimeCommonModule,
   DragDropModule,
   DialogConfirmationsModule,
   FlexLayoutModule,
@@ -23,7 +32,6 @@ const IMPORT_EXPORT_MODULES = [
   MatDividerModule,
   MatFormFieldModule,
   MatInputModule,
-  MomentCommonModule,
   ReactiveFormsModule,
   ToastMakeModule,
 ];
@@ -32,6 +40,15 @@ const IMPORT_EXPORT_MODULES = [
   declarations: [InvoiceSellGroupCloneComponent],
   exports: [IMPORT_EXPORT_MODULES],
   imports: [CommonModule, IMPORT_EXPORT_MODULES],
-  providers: [InvoiceSellGroupCloneService],
+  providers: [
+    InvoiceSellGroupCloneService,
+    { provide: MAT_DATE_LOCALE, useValue: "pl-PL" },
+    {
+      provide: DateAdapter,
+      useClass: CustomDateAdapterPl,
+      deps: [MAT_DATE_LOCALE, Platform],
+    },
+    { provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS },
+  ],
 })
 export class InvoiceSellGroupCloneModule {}

@@ -18,11 +18,12 @@ import { CurrencyModule } from "../currency/currency.module";
 import { ReactiveFormsModule } from "@angular/forms";
 import { ContractorsModule } from "../contractors/contractors.module";
 import { PaymentTermsModule } from "../payment-terms/payment-terms.module";
-import { MomentCommonModule } from "../moment-common/moment-common.module";
 import { TransportRoutingModule } from "./transport-routing.module";
 import { CreationInfoModule } from "../creation-info/creation-info.module";
+import { DateTimeCommonModule } from "../date-time-common/date-time-common.module";
 
 const IMPORT_EXPORT_MODULES = [
+  DateTimeCommonModule,
   ContractorsModule,
   CreationInfoModule,
   CurrencyModule,
@@ -35,7 +36,6 @@ const IMPORT_EXPORT_MODULES = [
   MatInputModule,
   MatPaginatorModule,
   MatTableModule,
-  MomentCommonModule,
   NavListModule,
   PaymentTermsModule,
   PendingIndicatorModule,

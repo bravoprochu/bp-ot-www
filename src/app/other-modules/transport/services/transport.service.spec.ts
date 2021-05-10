@@ -4,8 +4,6 @@ import { ContractorsModule } from "app/other-modules/contractors/contractors.mod
 import { ContractorService } from "app/other-modules/contractors/services/contractor.service";
 import { CurrencyCommonService } from "app/other-modules/currency/currency-common.service";
 import { CurrencyModule } from "app/other-modules/currency/currency.module";
-import { MomentCommonModule } from "app/other-modules/moment-common/moment-common.module";
-import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 import { PaymentTermsModule } from "app/other-modules/payment-terms/payment-terms.module";
 import { PaymentTermsService } from "app/other-modules/payment-terms/services/payment-terms.service";
 import { TokenService } from "app/services/token.service";
@@ -17,7 +15,6 @@ describe("TransportService", () => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientModule,
-        MomentCommonModule,
         CurrencyModule,
         ContractorsModule,
         PaymentTermsModule,
@@ -25,7 +22,6 @@ describe("TransportService", () => {
       providers: [
         TransportService,
         TokenService,
-        MomentCommonService,
         CurrencyCommonService,
         ContractorService,
         PaymentTermsService,

@@ -1,29 +1,51 @@
 <div fxLayout="row wrap" fxLayoutGap="10px">
-    <button mat-mini-fab (click)="dateRangeIsActive()" *ngIf="!showDateRange">
-        <mat-icon>date_range</mat-icon>
-    </button>
-  
+  <button mat-mini-fab (click)="dateRangeIsActive()" *ngIf="!showDateRange">
+    <mat-icon>date_range</mat-icon>
+  </button>
+
   <div *ngIf="showDateRange" fxLayout="column">
     <mat-form-field>
-        <input matInput placeholder="Data od" [matDatepicker]="pickerFrom" [formControl]="dateFrom" [max]="dateTo.value">
-        <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
-        <mat-datepicker #pickerFrom></mat-datepicker>
+      <input
+        matInput
+        placeholder="Data od"
+        [matDatepicker]="pickerFrom"
+        [formControl]="dateFrom"
+        [max]="dateTo.value"
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="pickerFrom"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #pickerFrom></mat-datepicker>
     </mat-form-field>
-      
+
     <mat-form-field>
-        <input matInput placeholder="Data do" [matDatepicker]="pickerTo" [formControl]="dateTo" [min]="dateFrom.value">
-        <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
-        <mat-datepicker #pickerTo></mat-datepicker>
+      <input
+        matInput
+        placeholder="Data do"
+        [matDatepicker]="pickerTo"
+        [formControl]="dateTo"
+        [min]="dateFrom.value"
+      />
+      <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+      <mat-datepicker #pickerTo></mat-datepicker>
     </mat-form-field>
   </div>
 
-  <button mat-mini-fab (click)="dateRangeIsActive()" *ngIf="showDateRange" matTooltip="Wróć, anuluj">
-      <mat-icon>undo</mat-icon>
+  <button
+    mat-mini-fab
+    (click)="dateRangeIsActive()"
+    *ngIf="showDateRange"
+    matTooltip="Wróć, anuluj"
+  >
+    <mat-icon>undo</mat-icon>
   </button>
-  <button mat-mini-fab (click)="go();" *ngIf="showDateRange" matTooltip="Zatwierdź zakres">
-      <mat-icon>check</mat-icon>
-  </button>    
-
+  <button
+    mat-mini-fab
+    (click)="go()"
+    *ngIf="showDateRange"
+    matTooltip="Zatwierdź zakres"
+  >
+    <mat-icon>check</mat-icon>
+  </button>
 </div>
-
-

@@ -12,7 +12,7 @@ import { saveAs } from "file-saver";
 import { finalize, take, takeUntil } from "rxjs/operators";
 import { TransportService } from "../../services/transport.service";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
-import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
+import { DateTimeCommonServiceService } from "app/other-modules/date-time-common/services/date-time-common-service.service";
 
 @Component({
   selector: "app-transport-list",
@@ -47,8 +47,8 @@ export class TransportListComponent implements OnInit, IListObj, OnDestroy {
   };
 
   constructor(
+    private dateTimeService: DateTimeCommonServiceService,
     private transportService: TransportService,
-    private momentService: MomentCommonService,
     private router: Router,
     private toastService: ToastMakeService
   ) {}
@@ -60,7 +60,7 @@ export class TransportListComponent implements OnInit, IListObj, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.dateRange = this.transportService.dateRangeLastQuarter();
+    this.dateRange = this.dateTimeService.getRangeLastQuarter();
     this.isDestroyed$ = new Subject<boolean>();
     this.isPending = true;
     this.initData(this.dateRange);
@@ -123,10 +123,10 @@ export class TransportListComponent implements OnInit, IListObj, OnDestroy {
           );
           saveAs(
             b,
-            `Lista transportów ${this.dateRange.dateStart.format(
-              this.momentService.dateLocaleFormat()
-            )} - ${this.dateRange.dateEnd.format(
-              this.momentService.dateLocaleFormat()
+            `Lista transportów ${this.dateTimeService.formatYYYYMMDD(
+              this.dateRange.dateStart
+            )} - ${this.dateTimeService.formatYYYYMMDD(
+              this.dateRange.dateEnd
             )}.csv`
           );
         },

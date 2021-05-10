@@ -1,202 +1,153 @@
 import { Injectable } from "@angular/core";
-import {
-  FormGroup,
-  FormBuilder,
-  Validators,
-  FormControl,
-} from "@angular/forms";
-import * as moment from "moment";
-import { Subject, of, empty } from "rxjs";
-import { merge, takeUntil, tap, map, debounceTime } from "rxjs/operators";
-import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
+import { Observable, of, Subject } from "rxjs";
+import { PAYMENT_TERMS_OPTIONS } from "../data/payment-terms-options";
 import { IPaymentTerm } from "../interfaces/i-payment-term";
 import { IPaymentTerms } from "../interfaces/i-payment-terms";
+import { DateTime, DurationObject } from "luxon";
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from "@angular/forms";
 
-@Injectable()
+import { AbstractControlOptions, ValidatorFn } from "@angular/forms";
+
+type FormGroupConfig<T> = {
+  [P in keyof T]: [
+    T[P] | { value: T[P]; disabled: boolean },
+    (AbstractControlOptions | ValidatorFn | ValidatorFn[])?
+  ];
+};
+
+@Injectable({
+  providedIn: "root",
+})
 export class PaymentTermsService {
-  constructor(public mc: MomentCommonService) {}
+  paymentTerms$ = new Subject<IPaymentTerms>();
 
-  getPaymentTerms(): IPaymentTerm[] {
-    return [
-      {
-        paymentTermId: 1,
-        name: "gotówka",
-        isDescription: false,
-        isPaymentDate: false,
-      },
-      {
-        paymentTermId: 2,
-        name: "gotówka w terminie",
-        isDescription: true,
-        isPaymentDate: true,
-      },
-      {
-        paymentTermId: 3,
-        name: "przelew",
-        isDescription: false,
-        isPaymentDate: true,
-      },
-      {
-        paymentTermId: 4,
-        name: "karta płatnicza",
-        isDescription: false,
-        isPaymentDate: false,
-      },
-    ];
+  constructor(private fb: FormBuilder) {}
+
+  addDaysToDateISOFormat(daysToAdd: number, currentISODate: string): Date {
+    if (daysToAdd < 0) {
+      throw new Error("daysToAdd number should not be negative");
+    }
+
+    const DATE = DateTime.fromISO(currentISODate);
+    const IS_DATE = DateTime.isDateTime(DATE) && DATE.isValid;
+
+    if (IS_DATE === false) {
+      throw new Error("current date string is invalid");
+    }
+
+    const CURRENT_DATE = DateTime.fromISO(currentISODate);
+    const RES = new Date(CURRENT_DATE.plus({ days: +daysToAdd }).toString());
+
+    return RES;
   }
 
-  getPaymentTermsGroup(
-    fb: FormBuilder,
-    isDestroyed$: Subject<boolean>
-  ): FormGroup {
-    let paymentDay = `przelew, 60 dni, termin płatności: ${this.mc.getFormatedDate(
-      this.mc.getTodayConstTimeMoment()
-    )}`;
-    let res = fb.group({
-      combined: [paymentDay],
-      day0: [this.mc.getToday()],
-      description: [null],
-      paymentTerm: fb.control(this.getPaymentTerms()[2]),
-      paymentDate: [this.mc.getToday().add(60, "day"), Validators.required],
-      paymentDays: [60, Validators.required],
-    });
+  calcDateDifferenceISOFormat(
+    dateISOFormatA: string,
+    dateISOFormatB: string
+  ): number {
+    const A_DATE = DateTime.fromISO(dateISOFormatA);
+    const B_DATE = DateTime.fromISO(dateISOFormatB);
 
-    const combined = res.get("combined") as FormControl;
-    const day0 = res.get("day0") as FormControl;
-    const description = res.get("description") as FormControl;
-    const paymentDate = res.get("paymentDate") as FormControl;
-    const paymentDays = res.get("paymentDays") as FormControl;
-    const paymentTerm = res.get("paymentTerm") as FormControl;
+    const DATE_A_IS_VALID_DATE = this.isLuxonDate(A_DATE) && A_DATE.isValid;
+    const DATE_B_IS_VALID_DATE = this.isLuxonDate(B_DATE) && B_DATE.isValid;
 
-    //
-    // private function for update
-    //
+    if (DATE_A_IS_VALID_DATE === false || DATE_B_IS_VALID_DATE === false) {
+      throw new Error("Input date is invalid format/object date");
+    }
+    const DIFF = Math.ceil(B_DATE.diff(A_DATE, ["days"]).days);
 
-    let prepCombine = (): string => {
-      //
-      // defensive: if date is cleared..
-      //
-      let pTerm = paymentTerm.value;
-      if (!paymentDays.value || !paymentDate.value) {
-        return "błąd";
-      }
+    return DIFF;
+  }
 
-      if (pTerm.isPaymentDate && paymentDate.value == null) {
-        return;
-      }
-      let descr =
-        pTerm.isDescription &&
-        description.value != null &&
-        description.value.length > 0
-          ? ", " + description.value
-          : "";
-      let pDate = pTerm.isPaymentDate
-        ? `, ${
-            paymentDays.value
-          } dni,  termin płatności: ${this.mc.getFormatedDate(
-            paymentDate.value
-          )}`
+  infoPaymentTerms(paymentTerms: IPaymentTerms): string {
+    const PAY_NAME = paymentTerms.paymentTerm.name;
+    const IS_DATE = paymentTerms.paymentTerm.isPaymentDate ? true : false;
+
+    const DAY_DATE = IS_DATE
+      ? `, ${this.dzienDniFormat(
+          paymentTerms.paymentDays as number
+        )} w terminie: ${this.formatDateYearMonthDay(
+          new Date(paymentTerms.paymentDate as Date)
+        )}`
+      : "";
+
+    const DESCRIPTION =
+      paymentTerms.paymentTerm.isDescription && paymentTerms.description
+        ? `, ${paymentTerms.description}`
         : "";
-      let comb = `${pTerm.name}${pDate}${descr}`;
-      combined.patchValue(comb, { emitEvent: false });
-      return comb;
-    };
 
-    let updatePaymentDateBasedOnDays = (day: moment.Moment, days: number) => {
-      if (!day.isValid) {
-        return;
-      }
-      if (days < 0) {
-        return;
-      }
-      let _date: moment.Moment = day.clone().add(days, "days");
-      this.mc.setConstTimeMoment(_date);
-      paymentDate.setValue(_date, { emitEvent: false });
-    };
+    return `${PAY_NAME}${DAY_DATE}${DESCRIPTION}`;
+  }
+  convToLuxonDate(date: Date | string): DateTime {
+    const LUXON_DATE =
+      typeof date === "string"
+        ? DateTime.fromISO(date)
+        : DateTime.fromJSDate(date);
 
-    let day0$ = day0.valueChanges.pipe(
-      takeUntil(isDestroyed$),
-      map((_day: moment.Moment) => {
-        if (!_day.isValid) {
-          return empty();
-        }
-        updatePaymentDateBasedOnDays(_day, paymentDays.value);
-        return _day;
-      })
-    );
+    if (LUXON_DATE && LUXON_DATE.isValid === false) {
+      throw new Error("Input date is invalid format/object date");
+    }
 
-    let paymentDays$ = paymentDays.valueChanges.pipe(
-      takeUntil(isDestroyed$),
-      tap((_days: number) => {
-        updatePaymentDateBasedOnDays(day0.value, _days);
-      }),
-      map((d: number) => {
-        if (d < 0) {
-          paymentDays.setValue(0, { emitEvent: false });
-          return 0;
-        }
-      })
-    );
-
-    let paymentDate$ = paymentDate.valueChanges.pipe(
-      takeUntil(isDestroyed$),
-      debounceTime(500),
-      map((_date: moment.Moment) => {
-        if (_date == null) {
-          return null;
-        }
-        this.mc.setConstTimeMoment(_date);
-
-        let diff = _date.diff(day0.value, "days");
-
-        if (diff < 0) {
-          return null;
-        }
-
-        // if (!(moment(<moment.Moment>(day0.value))).isBefore(_date)) {
-        //   return null;
-        // }
-        paymentDays.patchValue(diff, { emitEvent: false });
-        paymentDate.patchValue(_date, { emitEvent: false });
-
-        return _date;
-      })
-    );
-
-    let paymentTerm$ = paymentTerm.valueChanges.pipe(
-      takeUntil(isDestroyed$),
-      tap((pTerm: IPaymentTerm) => {
-        if (pTerm.isPaymentDate) {
-          paymentDate.setValidators(Validators.required);
-          paymentDays.setValidators(Validators.required);
-          paymentDate.updateValueAndValidity({ emitEvent: false });
-          paymentDays.updateValueAndValidity({ emitEvent: false });
-        } else {
-          paymentDate.clearValidators();
-          paymentDays.clearValidators();
-          paymentDate.updateValueAndValidity({ emitEvent: false });
-          paymentDays.updateValueAndValidity({ emitEvent: false });
-        }
-      })
-    );
-
-    of()
-      .pipe(
-        merge(day0$, paymentDate$, paymentDays$, paymentTerm$),
-        takeUntil(isDestroyed$)
-      )
-      .subscribe((_data: any) => {
-        prepCombine();
-      });
-    return res;
+    return LUXON_DATE;
   }
 
-  patchPaymentTerms(data: IPaymentTerms, rForm: FormGroup) {
-    data.day0 = this.mc.convertToConstTime(data.day0);
-    data.paymentDate =
-      data.paymentDate != null ? moment(data.paymentDate) : data.day0;
-    data.paymentDays = data.paymentDays != null ? data.paymentDays : 0;
-    rForm.patchValue(data, { emitEvent: false });
-    rForm.markAsPristine();
+  czySobotaLubNiedziela(date: Date): boolean {
+    const DAY = DateTime.fromJSDate(date).weekdayLong;
+    const NOT_SOBOTA_OR_NIEDZIELA = DAY === "sobota" || DAY === "niedziela";
+
+    //const RES = NOT_WEEKEND_DAYS;
+
+    return NOT_SOBOTA_OR_NIEDZIELA;
+  }
+
+  dzienDniFormat(daysNumber: number): string {
+    return daysNumber && daysNumber === 1 ? "1 dzień" : `${daysNumber} dni`;
+  }
+
+  formatDateYearMonthDay(date: Date): string {
+    return DateTime.fromJSDate(date).toISODate({ format: "extended" });
+  }
+
+  getPaymentTermsGroup$(): FormGroup {
+    const PAYMENT_TERMS_CONFIG = {
+      day0: [new Date(), Validators.required],
+      paymentTerm: [this.getPaymentTermInitValue(), Validators.required],
+      description: [null],
+      paymentDate: [new Date()],
+      paymentDays: [14],
+    } as FormGroupConfig<IPaymentTerms>;
+
+    const rForm = this.fb.group(PAYMENT_TERMS_CONFIG);
+
+    return rForm;
+  }
+
+  getPaymentTermsInitValue(): IPaymentTerms {
+    return {
+      day0: new Date(),
+      isWeenkendAllowed: false,
+      paymentTerm: this.getPaymentTermInitValue(),
+      paymentTermsOptions: PAYMENT_TERMS_OPTIONS,
+    } as IPaymentTerms;
+  }
+
+  getPaymentTermInitValue(): IPaymentTerm {
+    return PAYMENT_TERMS_OPTIONS[3];
+  }
+
+  getPaymentTermOptions(): IPaymentTerm[] {
+    return PAYMENT_TERMS_OPTIONS;
+  }
+  getPaymentTermOptions$(): Observable<IPaymentTerm[]> {
+    return of(PAYMENT_TERMS_OPTIONS);
+  }
+
+  isLuxonDate(date: any): boolean {
+    return DateTime.isDateTime(date);
   }
 }

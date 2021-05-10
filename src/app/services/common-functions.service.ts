@@ -10,9 +10,7 @@ import {
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActivatedRoute } from "@angular/router";
 import { ICreationInfo } from "app/shared/interfaces/i-creation-info";
-import { IDateRange } from "app/shared/interfaces/i-date-range";
 import { IStatusCode } from "app/shared/interfaces/istatus-code";
-import * as moment from "moment";
 import { IErrorObj } from "../auth/interfaces/ierror-object";
 import {
   ILoad,
@@ -28,7 +26,6 @@ import { ITransportOffer } from "../other-modules/transport/interfaces/itranspor
 import { Subject } from "rxjs";
 import { CurrencyCommonService } from "app/other-modules/currency/currency-common.service";
 import { ICurrencyNbp } from "app/other-modules/currency/interfaces/i-currency-nbp";
-import { Moment } from "moment";
 import { IPaymentTerm } from "app/other-modules/payment-terms/interfaces/i-payment-term";
 import { isArray } from "util";
 import { ContractorService } from "app/other-modules/contractors/services/contractor.service";
@@ -36,7 +33,6 @@ import {
   IInvoiceExtraInfo,
   IInvoiceExtraInfoChecked,
 } from "app/other-modules/invoices/interfaces/iinvoice-sell";
-import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 import { PaymentTermsService } from "app/other-modules/payment-terms/services/payment-terms.service";
 import { takeUntil } from "rxjs/operators";
 
@@ -46,7 +42,6 @@ export class CommonFunctionsService {
     private snackBar: MatSnackBar,
     private pTermsService: PaymentTermsService,
     private currService: CurrencyCommonService,
-    public momentService: MomentCommonService,
     private companyService: ContractorService
   ) {
     this.logArr = [];
@@ -119,13 +114,6 @@ export class CommonFunctionsService {
 
   dateTimeLocaleFormat(): string {
     return "YYYY-MM-DDTHH:mm";
-  }
-
-  getNextHour(hoursToAdd: number = 1) {
-    return moment()
-      .add(hoursToAdd, "hours")
-      .minutes(0)
-      .format(this.dateTimeLocaleFormat());
   }
 
   getViewValueGroupName(): IViewValueGroupName[] {
@@ -609,20 +597,6 @@ export class CommonFunctionsService {
     return res;
   }
 
-  dateRangeActiveMonth(): IDateRange {
-    return <IDateRange>{
-      dateStart: moment().date(1),
-      dateEnd: moment(),
-    };
-  }
-
-  dateRangeLastQuarter(): IDateRange {
-    return <IDateRange>{
-      dateStart: moment().subtract(3, "month").date(1),
-      dateEnd: moment(),
-    };
-  }
-
   statusCheck(data: any, code: IStatusCode): IStatusCode {
     let res: IStatusCode = null;
     switch (code) {
@@ -721,7 +695,7 @@ export class CommonFunctionsService {
     return fb.group({
       loadTransEuId: [null, Validators.required],
       contactPersonsList: fb.array([]),
-      price: this.currService.getCurrencyNbpGroup(fb, isDestroyed$),
+      price: this.currService.getCurrencyNbpGroup(fb),
       sellingCompany: this.companyService.formCompanyGroup(fb),
       transEuId: [null, Validators.required],
     });
@@ -791,15 +765,14 @@ export class CommonFunctionsService {
   ): FormGroup {
     let res = fb.group({
       company: this.companyService.formCompanyGroup(fb),
-      date: [this.momentService.getTodayConstTimeMoment(), Validators.required],
-      price: this.currService.getCurrencyNbpGroup(fb, isDestroyed$),
-      paymentTerms: this.pTermsService.getPaymentTermsGroup(fb, isDestroyed$),
+      date: [new Date(), Validators.required],
+      price: this.currService.getCurrencyNbpGroup(fb),
     });
 
     res
       .get("date")
       .valueChanges.pipe(takeUntil(isDestroyed$))
-      .subscribe((s: Moment) => {
+      .subscribe((s: Date) => {
         let _day0 = <FormControl>res.get("paymentTerms.day0");
         _day0.setValue(s, { emitEvent: true });
       });
@@ -1221,20 +1194,6 @@ export class CommonFunctionsService {
     return Math.round(v * 100) / 100;
   }
 
-  setMomentDate(date: any): moment.Moment {
-    if (date == null || !moment(date).isValid) {
-      return null;
-    }
-    return moment(date);
-  }
-
-  setFormatedDateTime(date: any): string {
-    if (date == null || !moment(date).isValid) {
-      return null;
-    }
-    return moment(date).utc(false).format(this.dateTimeLocaleFormat());
-  }
-
   toastMake(message: string, action: string, actRoute: ActivatedRoute) {
     this.snackBar.open(message, null, {
       duration: 3000,
@@ -1247,12 +1206,7 @@ export class CommonFunctionsService {
       routeName: actRoute.snapshot.url.map((m) => m.path).join("/"),
     };
   }
-
-  today(): moment.Moment {
-    return moment();
-  }
 }
-
 export interface ILogItem {
   routeName: string;
   message: string;

@@ -7,13 +7,12 @@ import { FormGroup } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { IDialogTakNie } from "app/other-modules/dialog-confirmations/interfaces/i-dialog-tak-nie";
 import { empty, Subject, of } from "rxjs";
-import * as moment from "moment";
 import { ICurrency } from "app/other-modules/currency/interfaces/i-currency";
 import { finalize, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { TransportService } from "../../services/transport.service";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
-import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
+import { DateTimeCommonServiceService } from "app/other-modules/date-time-common/services/date-time-common-service.service";
 
 @Component({
   selector: "app-transport",
@@ -37,9 +36,9 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
 
   constructor(
     private actRoute: ActivatedRoute,
+    private dateTimeService: DateTimeCommonServiceService,
     private df: TransportService,
     private dialogConfirmationService: DialogConfirmationsService,
-    private momentService: MomentCommonService,
     private router: Router,
     private toastService: ToastMakeService
   ) {}
@@ -84,12 +83,13 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
             `Pobrano dane ${data.offerNo}, [id: ${data.transportOfferId}]`,
             "initData"
           );
-          this.df.patchTransport(data, this.rForm, this.fb, this.isDestroyed$);
+          this.df.patchTransport(data, this.rForm, this.fb);
           this.rForm.markAsPristine();
         });
     } else {
-      this.loadDate.patchValue(this.momentService.getNextHour());
-      this.unloadDate.patchValue(this.momentService.getNextHour(2));
+      const NOW_ISO = new Date().toISOString();
+      this.loadDate.patchValue(this.addHoursAndFormat(NOW_ISO, 1));
+      this.unloadDate.patchValue(this.addHoursAndFormat(NOW_ISO, 2));
       this.isPending = false;
       this.isFormReady = true;
     }
@@ -152,7 +152,7 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
           takeUntil(this.isDestroyed$)
         )
         .subscribe((s) => {
-          this.df.patchTransport(s, this.rForm, this.fb, this.isDestroyed$);
+          this.df.patchTransport(s, this.rForm, this.fb);
         });
     }
   }
@@ -207,7 +207,7 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
       this.rForm.value.transportOfferId == null
         ? 0
         : this.rForm.value.transportOfferId;
-    const d: moment.Moment = this.rForm.value.tradeInfo.date;
+    const d = this.rForm.value.tradeInfo.date;
 
     this.df
       .update(id, this.rForm.value)
@@ -227,9 +227,18 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
           `Pobrano zaktualizowane dane ${s.offerNo}, [id: ${s.transportOfferId}]`,
           "navSave"
         );
-        this.df.patchTransport(s, this.rForm, this.fb, this.isDestroyed$);
+        this.df.patchTransport(s, this.rForm, this.fb);
         this.rForm.markAsPristine();
       });
+  }
+
+  private addHoursAndFormat(dateTimeISO: string, hours: number): string {
+    return this.dateTimeService.formatYYYYMMDTHHMMSS(
+      this.dateTimeService.startOf(
+        this.dateTimeService.addToIsoDate(dateTimeISO, hours, "hours"),
+        "hour"
+      )
+    );
   }
 
   //#region getters

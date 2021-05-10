@@ -12,18 +12,16 @@ import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { Router } from "@angular/router";
-import { IDateRange } from "app/shared/interfaces/i-date-range";
 import { IListObj } from "../../../../shared/ilist-obj";
 import { ITitle } from "../../../../shared/ititle";
 import { InvoiceSellService } from "../services/invoice-sell.service";
 import { empty, Observable, of, Subject } from "rxjs";
-import { Moment } from "moment";
-import { DEFAULT_APP_VALUES } from "environments/environment";
 import { saveAs } from "file-saver";
 import { switchMap, take, takeUntil } from "rxjs/operators";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 import { InvoiceCommonFunctionsService } from "../../common/invoice-common-functions.service";
 import { InvoiceSellGroupCloneComponent } from "app/other-modules/invoice-sell-group-clone/components/invoice-sell-group-clone/invoice-sell-group-clone.component";
+import { DateTimeCommonServiceService } from "app/other-modules/date-time-common/services/date-time-common-service.service";
 
 @Component({
   selector: "app-invoice-sell-list",
@@ -33,7 +31,7 @@ import { InvoiceSellGroupCloneComponent } from "app/other-modules/invoice-sell-g
 export class InvoiceSellListComponent implements OnInit, OnDestroy, IListObj {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  dateRange: IDateRange = <IDateRange>{};
+  dateRange = this.dateTimeService.getRangeLastQuarter();
   dataSource: any;
   displayedColumns: string[];
   isDestroyed$ = new Subject<boolean>() as Subject<boolean>;
@@ -47,6 +45,7 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, IListObj {
   search$: FormControl;
 
   constructor(
+    private dateTimeService: DateTimeCommonServiceService,
     private invoiceCommonService: InvoiceCommonFunctionsService,
     private invoiceSellService: InvoiceSellService,
     private router: Router,
@@ -63,16 +62,15 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, IListObj {
   }
 
   ngOnInit() {
-    this.dateRange = this.invoiceCommonService.dateRangeLastQuarter();
     this.initObservable();
-    this.initData(this.dateRange);
+    this.initData();
   }
 
   createNew(): void {
     this.router.navigate(["/invoices/fakturaSprzedazy", 0]);
   }
 
-  initData(dateRange?: IDateRange): void {
+  initData(): void {
     this.isPending = true;
 
     this.displayedColumns = [
@@ -87,15 +85,15 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, IListObj {
       "brutto",
     ];
     this.invoiceSellService
-      .getAll(dateRange)
+      .getAll(this.dateRange)
       .pipe(takeUntil(this.isDestroyed$))
       .subscribe((s: any) => {
         this.dataSource = new MatTableDataSource(s);
         this.toastService.toastMake(
-          `Pobrano dane dla zakresu od ${(<Moment>dateRange.dateStart).format(
-            DEFAULT_APP_VALUES.dateLocalFormat
-          )} do ${(<Moment>dateRange.dateEnd).format(
-            DEFAULT_APP_VALUES.dateLocalFormat
+          `Pobrano dane dla zakresu od ${this.dateTimeService.formatYYYYMMDD(
+            this.dateRange.dateStart
+          )} do ${this.dateTimeService.formatYYYYMMDD(
+            this.dateRange.dateEnd
           )}, razem: ${s.length}`,
           "initData"
         );
@@ -167,7 +165,7 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, IListObj {
   }
 
   getDataByRange(range: any) {
-    this.initData(range);
+    this.initData();
   }
 
   genCsv() {
@@ -188,10 +186,10 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, IListObj {
         );
         saveAs(
           b,
-          `Lista faktur sprzedaży ${this.dateRange.dateStart.format(
-            this.invoiceCommonService.dateLocaleFormat()
-          )} - ${this.dateRange.dateEnd.format(
-            this.invoiceCommonService.dateLocaleFormat()
+          `Lista faktur sprzedaży ${this.dateTimeService.formatYYYYMMDD(
+            this.dateRange.dateStart
+          )} - ${this.dateTimeService.formatYYYYMMDD(
+            this.dateRange.dateEnd
           )}.csv`
         );
       });

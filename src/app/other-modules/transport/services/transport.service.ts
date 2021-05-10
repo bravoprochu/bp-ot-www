@@ -13,25 +13,23 @@ import {
 } from "@angular/forms";
 import { ContractorService } from "app/other-modules/contractors/services/contractor.service";
 import { CurrencyCommonService } from "app/other-modules/currency/currency-common.service";
-import { Moment } from "moment";
 import { PaymentTermsService } from "app/other-modules/payment-terms/services/payment-terms.service";
 import { Subject } from "rxjs";
-import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
-import { IDateRange } from "@bpCommonInterfaces/i-date-range";
-import * as moment from "moment";
 import { ITransportOffer } from "../interfaces/itransport-offer";
 import { ICreationInfo } from "@bpCommonInterfaces/i-creation-info";
 import { ICurrencyNbp } from "app/other-modules/currency/interfaces/i-currency-nbp";
 import { ILoadTradeInfo } from "@bpCommonInterfaces/iload";
+import { DateTimeCommonServiceService } from "app/other-modules/date-time-common/services/date-time-common-service.service";
 
 @Injectable()
 export class TransportService extends DataFactoryService {
   constructor(
+    private dateTimeService: DateTimeCommonServiceService,
     public http: HttpClient,
     private token: TokenService,
     private contractorService: ContractorService,
     private currencyService: CurrencyCommonService,
-    private momentService: MomentCommonService,
+
     private pTermsService: PaymentTermsService
   ) {
     super(environment.apiUrlTransportOffer, http, token);
@@ -72,13 +70,6 @@ export class TransportService extends DataFactoryService {
     return;
   }
 
-  dateRangeLastQuarter(): IDateRange {
-    return <IDateRange>{
-      dateStart: moment().subtract(3, "month").date(1),
-      dateEnd: moment(),
-    };
-  }
-
   formCreationInfo(fb: FormBuilder) {
     return fb.group({
       createdBy: [null],
@@ -94,16 +85,16 @@ export class TransportService extends DataFactoryService {
   ): FormGroup {
     let res = fb.group({
       company: this.contractorService.formCompanyGroup(fb),
-      date: [this.momentService.getTodayConstTimeMoment(), Validators.required],
-      price: this.currencyService.getCurrencyNbpGroup(fb, isDestroyed$),
-      paymentTerms: this.pTermsService.getPaymentTermsGroup(fb, isDestroyed$),
+      date: [this.dateTimeService.getToday(), Validators.required],
+      price: this.currencyService.getCurrencyNbpGroup(fb),
+      paymentTerms: this.pTermsService.getPaymentTermsGroup$(),
     });
 
     res
       .get("date")
       .valueChanges.pipe(takeUntil(isDestroyed$))
-      .subscribe((s: Moment) => {
-        let _day0 = <FormControl>res.get("paymentTerms.day0");
+      .subscribe((s: Date) => {
+        let _day0 = res.get("paymentTerms.day0") as FormControl;
         _day0.setValue(s, { emitEvent: true });
       });
     return res;
@@ -175,19 +166,15 @@ export class TransportService extends DataFactoryService {
   }
 
   patchCreationInfo(info: ICreationInfo, rForm: FormGroup) {
-    info.createdDateTime = this.momentService.setFormatedDateTime(
-      info.createdDateTime
-    );
-    info.modifyDateTime = this.momentService.setFormatedDateTime(
-      info.modifyDateTime
-    );
+    info.createdDateTime = new Date(info.createdDateTime).toISOString();
+    info.modifyDateTime = new Date(info.modifyDateTime).toISOString();
     rForm.patchValue(info, { emitEvent: false });
   }
 
   patchTradeInfo(info: ILoadTradeInfo, rForm: FormGroup, fb: FormBuilder) {
     //rForm - formLoadTradeInfoGroup
     //patching companyData
-    info.date = this.momentService.convertToConstTime(info.date);
+    // info.date = this.momentService.convertToConstTime(info.date);
     this.contractorService.patchCompanyData(
       info.company,
       <FormGroup>rForm.get("company"),
@@ -198,34 +185,41 @@ export class TransportService extends DataFactoryService {
       <ICurrencyNbp>info.price,
       <FormGroup>rForm.get("price")
     );
-    this.pTermsService.patchPaymentTerms(
-      info.paymentTerms,
-      <FormGroup>rForm.get("paymentTerms")
-    );
+    // this.pTermsService.patchPaymentTerms(
+    //   info.paymentTerms,
+    //   <FormGroup>rForm.get("paymentTerms")
+    // );
     rForm.patchValue(info, { emitEvent: false, onlySelf: true });
   }
 
   patchTransport(
-    tr: ITransportOffer,
+    transportData: ITransportOffer,
     rForm: FormGroup,
-    fb: FormBuilder,
-    isDestroyed$: Subject<boolean>
+    fb: FormBuilder
   ) {
     let creationInfo = <FormGroup>rForm.get("creationInfo");
 
-    this.patchCreationInfo(tr.creationInfo, creationInfo);
+    this.patchCreationInfo(transportData.creationInfo, creationInfo);
 
-    tr.load.date = this.momentService.setFormatedDateTime(tr.load.date);
-    tr.unload.date = this.momentService.setFormatedDateTime(tr.unload.date);
+    /**
+     * native dateTime input format is similar to ISO format (except - last letter)
+     *
+     */
+    transportData.load.date = transportData.load.date.slice(0, -1);
+    transportData.unload.date = transportData.unload.date.slice(0, -1);
 
     this.contractorService.patchCompanyData(
-      tr.tradeInfo.company,
+      transportData.tradeInfo.company,
       <FormGroup>rForm.get("tradeInfo.company"),
       fb,
       false
     );
-    this.patchTradeInfo(tr.tradeInfo, <FormGroup>rForm.get("tradeInfo"), fb);
+    this.patchTradeInfo(
+      transportData.tradeInfo,
+      <FormGroup>rForm.get("tradeInfo"),
+      fb
+    );
 
-    rForm.patchValue(tr, { emitEvent: false, onlySelf: true });
+    rForm.patchValue(transportData, { emitEvent: false });
   }
 }

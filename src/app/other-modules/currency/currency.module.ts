@@ -3,7 +3,6 @@ import { CommonModule } from "@angular/common";
 import { CurrencyListComponent } from "./currency-list/currency-list.component";
 import { CurrencyCommonService } from "./currency-common.service";
 import { CurrencyNbpComponent } from "./currency-nbp/currency-nbp.component";
-import { MomentCommonModule } from "app/other-modules/moment-common/moment-common.module";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MatButtonModule } from "@angular/material/button";
 import { MatDatepickerModule } from "@angular/material/datepicker";
@@ -17,11 +16,10 @@ import {
   MAT_DATE_FORMATS,
   MAT_DATE_LOCALE,
   MAT_NATIVE_DATE_FORMATS,
-  NativeDateAdapter,
 } from "@angular/material/core";
 import { Platform, PlatformModule } from "@angular/cdk/platform";
-import { CustomDateAdapterPl } from "./classes/custom-date-adapter-pl";
 import { DateTimeCommonModule } from "../date-time-common/date-time-common.module";
+import { CustomDateAdapterPl } from "app/common-functions/angular-datepicker/custom-date-adapter-pl";
 
 const IMPORT_EXPORT_MODULES = [
   DateTimeCommonModule,
@@ -32,7 +30,6 @@ const IMPORT_EXPORT_MODULES = [
   MatIconModule,
   MatInputModule,
   MatSelectModule,
-  MomentCommonModule,
   PlatformModule,
   ReactiveFormsModule,
 ];

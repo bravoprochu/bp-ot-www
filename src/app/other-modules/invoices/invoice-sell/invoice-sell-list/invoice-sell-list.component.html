@@ -4,7 +4,7 @@
   [subtitle]="navTitle?.subtitle"
   [dateRange]="dateRange"
   (onCreate)="createNew()"
-  (onRefresh)="initData(dateRange)"
+  (onRefresh)="initData()"
   (onSearch)="searchFilter($event)"
   (onDateRange)="getDataByRange($event)"
 ></app-nav-list>
@@ -46,7 +46,7 @@
 
   <mat-checkbox [formControl]="isGroupClone$">Group clone</mat-checkbox>
 </div>
-<!-- 
+<!--
 <app-invoice-sell-group-clone
   *ngIf="isGroupClone"
 ></app-invoice-sell-group-clone> -->

@@ -8,12 +8,11 @@ import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { Subject } from "rxjs";
-import { Moment } from "moment";
-import { DEFAULT_APP_VALUES } from "environments/environment.prod";
 import { takeUntil, take } from "rxjs/operators";
 import { saveAs } from "file-saver";
 import { InvoiceCommonFunctionsService } from "../../common/invoice-common-functions.service";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
+import { DateTimeCommonServiceService } from "app/other-modules/date-time-common/services/date-time-common-service.service";
 
 @Component({
   selector: "app-invoice-sell-buy-list",
@@ -34,6 +33,7 @@ export class InvoiceBuyListComponent implements OnInit, OnDestroy, IListObj {
   displayedColumns: string[];
 
   constructor(
+    private dateTimeService: DateTimeCommonServiceService,
     private invoiceCommonService: InvoiceCommonFunctionsService,
     private df: InvoiceBuyService,
     private router: Router,
@@ -47,7 +47,7 @@ export class InvoiceBuyListComponent implements OnInit, OnDestroy, IListObj {
   }
 
   ngOnInit() {
-    this.dateRange = this.invoiceCommonService.dateRangeLastQuarter();
+    this.dateRange = this.dateTimeService.getRangeLastQuarter();
     this.isDestroyed$ = new Subject<boolean>();
     this.isPending = true;
     this.initData(this.dateRange);
@@ -77,10 +77,10 @@ export class InvoiceBuyListComponent implements OnInit, OnDestroy, IListObj {
       .subscribe((s) => {
         this.dataSource = new MatTableDataSource(s);
         this.toastService.toastMake(
-          `Pobrano dane dla zakresu od ${(<Moment>dateRange?.dateStart).format(
-            DEFAULT_APP_VALUES?.dateLocalFormat
-          )} do ${(<Moment>dateRange?.dateEnd).format(
-            DEFAULT_APP_VALUES?.dateLocalFormat
+          `Pobrano dane dla zakresu od ${this.dateTimeService.formatYYYYMMDD(
+            this.dateRange.dateStart
+          )} do ${this.dateTimeService.formatYYYYMMDD(
+            this.dateRange.dateEnd
           )}, razem: ${s.length}`,
           "initData"
         );
@@ -115,10 +115,10 @@ export class InvoiceBuyListComponent implements OnInit, OnDestroy, IListObj {
         );
         saveAs(
           b,
-          `Lista faktur zakupowych ${this.dateRange.dateStart.format(
-            this.invoiceCommonService.dateLocaleFormat()
-          )} - ${this.dateRange.dateEnd.format(
-            this.invoiceCommonService.dateLocaleFormat()
+          `Lista faktur zakupowych ${this.dateTimeService.formatYYYYMMDD(
+            this.dateRange.dateStart
+          )} - ${this.dateTimeService.formatYYYYMMDD(
+            this.dateRange.dateEnd
           )}.csv`
         );
       });

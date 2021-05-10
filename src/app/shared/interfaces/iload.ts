@@ -4,7 +4,6 @@ import { IGeo } from "./igeo";
 import { IAddress } from "app/other-modules/contractors/interfaces/iaddress";
 import { IUnitValue } from "app/shared/interfaces/iunit-value";
 import { IValueViewValue } from "app/shared/interfaces/ivalue-view-value";
-import { Moment } from "moment";
 import { ICurrencyNbp } from "app/other-modules/currency/interfaces/i-currency-nbp";
 import { ICompany } from "app/other-modules/contractors/interfaces/icompany";
 import { IInvoiceExtraInfo } from "app/other-modules/invoices/interfaces/iinvoice-sell";
@@ -89,7 +88,7 @@ export interface ILoadInfoExtra {
 
 export interface ILoadTradeInfo {
   company: ICompany;
-  date: Moment;
+  date: string;
   price: ICurrencyNbp;
   paymentTerms: IPaymentTerms;
 }

@@ -7,8 +7,10 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { RouterModule } from "@angular/router";
+import { DateTimeCommonModule } from "../date-time-common/date-time-common.module";
 
 const IMPORT_EXPORT_MODULES = [
+  DateTimeCommonModule,
   FlexLayoutModule,
   DateRangeModule,
   MatButtonModule,

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
-import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 
 import { ExtraInfoCheckedComponent } from "./extra-info-checked.component";
 
@@ -11,7 +10,7 @@ describe("ExtraInfoCheckedComponent", () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [ExtraInfoCheckedComponent],
-        providers: [MomentCommonService],
+        providers: [],
       }).compileComponents();
     })
   );

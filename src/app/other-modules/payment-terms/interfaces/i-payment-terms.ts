@@ -1,15 +1,9 @@
-import { IPaymentTerm } from "./i-payment-term";
-import { InvoiceTypeEnum } from "@bpCommonInterfaces/i-invoice-type-enum";
-import { Moment } from "moment";
-
+import { IPaymentTerm } from './i-payment-term';
 
 export interface IPaymentTerms {
-    combined: string,
-    day0:Moment,
-    description?: string,
-    paymentTerm: IPaymentTerm,
-    paymentDate?: Moment,
-    paymentDays?: number,
-    paymentTermId: number,
-    invoiceType: InvoiceTypeEnum,
+  day0: Date | string;
+  description?: string | null;
+  paymentTerm: IPaymentTerm;
+  paymentDate?: Date | string | null;
+  paymentDays?: number | null;
 }

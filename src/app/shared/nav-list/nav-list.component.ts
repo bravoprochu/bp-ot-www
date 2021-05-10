@@ -3,8 +3,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { IDateRange } from "app/shared/interfaces/i-date-range";
 import { OnDestroy } from "@angular/core";
 import { Subject } from "rxjs";
-import * as moment from "moment";
 import { takeUntil } from "rxjs/operators";
+import { DateTimeCommonServiceService } from "app/other-modules/date-time-common/services/date-time-common-service.service";
 
 @Component({
   selector: "app-nav-list",
@@ -18,9 +18,20 @@ export class NavListComponent implements OnInit, OnDestroy {
   @Output() onRefresh = new EventEmitter();
   @Input() title: string;
   @Input() subtitle: string;
-  @Input() dateRange: IDateRange;
+  @Input() dateRange?: IDateRange;
+  activeRange: boolean;
+  dateRangeIsUndefined: boolean;
+  infoSearchFilter: string;
+  searchIsActive: boolean;
+  showCreate: boolean;
+  showDateRange: boolean;
+  showSearch: boolean;
 
-  constructor() {}
+  isDestroyed$: Subject<boolean>;
+  search$: FormControl;
+  zakresInfo: string;
+
+  constructor(private dateTimeService: DateTimeCommonServiceService) {}
 
   ngOnDestroy(): void {
     this.isDestroyed$.next(true);
@@ -31,10 +42,10 @@ export class NavListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.isDestroyed$ = new Subject<boolean>();
     this.search$ = new FormControl();
-    if (this.dateRange == undefined) {
+    if (this.dateRange === undefined) {
       this.dateRangeIsUndefined = true;
       this.showDateRange = false;
-      this.dateRange = this.dateRangeActiveMonth();
+      this.dateRange = this.dateTimeService.getRangeActiveMonth();
     } else {
       this.showDateRange = true;
     }
@@ -49,18 +60,6 @@ export class NavListComponent implements OnInit, OnDestroy {
         this.infoSearchFilter = s == "" ? "" : "[TextFilter] ";
       });
   }
-
-  activeRange: boolean;
-  dateRangeIsUndefined: boolean;
-  infoSearchFilter: string;
-  searchIsActive: boolean;
-  showCreate: boolean;
-  showDateRange: boolean;
-  showSearch: boolean;
-
-  isDestroyed$: Subject<boolean>;
-  search$: FormControl;
-  zakresInfo: string;
 
   click() {
     this.onCreate.emit();
@@ -86,24 +85,6 @@ export class NavListComponent implements OnInit, OnDestroy {
     }
   }
 
-  dateLocaleFormat(): string {
-    return "YYYY-MM-DD";
-  }
-
-  dateRangeActiveMonth(): IDateRange {
-    return <IDateRange>{
-      dateStart: moment().date(1),
-      dateEnd: moment(),
-    };
-  }
-
-  dateRangeLastQuarter(): IDateRange {
-    return <IDateRange>{
-      dateStart: moment().subtract(3, "month").date(1),
-      dateEnd: moment(),
-    };
-  }
-
   refresh() {
     this.onRefresh.emit();
   }
@@ -116,8 +97,12 @@ export class NavListComponent implements OnInit, OnDestroy {
     if (!this.showDateRange) {
       return;
     }
-    this.zakresInfo = `od ${this.dateRange.dateStart.format(
-      this.dateLocaleFormat()
-    )} do ${this.dateRange.dateEnd.format(this.dateLocaleFormat())}`;
+    const DATE_START = this.dateTimeService.formatYYYYMMDD(
+      this.dateRange.dateStart
+    );
+    const DATE_END = this.dateTimeService.formatYYYYMMDD(
+      this.dateRange.dateEnd
+    );
+    this.zakresInfo = `od ${DATE_START} do ${DATE_END}`;
   }
 }

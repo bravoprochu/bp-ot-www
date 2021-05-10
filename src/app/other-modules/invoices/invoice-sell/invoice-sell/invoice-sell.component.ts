@@ -3,7 +3,7 @@ import { IDetailObj } from "../../../../shared/idetail-obj";
 import { INavDetailInfo } from "../../../../shared/interfaces/inav-detail-info";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { IBasicActions } from "app/shared/ibasic-actions";
 import { FormControl } from "@angular/forms";
 import { saveAs } from "file-saver";
@@ -29,9 +29,9 @@ import { ICurrency } from "app/other-modules/currency/interfaces/i-currency";
 import { IInvoicePos } from "../../interfaces/iinvoice-pos";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 import { Location } from "@angular/common";
-import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
 import { IDialogTakNie } from "app/other-modules/dialog-confirmations/interfaces/i-dialog-tak-nie";
+import { DateTimeCommonServiceService } from "app/other-modules/date-time-common/services/date-time-common-service.service";
 
 @Component({
   selector: "app-invoice-sell",
@@ -50,10 +50,10 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
 
   constructor(
     private actRoute: ActivatedRoute,
+    private dateTimeService: DateTimeCommonServiceService,
     private df: InvoiceSellService,
     private currService: CurrencyCommonService,
     private dialogConfirmationService: DialogConfirmationsService,
-    private momentService: MomentCommonService,
     private icf: InvoiceCommonFunctionsService,
     public fb: FormBuilder,
     private location: Location,
@@ -85,7 +85,6 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
 
   public initForm(): void {
     this.rForm = this.icf.formInvoiceSellGroup(this.fb, this.isDestroyed$);
-
     this.paymentIsDone.valueChanges
       .pipe(takeUntil(this.isDestroyed$))
       .subscribe((s) => {
@@ -113,7 +112,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
           };
           if (_isChecked && (<ICurrencyNbp>this.currencyNbp.value).rate == 0) {
             this.currencyNbp.patchValue(_currNbp, { emitEvent: false });
-            return this.currService.getCurrencyNbp$(_currNbp);
+            return this.currService.getExchangeFromNbpService$(_currNbp);
           } else {
             return empty();
           }
@@ -131,7 +130,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
         if (_curr.name == "PLN") {
           this.extraInfoIsTaxNbpExchanged.setValue(false, { emitEvent: false });
           let currNbpCurrency = this.currencyNbp.get("currency");
-          (<FormControl>currNbpCurrency).setValue(_curr, {
+          currNbpCurrency.setValue(_curr, {
             emitEvent: this.extraInfoIsTaxNbpExchanged.value,
           });
         }
@@ -342,14 +341,14 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
             ) {
               this.extraInfoCheckedCmr.patchValue({
                 checked: true,
-                date: this.momentService.getToday(),
+                date: this.dateTimeService.getToday(),
                 info: "auto print faktury",
               } as IInvoiceExtraInfoChecked);
             }
 
             this.extraInfoCheckedSent.patchValue({
               checked: true,
-              date: this.momentService.getToday(),
+              date: this.dateTimeService.getToday(),
               info: "auto print faktury",
             } as IInvoiceExtraInfoChecked);
 
@@ -408,22 +407,25 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
     }`;
   }
 
-  prepExtraInfoTaxExchangedNbp(_currNbp: ICurrencyNbp): void {
-    const netto = this.totalNetto.value;
-    const nettoPLN = this.icf.roundToCurrency(netto * _currNbp.rate);
-    const brutto = this.totalBrutto.value;
-    const bruttoPLN = this.icf.roundToCurrency(brutto * _currNbp.rate);
+  prepExtraInfoTaxExchangedNbp(currNbp: ICurrencyNbp): void {
+    const netto = this.currService.formatTwoDigits(this.totalNetto.value);
+    const nettoPLN = this.currService.formatTwoDigits(
+      this.totalNetto.value * currNbp.rate
+    );
+    const brutto = this.currService.formatTwoDigits(this.totalBrutto.value);
+    const bruttoPLN = this.currService.formatTwoDigits(
+      this.totalBrutto.value * currNbp.rate
+    );
+    const tax = this.currService.formatTwoDigits(this.totalTax.value);
+    const taxPLN = this.currService.formatTwoDigits(
+      this.totalTax.value * currNbp.rate
+    );
 
-    let info = `Średni kurs dla ${
-      _currNbp.currency.name
-    } z dnia ${this.momentService.getFormatedDate(_currNbp.rateDate)} (${
-      _currNbp.rate
-    }) ||| Netto (${netto}) wartość: ${nettoPLN} PLN ||| Podatek VAT (${this.icf.roundToCurrency(
-      _currNbp.price
-    )}) wartość: ${this.icf.roundToCurrency(
-      _currNbp.plnValue
-    )} PLN ||| Brutto (${brutto}) wartość: ${bruttoPLN} PLN `;
-    this.extraInfoTaxExchangedInfo.setValue(info);
+    const BASIC_EXCHANGE_INFO = this.currService.prepCombinedInfoNbp(currNbp);
+
+    const INFO = `${BASIC_EXCHANGE_INFO} ||| Netto (${netto}) wartość: ${nettoPLN} PLN ||| Podatek VAT (${tax}) wartość: ${taxPLN} PLN ||| Brutto (${brutto}) wartość: ${bruttoPLN} PLN `;
+
+    this.extraInfoTaxExchangedInfo.setValue(INFO);
   }
 
   prepCorrectionOriginalData(): void {
@@ -469,92 +471,92 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   //#region geters
 
   get baseInvoiceId(): FormControl {
-    return <FormControl>this.rForm.get("baseInvoiceId");
+    return this.rForm.get("baseInvoiceId") as FormControl;
   }
 
   get companyBuyer(): FormGroup {
-    return <FormGroup>this.rForm.get("companyBuyer");
+    return this.rForm.get("companyBuyer") as FormGroup;
   }
 
   get companySeller(): FormGroup {
-    return <FormGroup>this.rForm.get("companySeller");
+    return this.rForm.get("companySeller") as FormGroup;
   }
 
   get creationInfo(): FormGroup {
-    return <FormGroup>this.rForm.get("creationInfo");
+    return this.rForm.get("creationInfo") as FormGroup;
   }
 
   get correctionId(): FormControl {
-    return <FormControl>this.rForm.get("correctionId");
+    return this.rForm.get("correctionId") as FormControl;
   }
 
   get correctionTotalInfoFc(): FormControl {
-    return <FormControl>this.rForm.get("correctionTotalInfo");
+    return this.rForm.get("correctionTotalInfo") as FormControl;
   }
 
   get currency(): FormControl {
-    return <FormControl>this.rForm.get("currency");
+    return this.rForm.get("currency") as FormControl;
   }
 
   get currencyNbp(): FormGroup {
-    return <FormGroup>this.rForm.get("extraInfo.currencyNbp");
+    return this.rForm.get("extraInfo.currencyNbp") as FormGroup;
   }
 
   get extraInfo(): FormGroup {
-    return <FormGroup>this.rForm.get("extraInfo");
+    return this.rForm.get("extraInfo") as FormGroup;
   }
 
   get extraInfoCheckedCmr(): FormGroup {
-    return <FormGroup>this.rForm.get("extraInfo.cmr");
+    return this.rForm.get("extraInfo.cmr") as FormGroup;
   }
 
   get extraInfoCheckedRecived(): FormGroup {
-    return <FormGroup>this.rForm.get("extraInfo.recived");
+    return this.rForm.get("extraInfo.recived") as FormGroup;
   }
 
   get extraInfoCheckedSent(): FormGroup {
-    return <FormGroup>this.rForm.get("extraInfo.sent");
+    return this.rForm.get("extraInfo.sent") as FormGroup;
   }
   get extraInfoIsTaxNbpExchanged(): FormControl {
-    return <FormControl>this.rForm.get("extraInfo.is_tax_nbp_exchanged");
+    return this.rForm.get("extraInfo.is_tax_nbp_exchanged") as FormControl;
   }
   get extraInfoTaxExchangedInfo(): FormControl {
-    return <FormControl>this.rForm.get("extraInfo.tax_exchanged_info");
+    return this.rForm.get("extraInfo.tax_exchanged_info") as FormControl;
   }
 
   get extraInfoTtotalBruttoInWords(): FormControl {
-    return <FormControl>this.rForm.get("extraInfo.total_brutto_in_words");
+    return this.rForm.get("extraInfo.total_brutto_in_words") as FormControl;
   }
 
   get getCorrectionPaymenntInfo(): FormControl {
-    return <FormControl>this.rForm.get("getCorrectionPaymenntInfo");
+    return this.rForm.get("getCorrectionPaymenntInfo") as FormControl;
   }
 
   get getInvoiceValue(): FormControl {
-    return <FormControl>this.rForm.get("getInvoiceValue");
+    return this.rForm.get("getInvoiceValue") as FormControl;
   }
 
   get info(): FormControl {
-    return <FormControl>this.rForm.get("info");
+    return this.rForm.get("info") as FormControl;
   }
 
   get invoiceSellId(): FormControl {
-    return <FormControl>this.rForm.get("invoiceSellId");
+    return this.rForm.get("invoiceSellId") as FormControl;
   }
 
   get invoiceNo(): FormControl {
-    return <FormControl>this.rForm.get("invoiceNo");
+    return this.rForm.get("invoiceNo") as FormControl;
   }
 
   get invoiceOriginalNo(): FormControl {
-    return <FormControl>this.rForm.get("invoiceOriginalNo");
+    return this.rForm.get("invoiceOriginalNo") as FormControl;
   }
   get invoiceOriginalPaid(): FormControl {
-    return <FormControl>this.rForm.get("invoiceOriginalPaid");
+    return this.rForm.get("invoiceOriginalPaid") as FormControl;
   }
 
   get isCorrection(): FormControl {
-    return <FormControl>this.rForm.get("isCorrection");
+    return this.rForm.get("isCorrection") as FormControl;
   }
 
   get isLoad(): boolean {
@@ -570,47 +572,47 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
   get invoiceCorrectionsLines(): FormGroup {
-    return <FormGroup>this.rForm.get("invoiceLines.corrections");
+    return this.rForm.get("invoiceLines.corrections") as FormGroup;
   }
 
   get invoiceCurrentLines(): FormGroup {
-    return <FormGroup>this.rForm.get("invoiceLines.current");
+    return this.rForm.get("invoiceLines.current") as FormGroup;
   }
 
   get invoiceOriginalLines(): FormGroup {
-    return <FormGroup>this.rForm.get("invoiceLines.original");
+    return this.rForm.get("invoiceLines.original") as FormGroup;
   }
 
   get paymentDate(): FormControl {
-    return <FormControl>this.rForm.get("paymentDate");
+    return this.rForm.get("paymentDate") as FormControl;
   }
 
   get paymentIsDone(): FormControl {
-    return <FormControl>this.rForm.get("paymentIsDone");
+    return this.rForm.get("paymentIsDone") as FormControl;
   }
 
   get paymentTerms(): FormGroup {
-    return <FormGroup>this.rForm.get("paymentTerms");
+    return this.rForm.get("paymentTerms") as FormGroup;
   }
 
   get paymentIsTermsPaymentDays(): FormControl {
-    return <FormControl>this.rForm.get("paymentTerms.paymentDays");
+    return this.rForm.get("paymentTerms.paymentDays") as FormControl;
   }
 
   get invoiceTotal(): FormGroup {
-    return <FormGroup>this.rForm.get("invoiceTotal");
+    return this.rForm.get("invoiceTotal") as FormGroup;
   }
 
   get invoiceTotalCorrections(): FormGroup {
-    return <FormGroup>this.rForm.get("invoiceTotal.corrections");
+    return this.rForm.get("invoiceTotal.corrections") as FormGroup;
   }
 
   get invoiceTotalCurrent(): FormGroup {
-    return <FormGroup>this.rForm.get("invoiceTotal.current");
+    return this.rForm.get("invoiceTotal.current") as FormGroup;
   }
 
   get invoiceTotalOriginal(): FormGroup {
-    return <FormGroup>this.rForm.get("invoiceTotal.original");
+    return this.rForm.get("invoiceTotal.original") as FormGroup;
   }
 
   get rates(): FormArray {
@@ -618,19 +620,19 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
   get sellingDate(): FormControl {
-    return <FormControl>this.rForm.get("dateOfSell");
+    return this.rForm.get("dateOfSell") as FormControl;
   }
 
   get totalBrutto(): FormControl {
-    return <FormControl>this.rForm.get("invoiceTotal.current.total_brutto");
+    return this.rForm.get("invoiceTotal.current.total_brutto") as FormControl;
   }
 
   get totalNetto(): FormControl {
-    return <FormControl>this.rForm.get("invoiceTotal.current.total_netto");
+    return this.rForm.get("invoiceTotal.current.total_netto") as FormControl;
   }
 
   get totalTax(): FormControl {
-    return <FormControl>this.rForm.get("invoiceTotal.current.total_tax");
+    return this.rForm.get("invoiceTotal.current.total_tax") as FormControl;
   }
 
   //#endregion

@@ -1,6 +1,4 @@
-import { Moment } from "moment";
-
-export interface IDateRange{
-    dateStart:Moment,
-    dateEnd:Moment
+export interface IDateRange {
+  dateStart: string;
+  dateEnd: string;
 }

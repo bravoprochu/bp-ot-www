@@ -1,11 +1,9 @@
-import { IInvoiceCommon } from './iinvoice-common';
-import { Moment } from 'moment';
-
+import { IInvoiceCommon } from "./iinvoice-common";
 
 export interface IInvoiceBuy extends IInvoiceCommon {
-    invoiceBuyId:number,
-    invoiceReceivedDate: Moment,
-    isInvoiceReceived: boolean,
-    paymentIsDone:boolean,
-    paymentDate:Moment,
+  invoiceBuyId: number;
+  invoiceReceivedDate: string;
+  isInvoiceReceived: boolean;
+  paymentIsDone: boolean;
+  paymentDate: string;
 }

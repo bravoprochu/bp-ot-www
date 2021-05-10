@@ -2,7 +2,6 @@ import { IInvoicePos } from "./iinvoice-pos";
 import { IInvoiceTotal } from "./iinvoice-total";
 import { IInvoiceCommon } from "./iinvoice-common";
 import { IInvoiceRate } from "./iinvoice-rate";
-import { Moment } from "moment";
 import { ICurrencyNbp } from "app/other-modules/currency/interfaces/i-currency-nbp";
 
 export interface IInvoiceSell extends IInvoiceCommon {
@@ -14,7 +13,7 @@ export interface IInvoiceSell extends IInvoiceCommon {
   loadId?: number;
   loadNo: string;
   paymentIsDone: boolean;
-  paymentDate: Moment;
+  paymentDate: string;
 }
 
 export interface IInvoiceLineGroup {
@@ -57,6 +56,6 @@ export interface IInvoiceExtraInfo {
 export interface IInvoiceExtraInfoChecked {
   invoiceExtraInfoCheckedId?: number;
   checked: boolean;
-  date: Moment;
+  date: string;
   info: string;
 }

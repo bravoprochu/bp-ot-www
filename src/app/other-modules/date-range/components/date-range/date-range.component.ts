@@ -1,6 +1,6 @@
 import { Component, Input, EventEmitter, OnInit, Output } from "@angular/core";
 import { FormControl } from "@angular/forms/";
-import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
+import { DateTimeCommonServiceService } from "app/other-modules/date-time-common/services/date-time-common-service.service";
 import { IDateRange } from "app/shared/interfaces/i-date-range";
 
 @Component({
@@ -9,16 +9,14 @@ import { IDateRange } from "app/shared/interfaces/i-date-range";
   styleUrls: ["./date-range.component.css"],
 })
 export class DateRangeComponent implements OnInit {
-  @Input() dateRange = this.momentService.getPreviousMonth() as IDateRange;
+  @Input() dateRange = this.dateTimeService.getRangeLastQuarter() as IDateRange;
   @Output() onGo = new EventEmitter<IDateRange>();
   @Output() isActive = new EventEmitter<boolean>();
-  dateFrom = new FormControl(
-    this.momentService.getToday().subtract(3, "months")
-  );
-  dateTo = new FormControl(this.momentService.getToday());
+  dateFrom = new FormControl(this.dateRange.dateStart);
+  dateTo = new FormControl(this.dateRange.dateEnd);
   showDateRange = false;
 
-  constructor(private momentService: MomentCommonService) {}
+  constructor(private dateTimeService: DateTimeCommonServiceService) {}
 
   ngOnInit(): void {}
 

@@ -8,8 +8,6 @@ import { CurrencyCommonService } from "app/other-modules/currency/currency-commo
 import { CurrencyModule } from "app/other-modules/currency/currency.module";
 import { DialogConfirmationsModule } from "app/other-modules/dialog-confirmations/dialog-confirmations.module";
 import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
-import { MomentCommonModule } from "app/other-modules/moment-common/moment-common.module";
-import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 import { PaymentTermsModule } from "app/other-modules/payment-terms/payment-terms.module";
 import { PaymentTermsService } from "app/other-modules/payment-terms/services/payment-terms.service";
 import { ToastMakeModule } from "app/other-modules/toast-make/toast-make.module";
@@ -33,7 +31,6 @@ describe("TransportComponent", () => {
           CurrencyModule,
           DialogConfirmationsModule,
           HttpClientModule,
-          MomentCommonModule,
           PaymentTermsModule,
           RouterModule.forRoot([]),
           ToastMakeModule,
@@ -42,7 +39,6 @@ describe("TransportComponent", () => {
           ContractorService,
           CurrencyCommonService,
           DialogConfirmationsService,
-          MomentCommonService,
           PaymentTermsService,
           ToastMakeService,
           TokenService,

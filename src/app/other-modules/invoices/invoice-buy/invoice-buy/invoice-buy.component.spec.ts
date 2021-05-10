@@ -12,8 +12,6 @@ import { ContractorService } from "app/other-modules/contractors/services/contra
 import { CurrencyCommonService } from "app/other-modules/currency/currency-common.service";
 import { DialogConfirmationsModule } from "app/other-modules/dialog-confirmations/dialog-confirmations.module";
 import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
-import { MomentCommonModule } from "app/other-modules/moment-common/moment-common.module";
-import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 import { PaymentTermsModule } from "app/other-modules/payment-terms/payment-terms.module";
 import { PaymentTermsService } from "app/other-modules/payment-terms/services/payment-terms.service";
 import { ToastMakeModule } from "app/other-modules/toast-make/toast-make.module";
@@ -41,9 +39,7 @@ describe("InvoiceBuyComponent", () => {
           MatCheckboxModule,
           MatExpansionModule,
           MatFormFieldModule,
-
           MatInputModule,
-          MomentCommonModule,
           PaymentTermsModule,
           ReactiveFormsModule,
           ToastMakeModule,
@@ -55,7 +51,6 @@ describe("InvoiceBuyComponent", () => {
           InvoiceCommonFunctionsService,
           InvoiceBuyService,
           DialogConfirmationsService,
-          MomentCommonService,
           PaymentTermsService,
           ToastMakeService,
           TokenService,

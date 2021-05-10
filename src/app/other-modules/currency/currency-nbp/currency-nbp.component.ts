@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy } from "@angular/core";
-import { FormBuilder, FormControl, FormGroup } from "@angular/forms";
+import { FormBuilder, FormControl } from "@angular/forms";
 import { combineLatest, empty, Observable, Subject } from "rxjs";
 import { CurrencyCommonService } from "app/other-modules/currency/currency-common.service";
 import {
@@ -8,7 +8,6 @@ import {
   map,
   startWith,
   switchMap,
-  takeUntil,
   tap,
 } from "rxjs/operators";
 import { ICurrencyNbpResult } from "../interfaces/i-currency-nbp-result";

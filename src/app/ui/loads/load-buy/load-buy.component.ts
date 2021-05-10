@@ -13,7 +13,6 @@ import { ICurrency } from "app/other-modules/currency/interfaces/i-currency";
 import { ContractorService } from "app/other-modules/contractors/services/contractor.service";
 import { switchMap, take, takeUntil } from "rxjs/operators";
 import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
-import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 
 @Component({
   selector: "app-load-buy",
@@ -48,8 +47,7 @@ export class LoadBuyComponent implements OnInit, OnDestroy, IDetailObj {
     private actRoute: ActivatedRoute,
     private df: LoadService,
     public cf: CommonFunctionsService,
-    private contractorService: ContractorService,
-    private momentService: MomentCommonService
+    private contractorService: ContractorService
   ) {}
 
   ngOnDestroy(): void {

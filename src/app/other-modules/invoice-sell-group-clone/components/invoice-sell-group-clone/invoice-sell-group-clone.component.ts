@@ -12,9 +12,9 @@ import { take, switchMap, takeUntil, startWith } from "rxjs/operators";
 import { IInvoiceSellLineList } from "../../../invoices/interfaces/i-invoice-line-list";
 import { IInvoiceSellGroupClone } from "../../../invoices/interfaces/i-invoice-sell-group-clone";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
-import { MomentCommonService } from "app/other-modules/moment-common/services/moment-common.service";
 import { InvoiceSellGroupCloneService } from "../../services/invoice-sell-group-clone.service";
 import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
+import { DateTimeCommonServiceService } from "app/other-modules/date-time-common/services/date-time-common-service.service";
 
 @Component({
   selector: "app-invoice-sell-group-clone",
@@ -28,15 +28,15 @@ export class InvoiceSellGroupCloneComponent implements OnInit, OnDestroy {
   invoiceListRest = [] as IInvoiceSellLineList[];
   isPending = true;
   productName = new FormControl(null);
-  dateOfSell = new FormControl(this.momentService.getToday());
-  dateOfIssue = new FormControl(this.momentService.getToday());
+  dateOfSell = new FormControl(this.dateTimeService.getToday());
+  dateOfIssue = new FormControl(this.dateTimeService.getToday());
   monthsAgo = new FormControl(1);
 
   constructor(
+    private dateTimeService: DateTimeCommonServiceService,
     private dialogConfirmationService: DialogConfirmationsService,
     private invoiceGroupCloneService: InvoiceSellGroupCloneService,
-    private toastService: ToastMakeService,
-    private momentService: MomentCommonService
+    private toastService: ToastMakeService
   ) {}
 
   ngOnDestroy(): void {
@@ -115,13 +115,12 @@ export class InvoiceSellGroupCloneComponent implements OnInit, OnDestroy {
       : 25;
   }
 
-  getMonthAgo(): string {
-    return this.monthsAgo.value
-      ? this.momentService
-          .getToday()
-          .subtract(this.monthsAgo.value, "month")
-          .format("MMMM")
-      : "wprowadź wartość: ile miesięcy temu..";
+  get getMonthAgo(): string {
+    return this.dateTimeService.addToIsoDate(
+      this.dateTimeService.getToday(),
+      -this.monthsAgo.value,
+      "months"
+    );
   }
 
   initData() {
@@ -129,8 +128,8 @@ export class InvoiceSellGroupCloneComponent implements OnInit, OnDestroy {
       .pipe(
         startWith(1),
         takeUntil(this.isDestroyed$),
-        switchMap((_monthsAgo) => {
-          if (!_monthsAgo) {
+        switchMap((monthsAgo) => {
+          if (!monthsAgo) {
             return empty();
           }
           return this.invoiceGroupCloneService
