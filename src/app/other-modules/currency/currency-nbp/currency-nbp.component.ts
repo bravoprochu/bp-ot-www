@@ -105,11 +105,4 @@ export class CurrencyNbpComponent implements OnInit, OnDestroy {
     return <FormControl>this.rForm?.get("rateDate");
   }
   //#endregion
-
-  refresh() {
-    if (!this.rForm.valid) {
-      return;
-    }
-    this.refreshData$.next(null);
-  }
 }
