@@ -1,6 +1,8 @@
 import { IInvoicePaymentStatusInfoCurrency } from "./i-invoice-payment-status-info-currency";
 
 export interface IInvoicePaymentStatusInfo {
+  dateOfIssue: string;
+  dateOfSell: string;
   paymentDate: Date;
   company: {
     companyId: number;

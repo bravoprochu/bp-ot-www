@@ -240,6 +240,12 @@
             &nbsp;({{ g.company.vatId }})
           </small>
         </div>
+        <h4 class="mat-h4">
+          <small>data sprzedaży:&nbsp;</small
+          >{{ g.dateOfSell | date: "yyyy-MM-dd" }} ||
+          <small>data wystawienia:&nbsp;</small
+          >{{ g.dateOfIssue | date: "yyyy-MM-dd" }}
+        </h4>
         <h3 class="mat-h3">
           {{ g.invoiceTotal.total_netto | number: "1.2-2" }} |
           {{ g.invoiceTotal.total_tax | number: "1.2-2" }} |
