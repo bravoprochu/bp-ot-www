@@ -112,6 +112,7 @@ export class CurrencyCommonService {
       ],
       currency: this.getCurrencyListGroup(fb, initCurrencyName),
       plnValue: [],
+      plnValueFormated: [],
       rate: [0],
       rateDate: [new Date()],
       table: [null],
@@ -159,7 +160,8 @@ export class CurrencyCommonService {
 
         const RES = {
           currency: nbp.currency,
-          plnValue: this.formatTwoDigits(nbp.price * RATE.mid),
+          plnValue: nbp.price * RATE.mid,
+          plnValueFormated: this.formatTwoDigits(nbp.price * RATE.mid),
           price: nbp.price,
           rate: RATE.mid,
           rateDate: RATE.effectiveDate,

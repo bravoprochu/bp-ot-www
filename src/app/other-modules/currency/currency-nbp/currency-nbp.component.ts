@@ -85,18 +85,13 @@ export class CurrencyNbpComponent implements OnInit, OnDestroy {
     return (this.currency.value as ICurrency).name === "PLN";
   }
 
-  private prepCombinedInfo(currNBPRes: ICurrencyNbpResult): string {
-    const RATE = currNBPRes.rates[0];
-    return `Średni kurs dla ${currNBPRes.currency} (${currNBPRes.code}) z dnia ${RATE.effectiveDate} wynosi: ${RATE.mid} (tabela: ${RATE.no})`;
-  }
-
   //#region rForm getters
 
   get currency(): FormControl {
     return <FormControl>this.rForm?.get("currency");
   }
   get plnValue(): FormControl {
-    return <FormControl>this.rForm?.get("plnValue");
+    return <FormControl>this.rForm?.get("plnValueFormated");
   }
 
   get price(): FormControl {
