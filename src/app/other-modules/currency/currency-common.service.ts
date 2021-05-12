@@ -107,7 +107,7 @@ export class CurrencyCommonService {
     // if nbp service returns not found (weekend day/ holiday etc.. )
     // request rateDate (a day before) (retry max 5 times..)
     //
-    const NBP_BASE_URL = `http://api.nbp.pl/api/exchangerates/rates/a`;
+    const NBP_BASE_URL = `//api.nbp.pl/api/exchangerates/rates/a`;
     const CURRENCY = nbp.currency.name.toLowerCase();
     let DATE_TO_CHECK = this.dateTimeCommonService.formatYYYYMMDD(nbp.rateDate);
 
