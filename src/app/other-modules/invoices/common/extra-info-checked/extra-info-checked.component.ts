@@ -42,7 +42,7 @@ export class ExtraInfoCheckedComponent implements OnInit, OnDestroy {
       ?.get("checked")
       .valueChanges.pipe(startWith(false), takeUntil(this.isDestroyed$))
       .subscribe((s: boolean) => {
-        if (s == true) {
+        if (s === true) {
           this.date.setValidators(Validators.required);
           if (this.date.value == null) {
             this.date.setValue(this.dateTimeService.getToday());
