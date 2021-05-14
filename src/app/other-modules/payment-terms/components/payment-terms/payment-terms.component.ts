@@ -20,13 +20,14 @@ import { PaymentTermsService } from "../../services/payment-terms.service";
   exportAs: "paymentTerms",
 })
 export class PaymentTermsComponent implements OnInit, OnDestroy {
-  @Input() isWeekendAllowed = false;
+  @Input() isWeekendAllowed = true;
   isFormReady = true;
   infoPaymentTerms = "";
   @Input() rForm?: FormGroup;
-  paymentTermsOptions$ = this.paymentTermsService.getPaymentTermOptions$() as Observable<
-    IPaymentTerm[]
-  >;
+  paymentTermsOptions$ =
+    this.paymentTermsService.getPaymentTermOptions$() as Observable<
+      IPaymentTerm[]
+    >;
   isDestroyed$ = new Subject() as Subject<boolean>;
 
   constructor(private paymentTermsService: PaymentTermsService) {}
@@ -147,10 +148,11 @@ export class PaymentTermsComponent implements OnInit, OnDestroy {
           const DATE_A = new Date(this.day0$.value).toISOString();
           const DATE_B = new Date(date).toISOString();
 
-          const DAYS_DIFF = this.paymentTermsService.calcDateDifferenceISOFormat(
-            DATE_A,
-            DATE_B
-          );
+          const DAYS_DIFF =
+            this.paymentTermsService.calcDateDifferenceISOFormat(
+              DATE_A,
+              DATE_B
+            );
 
           if (DAYS_DIFF && DAYS_DIFF >= 0) {
             this.paymentDays$.setValue(DAYS_DIFF, {
