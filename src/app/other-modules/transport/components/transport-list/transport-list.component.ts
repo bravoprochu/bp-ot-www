@@ -75,7 +75,7 @@ export class TransportListComponent implements OnInit, IListObj, OnDestroy {
   initData(dateRange: IDateRange): void {
     this.isPending = true;
     this.transportService
-      .getAll(dateRange)
+      .getAllRanged(dateRange)
       .pipe(
         take(1),
         takeUntil(this.isDestroyed$),
@@ -94,9 +94,8 @@ export class TransportListComponent implements OnInit, IListObj, OnDestroy {
         this.paginator.pageSize = this.transportService.paginatorPageSize(
           s.length
         );
-        this.paginator.pageSizeOptions = this.transportService.paginatorLimitOption(
-          s.length
-        );
+        this.paginator.pageSizeOptions =
+          this.transportService.paginatorLimitOption(s.length);
         this.dataSource.paginator = this.paginator;
       });
   }

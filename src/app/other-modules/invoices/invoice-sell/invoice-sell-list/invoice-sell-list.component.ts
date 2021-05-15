@@ -85,7 +85,7 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, IListObj {
       "brutto",
     ];
     this.invoiceSellService
-      .getAll(this.dateRange)
+      .getAllRanged(this.dateRange)
       .pipe(takeUntil(this.isDestroyed$))
       .subscribe((s: any) => {
         this.dataSource = new MatTableDataSource(s);
@@ -103,9 +103,8 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, IListObj {
         this.paginator.pageSize = this.invoiceCommonService.paginatorPageSize(
           s.length
         );
-        this.paginator.pageSizeOptions = this.invoiceCommonService.paginatorLimitOption(
-          s.length
-        );
+        this.paginator.pageSizeOptions =
+          this.invoiceCommonService.paginatorLimitOption(s.length);
         this.dataSource.paginator = this.paginator;
       });
   }
@@ -141,9 +140,10 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, IListObj {
           return modFactory.ngModuleFactory.create(this.injector);
         })
         .then((moduleRef) => {
-          const groupCloneComp = moduleRef.componentFactoryResolver.resolveComponentFactory(
-            InvoiceSellGroupCloneComponent
-          );
+          const groupCloneComp =
+            moduleRef.componentFactoryResolver.resolveComponentFactory(
+              InvoiceSellGroupCloneComponent
+            );
 
           this.viewContainerRef.clear();
           this.viewContainerRef.createComponent(groupCloneComp);
