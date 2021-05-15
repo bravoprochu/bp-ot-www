@@ -25,8 +25,8 @@ export class DataFactoryService {
 
   getAll(dateRange?: IDateRange): Observable<any> {
     if (dateRange) {
-      const START = dateRange.dateStart.slice(0, 10);
-      const END = dateRange.dateEnd.slice(0, 10);
+      const START = new Date(dateRange.dateStart).toISOString().slice(0, 10);
+      const END = new Date(dateRange.dateEnd).toISOString().slice(0, 10);
       const URI = encodeURI(`${this.url}/GetAll/${START}/${END}`);
 
       return this.http
@@ -34,6 +34,29 @@ export class DataFactoryService {
           headers: this.bearerHeader(),
         })
         .pipe(take(1), catchError(this.errorHandler));
+    } else {
+      return this.http
+        .get(this.url + "/GetAll", { headers: this.bearerHeader() })
+        .pipe(take(1), catchError(this.errorHandler));
+    }
+  }
+
+  getAllRanged(dateRange?: IDateRange): Observable<any> {
+    if (dateRange) {
+      // const START = new Date(dateRange.dateStart).toISOString().slice(0, 10);
+      // const END = new Date(dateRange.dateEnd).toISOString().slice(0, 10);
+      // const URI = encodeURI(`${this.url}/GetAll/${START}/${END}`);
+
+      return (
+        this.http
+          // .get(URI, {
+          //   headers: this.bearerHeader(),
+          // })
+          .post(`${this.url}/GetAll`, dateRange, {
+            headers: this.bearerHeader(),
+          })
+          .pipe(take(1), catchError(this.errorHandler))
+      );
     } else {
       return this.http
         .get(this.url + "/GetAll", { headers: this.bearerHeader() })
