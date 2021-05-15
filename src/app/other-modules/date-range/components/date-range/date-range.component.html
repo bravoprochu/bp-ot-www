@@ -3,14 +3,18 @@
     <mat-icon>date_range</mat-icon>
   </button>
 
-  <div *ngIf="showDateRange" fxLayout="column">
+  <div
+    *ngIf="showDateRange && this.isFormReady"
+    fxLayout="column"
+    [formGroup]="rForm"
+  >
     <mat-form-field>
       <input
         matInput
         placeholder="Data od"
         [matDatepicker]="pickerFrom"
-        [formControl]="dateFrom"
-        [max]="dateTo.value"
+        formControlName="dateStart"
+        [max]="dateEnd.value"
       />
       <mat-datepicker-toggle
         matSuffix
@@ -24,8 +28,8 @@
         matInput
         placeholder="Data do"
         [matDatepicker]="pickerTo"
-        [formControl]="dateTo"
-        [min]="dateFrom.value"
+        formControlName="dateEnd"
+        [min]="dateStart.value"
       />
       <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
       <mat-datepicker #pickerTo></mat-datepicker>
@@ -41,6 +45,7 @@
     <mat-icon>undo</mat-icon>
   </button>
   <button
+    [disabled]="!rForm.valid"
     mat-mini-fab
     (click)="go()"
     *ngIf="showDateRange"
