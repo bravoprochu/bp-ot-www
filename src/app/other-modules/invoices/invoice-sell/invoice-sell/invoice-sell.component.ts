@@ -55,7 +55,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
     private currService: CurrencyCommonService,
     private dialogConfirmationService: DialogConfirmationsService,
     private icf: InvoiceCommonFunctionsService,
-    public fb: FormBuilder,
+    private fb: FormBuilder,
     private location: Location,
     private toastService: ToastMakeService
   ) {}
@@ -73,7 +73,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
     this.initData();
   }
 
-  public navDetailInfo: INavDetailInfo = <INavDetailInfo>{
+  navDetailInfo: INavDetailInfo = <INavDetailInfo>{
     title: {
       subtitle: "Tworzenie, edycja, szczegóły",
       title: "Faktura sprzedaży",
@@ -83,7 +83,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
 
   //#region  init, start
 
-  public initForm(): void {
+  initForm(): void {
     this.rForm = this.icf.formInvoiceSellGroup(this.fb, this.isDestroyed$);
     this.paymentIsDone.valueChanges
       .pipe(takeUntil(this.isDestroyed$))
@@ -129,10 +129,14 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
       .subscribe((_curr: ICurrency) => {
         if (_curr.name == "PLN") {
           this.extraInfoIsTaxNbpExchanged.setValue(false, { emitEvent: false });
-          let currNbpCurrency = this.currencyNbp.get("currency");
-          currNbpCurrency.setValue(_curr, {
-            emitEvent: this.extraInfoIsTaxNbpExchanged.value,
-          });
+          this.extraInfoTaxExchangedInfo.setValue(null, { emitEvent: false });
+          this.currencyNbp.clearValidators();
+          this.currencyNbp.updateValueAndValidity();
+
+          // let currNbpCurrency = this.currencyNbp.get("currency");
+          // currNbpCurrency.setValue(_curr, {
+          //   emitEvent: this.extraInfoIsTaxNbpExchanged.value,
+          // });
         }
       });
 
@@ -151,13 +155,13 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
       });
   }
 
-  public initRouteId(): void {
+  initRouteId(): void {
     this.actRoute.paramMap.pipe(takeUntil(this.isDestroyed$)).subscribe((s) => {
       this.routeId = +s.get("id");
     });
   }
 
-  public initData(): void {
+  initData(): void {
     this.isPending = true;
     if (this.routeId > 0) {
       this.df
@@ -184,15 +188,15 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
     }
   }
 
-  public navCancel(): void {
+  navCancel(): void {
     throw new Error("Not implemented yet.");
   }
 
-  public navDownload(): void {
+  navDownload(): void {
     throw new Error("Not implemented yet.");
   }
 
-  public navDelete(): void {
+  navDelete(): void {
     const data = {
       title: "Faktura sprzedaży",
       question: `Czy na pewno usunąć dokument nr: ${this.rForm.value.invoiceNo} ? \n Dokumnet zostanie trwale usunięty z bazy bez możliwośći jego przywrcenia`,
@@ -218,7 +222,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
       });
   }
 
-  public navSave(): void {
+  navSave(): void {
     this.isPending = true;
     let id = this.invoiceSellId.value;
 
@@ -421,9 +425,14 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
       this.totalTax.value * currNbp.rate
     );
 
+    const TAX =
+      this.totalTax.value === 0
+        ? ""
+        : `||| Podatek VAT (${tax}) wartość: ${taxPLN} PLN;`;
+
     const BASIC_EXCHANGE_INFO = this.currService.prepCombinedInfoNbp(currNbp);
 
-    const INFO = `${BASIC_EXCHANGE_INFO} ||| Netto (${netto}) wartość: ${nettoPLN} PLN ||| Podatek VAT (${tax}) wartość: ${taxPLN} PLN ||| Brutto (${brutto}) wartość: ${bruttoPLN} PLN `;
+    const INFO = `${BASIC_EXCHANGE_INFO} ||| Netto (${netto}) wartość: ${nettoPLN} PLN ${TAX} ||| Brutto (${brutto}) wartość: ${bruttoPLN} PLN `;
 
     this.extraInfoTaxExchangedInfo.setValue(INFO);
   }

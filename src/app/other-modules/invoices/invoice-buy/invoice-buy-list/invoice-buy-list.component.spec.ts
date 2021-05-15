@@ -5,7 +5,7 @@ import { MatSortModule } from "@angular/material/sort";
 import { MatTableModule } from "@angular/material/table";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterModule } from "@angular/router";
-import { NavListComponent } from "@bpShared/nav-list/nav-list.component";
+import { NavListComponent } from "app/other-modules/nav-list/components/nav-list/nav-list.component";
 import { ContractorsModule } from "app/other-modules/contractors/contractors.module";
 import { ContractorService } from "app/other-modules/contractors/services/contractor.service";
 import { CurrencyCommonService } from "app/other-modules/currency/currency-common.service";
