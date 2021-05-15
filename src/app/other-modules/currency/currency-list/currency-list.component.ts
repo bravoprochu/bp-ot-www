@@ -4,7 +4,7 @@ import {
   CURRENCY_LIST,
   CurrencyCommonService,
 } from "../currency-common.service";
-import { FormControl } from "@angular/forms";
+import { FormControl, Validators } from "@angular/forms";
 import { MatAutocomplete } from "@angular/material/autocomplete";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
@@ -19,7 +19,7 @@ export class CurrencyListComponent implements OnInit, OnDestroy {
   @ViewChild(MatAutocomplete) matAuto: MatAutocomplete;
   currencyList = [] as ICurrency[];
   isDestroyed$ = new Subject() as Subject<boolean>;
-  search$ = new FormControl() as FormControl;
+  search$ = new FormControl("", Validators.required) as FormControl;
 
   constructor(private cf: CurrencyCommonService) {}
 
@@ -30,32 +30,31 @@ export class CurrencyListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.isDestroyed$ = new Subject<boolean>();
     this.search$ = new FormControl(this.rForm?.value);
     this.currencyList = CURRENCY_LIST;
 
     this.rForm?.valueChanges
       .pipe(takeUntil(this.isDestroyed$))
-      .subscribe((_data: ICurrency) => {
-        if (_data) {
-          this.search$.setValue(_data, { emitEvent: false });
+      .subscribe((currency: ICurrency) => {
+        if (currency) {
+          this.search$.setValue(currency, { emitEvent: false });
           this.rForm?.markAsDirty();
         }
       });
 
     this.search$.valueChanges
       .pipe(takeUntil(this.isDestroyed$))
-      .subscribe((_data: any) => {
-        if (typeof _data == "string") {
-          _data = _data.toLowerCase();
+      .subscribe((searchPhrase: string) => {
+        if (typeof searchPhrase === "string") {
+          searchPhrase = searchPhrase.toLowerCase();
           this.currencyList = CURRENCY_LIST.filter((v: ICurrency) => {
             return (
-              v.name.toLowerCase().includes(_data) ||
-              v.description.toLowerCase().includes(_data)
+              v.name.toLowerCase().includes(searchPhrase) ||
+              v.description.toLowerCase().includes(searchPhrase)
             );
           });
         } else {
-          this.rForm?.setValue(_data, { emitEvent: true });
+          this.rForm?.setValue(searchPhrase, { emitEvent: true });
         }
       });
   }
