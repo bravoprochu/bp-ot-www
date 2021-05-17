@@ -77,6 +77,10 @@ export class DateTimeCommonServiceService {
     return DateTime.now().startOf("day").toISO();
   }
 
+  getNow(): string {
+    return DateTime.now().toISO();
+  }
+
   getRangeActiveMonth(): IDateRange {
     const FIRST_DAY_OF_MONTH = DateTime.now().startOf("month").startOf("day");
 
