@@ -23,6 +23,11 @@ import { IInvoicePaymentStatusInfoStats } from "../../interfaces/i-invoice-payme
 import { CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
 import { IDialogDateConfirmation } from "app/other-modules/dialog-confirmations/interfaces/i-dialog-date-confirmation";
 import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
+import { DataExportsService } from "app/other-modules/data-exports/services/data-exports.service";
+import { saveAs } from "file-saver";
+import { IInvoicePaymentStatusCsv } from "../../interfaces/i-invoice-payment-status-csv";
+import { DateTimeCommonServiceService } from "app/other-modules/date-time-common/services/date-time-common-service.service";
+import { TWO_DIGITS_FORMAT } from "app/common-functions/format/two-digits-format";
 
 @Component({
   selector: "app-invoices-payment-status",
@@ -58,6 +63,8 @@ export class InvoicesPaymentStatusComponent implements OnInit, OnDestroy {
   notConfirmedStats: IInvoicePaymentStatusInfoStats[];
 
   constructor(
+    private dateTimeService: DateTimeCommonServiceService,
+    private dataExportService: DataExportsService,
     private dialogConfirmationService: DialogConfirmationsService,
     private invoicePaymentStatusService: InvoicesPaymentStatusService
   ) {}
@@ -170,6 +177,52 @@ export class InvoicesPaymentStatusComponent implements OnInit, OnDestroy {
       (error) => console.log("Payment error", error),
       () => console.log("Payment completed..")
     );
+  }
+
+  genCsvReport(title: string, data: IInvoicePaymentStatusInfo[]): void {
+    const DATA_TO_EXPORT = data.map(
+      (payment: IInvoicePaymentStatusInfo) =>
+        ({
+          czyCmrOtrzymana: payment.IsCmrReceived,
+          czyFakturaNaBazieTransportu: payment.isTransportOrLoadInvoice,
+          czyFakturaOtrzymana: payment.IsInvoiceReceived,
+          czyFakturaWyslana: payment.IsInvoiceSent,
+          dataSprzedazy: this.dateTimeService.formatYYYYMMDD(
+            payment.dateOfSell
+          ),
+          dataWystawienia: this.dateTimeService.formatYYYYMMDD(
+            payment.dateOfIssue
+          ),
+          dniPrzedawnione: payment.daysOverdue,
+          fakturaNr: payment.invoiceNo,
+          fakturaSystemId: payment.invoiceId,
+          kontrahentAdres: payment.company.address,
+          kontrahentNazwa: payment.company.shortName,
+          kontrahentNip: payment.company.vatId,
+          razemBrutto: TWO_DIGITS_FORMAT(payment.invoiceTotal.total_brutto),
+          razemNetto: TWO_DIGITS_FORMAT(payment.invoiceTotal.total_netto),
+          razemVat: TWO_DIGITS_FORMAT(payment.invoiceTotal.total_tax),
+          terminPlatnosci: this.dateTimeService.formatYYYYMMDD(
+            payment.paymentDate
+          ),
+          terminPlatnosciIleDni: payment.paymentDays,
+          waluta: payment.currency.name,
+        } as IInvoicePaymentStatusCsv)
+    );
+
+    const KEYS = Object.keys(DATA_TO_EXPORT[0]).map((key) => key);
+
+    console.log(DATA_TO_EXPORT);
+    const BLOB = new Blob(
+      [this.dataExportService.csvConverter(DATA_TO_EXPORT, KEYS)],
+      {
+        type: "text/csv;charset=utf-8;",
+      }
+    );
+    const FILENAME = `${title}_${this.dateTimeService.formatYYYYMMDTHHMMSS(
+      this.dateTimeService.getNow()
+    )}`;
+    saveAs(BLOB, `${FILENAME}.csv`);
   }
 
   initData() {

@@ -17,8 +17,12 @@ import { FlexLayoutModule } from "@angular/flex-layout";
 import { MatBadgeModule } from "@angular/material/badge";
 import { ScrollingModule } from "@angular/cdk/scrolling";
 import { DialogConfirmationsModule } from "../dialog-confirmations/dialog-confirmations.module";
+import { DataExportsModule } from "../data-exports/data-exports.module";
+import { DateTimeCommonModule } from "../date-time-common/date-time-common.module";
 
 const IMPORT_EXPORT_MODULES = [
+  DateTimeCommonModule,
+  DataExportsModule,
   FlexLayoutModule,
   DialogConfirmationsModule,
   FormsModule,

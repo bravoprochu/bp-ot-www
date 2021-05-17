@@ -3,7 +3,7 @@ import { IInvoicePaymentStatusInfoCurrency } from "./i-invoice-payment-status-in
 export interface IInvoicePaymentStatusInfo {
   dateOfIssue: string;
   dateOfSell: string;
-  paymentDate: Date;
+  paymentDate: string;
   company: {
     companyId: number;
     shortName: string;
@@ -14,7 +14,7 @@ export interface IInvoicePaymentStatusInfo {
   };
   currency: IInvoicePaymentStatusInfoCurrency;
   correctionPaymenntInfo: string;
-  daysOverdue: Date | null;
+  daysOverdue: number | null;
   invoiceId: number;
   invoiceNo: string;
   invoiceTotal: {
@@ -28,5 +28,5 @@ export interface IInvoicePaymentStatusInfo {
   IsInvoiceReceived: boolean;
   isTransportOrLoadInvoice: boolean;
   paymentDays: number;
-  receivedInvoiceDate: Date | null;
+  receivedInvoiceDate: string | null;
 }

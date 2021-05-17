@@ -12,12 +12,22 @@
       potwierdzony odbiór przez nabywcę
     </p>
 
-    <ng-template
-      *ngTemplateOutlet="
-        searchTemplate;
-        context: { $implicit: notConfirmedSearch$ }
-      "
-    ></ng-template>
+    <div fxLayout fxLayoutAlign="space-around center">
+      <ng-template
+        *ngTemplateOutlet="
+          searchTemplate;
+          context: {
+            $implicit: notConfirmedSearch$
+          }
+        "
+      ></ng-template>
+      <ng-template
+        *ngTemplateOutlet="
+          genReport;
+          context: { data: notConfirmed, title: 'status_platnosci_oczekujace' }
+        "
+      ></ng-template>
+    </div>
 
     <cdk-virtual-scroll-viewport
       [itemSize]="itemSize"
@@ -61,12 +71,22 @@
         jest jako data otrzymania potwierdzenia faktury (przez nabywcę)
         powiększona o ilość dni z warunków płatności.
       </p>
-      <ng-template
-        *ngTemplateOutlet="
-          searchTemplate;
-          context: { $implicit: unpaidSearch$ }
-        "
-      ></ng-template>
+      <div fxLayout fxLayoutAlign="space-around center">
+        <ng-template
+          *ngTemplateOutlet="
+            searchTemplate;
+            context: {
+              $implicit: unpaidSearch$
+            }
+          "
+        ></ng-template>
+        <ng-template
+          *ngTemplateOutlet="
+            genReport;
+            context: { data: unpaid, title: 'status_platnosci_niewymagalne' }
+          "
+        ></ng-template>
+      </div>
 
       <cdk-virtual-scroll-viewport
         #viewport
@@ -112,12 +132,25 @@
         jest jako data otrzymania potwierdzenia faktury (przez nabywcę)
         powiększona o ilość dni z warunków płatności.
       </p>
-      <ng-template
-        *ngTemplateOutlet="
-          searchTemplate;
-          context: { $implicit: unpaidOverdueSearch$ }
-        "
-      ></ng-template>
+      <div fxLayout fxLayoutAlign="space-around center">
+        <ng-template
+          *ngTemplateOutlet="
+            searchTemplate;
+            context: {
+              $implicit: unpaidOverdueSearch$
+            }
+          "
+        ></ng-template>
+        <ng-template
+          *ngTemplateOutlet="
+            genReport;
+            context: {
+              data: unpaidOverdue,
+              title: 'status_platnosci_przeterminowane'
+            }
+          "
+        ></ng-template>
+      </div>
 
       <cdk-virtual-scroll-viewport
         [itemSize]="itemSize"
@@ -343,6 +376,14 @@
 
 <ng-template #invSentConfirmed>
   <div class="color-ok">FV wysłana, OK!</div>
+</ng-template>
+
+<ng-template #genReport let-data="data" let-title="title">
+  <div>
+    <button (click)="genCsvReport(title, data)" mat-raised-button>
+      Generuj CSV
+    </button>
+  </div>
 </ng-template>
 
 <ng-template #invReceivedConfirmed>
