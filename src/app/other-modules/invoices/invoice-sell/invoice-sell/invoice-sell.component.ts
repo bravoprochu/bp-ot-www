@@ -32,6 +32,7 @@ import { Location } from "@angular/common";
 import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
 import { IDialogTakNie } from "app/other-modules/dialog-confirmations/interfaces/i-dialog-tak-nie";
 import { DateTimeCommonServiceService } from "app/other-modules/date-time-common/services/date-time-common-service.service";
+import { TWO_DIGITS_FORMAT } from "app/common-functions/format/two-digits-format";
 
 @Component({
   selector: "app-invoice-sell",
@@ -412,18 +413,12 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
   prepExtraInfoTaxExchangedNbp(currNbp: ICurrencyNbp): void {
-    const netto = this.currService.formatTwoDigits(this.totalNetto.value);
-    const nettoPLN = this.currService.formatTwoDigits(
-      this.totalNetto.value * currNbp.rate
-    );
-    const brutto = this.currService.formatTwoDigits(this.totalBrutto.value);
-    const bruttoPLN = this.currService.formatTwoDigits(
-      this.totalBrutto.value * currNbp.rate
-    );
-    const tax = this.currService.formatTwoDigits(this.totalTax.value);
-    const taxPLN = this.currService.formatTwoDigits(
-      this.totalTax.value * currNbp.rate
-    );
+    const netto = TWO_DIGITS_FORMAT(this.totalNetto.value);
+    const nettoPLN = TWO_DIGITS_FORMAT(this.totalNetto.value * currNbp.rate);
+    const brutto = TWO_DIGITS_FORMAT(this.totalBrutto.value);
+    const bruttoPLN = TWO_DIGITS_FORMAT(this.totalBrutto.value * currNbp.rate);
+    const tax = TWO_DIGITS_FORMAT(this.totalTax.value);
+    const taxPLN = TWO_DIGITS_FORMAT(this.totalTax.value * currNbp.rate);
 
     const TAX =
       this.totalTax.value === 0

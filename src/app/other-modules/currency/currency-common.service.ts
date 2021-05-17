@@ -13,6 +13,7 @@ import { map, take, catchError, retry } from "rxjs/operators";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { DateTimeCommonServiceService } from "../date-time-common/services/date-time-common-service.service";
 import { CHECK_IF_CURRENCY_NOT_PLN_VALIDATOR } from "./form-validators/check-if-currency-pln";
+import { TWO_DIGITS_FORMAT } from "app/common-functions/format/two-digits-format";
 
 export const CURRENCY_LIST: ICurrency[] = [
   { currencyId: 1, description: "bat (Tajlandia)", name: "THB" },
@@ -68,14 +69,6 @@ export class CurrencyCommonService {
     return CURRENCY_LIST.find((f) =>
       f.name.toLowerCase().includes(name.toLowerCase())
     );
-  }
-
-  formatTwoDigits(num: number): string {
-    const formatter = new Intl.NumberFormat("pl-PL", {
-      maximumFractionDigits: 2,
-      minimumFractionDigits: 2,
-    });
-    return formatter.format(num);
   }
 
   getCurrencyListGroup(fb: FormBuilder, initCurrencyName = "PLN"): FormControl {
@@ -139,7 +132,7 @@ export class CurrencyCommonService {
         const RES = {
           currency: nbp.currency,
           plnValue: nbp.price * RATE.mid,
-          plnValueFormated: this.formatTwoDigits(nbp.price * RATE.mid),
+          plnValueFormated: TWO_DIGITS_FORMAT(nbp.price * RATE.mid),
           price: nbp.price,
           rate: RATE.mid,
           rateDate: RATE.effectiveDate,
