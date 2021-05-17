@@ -38,41 +38,6 @@ export class InvoiceCommonFunctionsService {
     return "YYYY-MM-DDTHH:mm";
   }
 
-  csvConverter(data: any[], tableHeaders: string[]): string {
-    if (Array.isArray(data) && data.length > 1) {
-      let firstLine: string = "";
-      let end = ";";
-      let lineEnd = "\r\n";
-      let result: string = "";
-
-      //
-      // header
-      //
-
-      firstLine = tableHeaders.join(end) + lineEnd;
-
-      //
-      // loop
-      //
-
-      data.forEach((row) => {
-        tableHeaders.forEach((header) => {
-          let v: string;
-          if (row[header] == null) {
-            v = "";
-          } else {
-            v = row[header];
-          }
-          result += v + end;
-        });
-        result += lineEnd;
-      });
-
-      return firstLine + result;
-    }
-    return;
-  }
-
   dateLocaleFormat(): string {
     return "YYYY-MM-DD";
   }
@@ -549,9 +514,8 @@ export class InvoiceCommonFunctionsService {
 
     //default settings for currencyNbp
     if (!inv.extraInfo.currencyNbp.currency) {
-      inv.extraInfo.currencyNbp.currency = this.currService.findCurrencyByName(
-        "eur"
-      );
+      inv.extraInfo.currencyNbp.currency =
+        this.currService.findCurrencyByName("eur");
       inv.extraInfo.currencyNbp.rateDate = new Date().toISOString();
     }
     this.patchInvoiceExtraInfo(

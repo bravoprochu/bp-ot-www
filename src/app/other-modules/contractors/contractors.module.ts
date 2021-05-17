@@ -25,9 +25,11 @@ import { ContractorService } from "./services/contractor.service";
 import { DragDropOptionsModule } from "../drag-drop-options/drag-drop-options.module";
 import { DialogConfirmationsModule } from "../dialog-confirmations/dialog-confirmations.module";
 import { NavListModule } from "../nav-list/nav-list.module";
+import { DataExportsModule } from "../data-exports/data-exports.module";
 
 const IMPORT_EXPORT_MODULES = [
   DialogConfirmationsModule,
+  DataExportsModule,
   DragDropOptionsModule,
   FlexLayoutModule,
   MatAutocompleteModule,

@@ -13,6 +13,7 @@ import { finalize, take, takeUntil } from "rxjs/operators";
 import { TransportService } from "../../services/transport.service";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 import { DateTimeCommonServiceService } from "app/other-modules/date-time-common/services/date-time-common-service.service";
+import { DataExportsService } from "app/other-modules/data-exports/services/data-exports.service";
 
 @Component({
   selector: "app-transport-list",
@@ -47,6 +48,7 @@ export class TransportListComponent implements OnInit, IListObj, OnDestroy {
   };
 
   constructor(
+    private dataExportService: DataExportsService,
     private dateTimeService: DateTimeCommonServiceService,
     private transportService: TransportService,
     private router: Router,
@@ -117,7 +119,7 @@ export class TransportListComponent implements OnInit, IListObj, OnDestroy {
       .subscribe(
         (_data: any) => {
           let b = new Blob(
-            [this.transportService.csvConverter(_data, this.displayedColumns)],
+            [this.dataExportService.csvConverter(_data, this.displayedColumns)],
             { type: "text/csv;charset=utf-8;" }
           );
           saveAs(

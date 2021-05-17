@@ -17,6 +17,7 @@ import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import { ICompany } from "../../interfaces/icompany";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 import { IContrahentDialogCloseData } from "../../interfaces/i-contrahent-dialog-close-data";
+import { DataExportsService } from "app/other-modules/data-exports/services/data-exports.service";
 
 @Component({
   selector: "app-company-list",
@@ -40,6 +41,7 @@ export class CompanyListComponent implements OnInit, OnDestroy, IListObj {
 
   constructor(
     private contractorService: ContractorService,
+    private dataExportSercice: DataExportsService,
     private dialog: MatDialog,
     private toastService: ToastMakeService
   ) {}
@@ -72,9 +74,8 @@ export class CompanyListComponent implements OnInit, OnDestroy, IListObj {
         this.paginator.pageSize = this.contractorService.paginatorPageSize(
           s.length
         );
-        this.paginator.pageSizeOptions = this.contractorService.paginatorLimitOption(
-          s.length
-        );
+        this.paginator.pageSizeOptions =
+          this.contractorService.paginatorLimitOption(s.length);
         this.dataSource.paginator = this.paginator;
       });
   }
@@ -102,7 +103,7 @@ export class CompanyListComponent implements OnInit, OnDestroy, IListObj {
       .pipe(take(1))
       .subscribe((_data: any) => {
         let b = new Blob(
-          [this.contractorService.csvConverter(_data, this.displayedColumns)],
+          [this.dataExportSercice.csvConverter(_data, this.displayedColumns)],
           {
             type: "text/csv;charset=utf-8;",
           }

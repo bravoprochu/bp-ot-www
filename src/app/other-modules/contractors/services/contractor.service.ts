@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { DataExportsService } from "app/other-modules/data-exports/services/data-exports.service";
 import { DataFactoryService } from "app/services/data-factory.service";
 import { TokenService } from "app/services/token.service";
 import { environment } from "environments/environment";
@@ -11,41 +12,6 @@ import { ICompany } from "../interfaces/icompany";
 export class ContractorService extends DataFactoryService {
   constructor(http: HttpClient, tokenService: TokenService) {
     super(environment.apiUrlCompany, http, tokenService);
-  }
-
-  csvConverter(data: any[], tableHeaders: string[]): string {
-    if (Array.isArray(data) && data.length > 1) {
-      let firstLine: string = "";
-      let end = ";";
-      let lineEnd = "\r\n";
-      let result: string = "";
-
-      //
-      // header
-      //
-
-      firstLine = tableHeaders.join(end) + lineEnd;
-
-      //
-      // loop
-      //
-
-      data.forEach((row) => {
-        tableHeaders.forEach((header) => {
-          let v: string;
-          if (row[header] == null) {
-            v = "";
-          } else {
-            v = row[header];
-          }
-          result += v + end;
-        });
-        result += lineEnd;
-      });
-
-      return firstLine + result;
-    }
-    return;
   }
 
   getByKey(key: string) {

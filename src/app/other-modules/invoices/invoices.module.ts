@@ -44,11 +44,13 @@ import {
   MAT_NATIVE_DATE_FORMATS,
 } from "@angular/material/core";
 import { CustomDateAdapterPl } from "app/common-functions/angular-datepicker/custom-date-adapter-pl";
+import { DataExportsModule } from "../data-exports/data-exports.module";
 
 const IMPORT_EXPORT_MODULES = [
   ContractorsModule,
   CreationInfoModule,
   CurrencyModule,
+  DataExportsModule,
   DateRangeModule,
   DialogConfirmationsModule,
   DragDropOptionsModule,

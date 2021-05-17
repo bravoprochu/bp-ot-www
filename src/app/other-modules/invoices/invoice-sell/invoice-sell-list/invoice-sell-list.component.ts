@@ -22,6 +22,7 @@ import { ToastMakeService } from "app/other-modules/toast-make/toast-make.servic
 import { InvoiceCommonFunctionsService } from "../../common/invoice-common-functions.service";
 import { InvoiceSellGroupCloneComponent } from "app/other-modules/invoice-sell-group-clone/components/invoice-sell-group-clone/invoice-sell-group-clone.component";
 import { DateTimeCommonServiceService } from "app/other-modules/date-time-common/services/date-time-common-service.service";
+import { DataExportsService } from "app/other-modules/data-exports/services/data-exports.service";
 
 @Component({
   selector: "app-invoice-sell-list",
@@ -45,6 +46,7 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, IListObj {
   search$: FormControl;
 
   constructor(
+    private dataExportService: DataExportsService,
     private dateTimeService: DateTimeCommonServiceService,
     private invoiceCommonService: InvoiceCommonFunctionsService,
     private invoiceSellService: InvoiceSellService,
@@ -174,12 +176,7 @@ export class InvoiceSellListComponent implements OnInit, OnDestroy, IListObj {
       .pipe(take(1))
       .subscribe((_data: any) => {
         let b = new Blob(
-          [
-            this.invoiceCommonService.csvConverter(
-              _data,
-              this.displayedColumns
-            ),
-          ],
+          [this.dataExportService.csvConverter(_data, this.displayedColumns)],
           {
             type: "text/csv;charset=utf-8;",
           }
