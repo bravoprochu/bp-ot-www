@@ -83,6 +83,7 @@ export class PaymentTermsService {
 
     return `${PAY_NAME}${DAY_DATE}${DESCRIPTION}`;
   }
+
   convToLuxonDate(date: Date | string): DateTime {
     const LUXON_DATE =
       typeof date === "string"
@@ -114,12 +115,19 @@ export class PaymentTermsService {
   }
 
   getPaymentTermsGroup$(): FormGroup {
+    const INIT_DAY_0 = new Date().toISOString();
+    const INIT_PAYMENT_DAYS = 60;
+    const INIT_PAYMENT_DATE = this.addDaysToDateISOFormat(
+      INIT_PAYMENT_DAYS,
+      INIT_DAY_0
+    );
+
     const PAYMENT_TERMS_CONFIG = {
-      day0: [new Date(), Validators.required],
+      day0: [INIT_DAY_0, Validators.required],
       paymentTerm: [this.getPaymentTermInitValue(), Validators.required],
       description: [null],
-      paymentDate: [new Date()],
-      paymentDays: [14],
+      paymentDate: [INIT_PAYMENT_DATE],
+      paymentDays: [INIT_PAYMENT_DAYS],
     } as FormGroupConfig<IPaymentTerms>;
 
     const rForm = this.fb.group(PAYMENT_TERMS_CONFIG);
@@ -137,7 +145,7 @@ export class PaymentTermsService {
   }
 
   getPaymentTermInitValue(): IPaymentTerm {
-    return PAYMENT_TERMS_OPTIONS[3];
+    return PAYMENT_TERMS_OPTIONS[2];
   }
 
   getPaymentTermOptions(): IPaymentTerm[] {
