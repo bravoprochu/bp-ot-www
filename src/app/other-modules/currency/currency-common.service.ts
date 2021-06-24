@@ -14,6 +14,8 @@ import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { DateTimeCommonServiceService } from "../date-time-common/services/date-time-common-service.service";
 import { CHECK_IF_CURRENCY_NOT_PLN_VALIDATOR } from "./form-validators/check-if-currency-pln";
 import { TWO_DIGITS_FORMAT } from "app/common-functions/format/two-digits-format";
+import { DateTime } from "luxon";
+import { getLocaleDateFormat } from "@angular/common";
 
 export const CURRENCY_LIST: ICurrency[] = [
   { currencyId: 1, description: "bat (Tajlandia)", name: "THB" },
@@ -159,6 +161,7 @@ export class CurrencyCommonService {
   }
 
   prepCombinedInfoNbp(currNBPRes: ICurrencyNbp): string {
-    return `Średni kurs dla ${currNBPRes.currency.description} (${currNBPRes.currency.name}) z dnia ${currNBPRes.rateDate} wynosi: ${currNBPRes.rate} (tabela: ${currNBPRes.no})`;
+    const formated_date = this.dateTimeCommonService.formatYYYYMMDD(currNBPRes.rateDate);
+    return `Średni kurs dla ${currNBPRes.currency.description} (${currNBPRes.currency.name}) z dnia ${formated_date} wynosi: ${currNBPRes.rate} (tabela: ${currNBPRes.no})`;
   }
 }
