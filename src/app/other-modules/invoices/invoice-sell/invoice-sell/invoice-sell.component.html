@@ -79,7 +79,7 @@
             Data sprzedaży, data wystawienia, waluta
             <strong>
               <span>{{ sellingDate.value | date: "yyyy-MM-dd" }}</span>
-              <span *ngIf="currency.valid">, {{ currency.value.name }}</span>
+              <span> {{ rForm.get("currency")?.value?.name }}</span>
             </strong>
           </mat-panel-title>
         </mat-expansion-panel-header>
@@ -110,7 +110,12 @@
           ></mat-datepicker-toggle>
           <mat-datepicker #dpIssue></mat-datepicker>
         </mat-form-field>
-        <app-currency-list [rForm]="currency"></app-currency-list>
+        <app-currency-list
+          [controlContainerParentRef]="[]"
+          controlContainerRef="currency"
+          [formData]="currencyData"
+        ></app-currency-list>
+        <!-- <app-currency-list [rForm]="currency"></app-currency-list> -->
         <app-payment-terms [rForm]="paymentTerms"></app-payment-terms>
       </mat-expansion-panel>
 
@@ -374,17 +379,21 @@
                 formControlName="is_load_no"
                 >Numer zlecenia
               </mat-checkbox>
+
               <mat-checkbox
                 formControlName="is_tax_nbp_exchanged"
-                *ngIf="currency.value.name != 'PLN'"
+                *ngIf="isCurrencyNotPln"
                 >Przelicznik podatku (średni kurs NBP)</mat-checkbox
               >
 
-              <div *ngIf="extraInfoIsTaxNbpExchanged.value" fxLayout="column">
+              <div *ngIf="isCurrencyNbpPanel" fxLayout="column">
                 <app-currency-nbp
-                  [rForm]="currencyNbp"
-                  [placeholder]="'Wartość podatku w walucie obcej'"
+                  [controlContainerParentRef]="[]"
+                  controlContainerRef="currencyNbp"
+                  [formData]="currencyNbpData"
+                  placeholder="Wartość podatku w walucie obcej"
                 ></app-currency-nbp>
+
                 <div fxLayout="row">
                   <mat-form-field fxFlex>
                     <textarea

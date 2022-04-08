@@ -27,7 +27,7 @@ import { DataExportsService } from "app/other-modules/data-exports/services/data
 import { saveAs } from "file-saver";
 import { IInvoicePaymentStatusCsv } from "../../interfaces/i-invoice-payment-status-csv";
 import { DateTimeCommonServiceService } from "app/other-modules/date-time-common/services/date-time-common-service.service";
-import { TWO_DIGITS_FORMAT } from "app/common-functions/format/two-digits-format";
+import { twoDigitsFormat } from "app/common-functions/format/two-digits-format";
 
 @Component({
   selector: "app-invoices-payment-status",
@@ -199,9 +199,9 @@ export class InvoicesPaymentStatusComponent implements OnInit, OnDestroy {
           kontrahentAdres: payment.company.address,
           kontrahentNazwa: payment.company.shortName,
           kontrahentNip: payment.company.vatId,
-          razemBrutto: TWO_DIGITS_FORMAT(payment.invoiceTotal.total_brutto),
-          razemNetto: TWO_DIGITS_FORMAT(payment.invoiceTotal.total_netto),
-          razemVat: TWO_DIGITS_FORMAT(payment.invoiceTotal.total_tax),
+          razemBrutto: twoDigitsFormat(payment.invoiceTotal.total_brutto),
+          razemNetto: twoDigitsFormat(payment.invoiceTotal.total_netto),
+          razemVat: twoDigitsFormat(payment.invoiceTotal.total_tax),
           terminPlatnosci: this.dateTimeService.formatYYYYMMDD(
             payment.paymentDate
           ),

@@ -72,7 +72,7 @@ export class InvoiceCommonFunctionsService {
       invoiceBuyId: [0],
       companySeller: this.contractorService.formCompanyGroup(fb),
       creationInfo: this.formCreationInfo(fb),
-      currency: this.currService.getCurrencyListGroup(fb),
+
       dateOfIssue: [
         new Date(this.dateTimeService.getToday()),
         Validators.required,
@@ -109,7 +109,7 @@ export class InvoiceCommonFunctionsService {
       baseInvoiceId: [0],
       companyBuyer: this.contractorService.formCompanyGroup(fb),
       correctionId: [null],
-      currency: this.currService.getCurrencyListGroup(fb),
+      //
       dateOfIssue: [
         new Date(this.dateTimeService.getToday()),
         Validators.required,

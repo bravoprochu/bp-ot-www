@@ -15,11 +15,15 @@ import { empty } from "rxjs";
 import { IInvoiceBuy } from "../../interfaces/iinvoice-buy";
 import { InvoiceCommonFunctionsService } from "../../common/invoice-common-functions.service";
 import { Subject } from "rxjs";
-import { CurrencyCommonService } from "app/other-modules/currency/currency-common.service";
+import {
+  CurrencyCommonService,
+  CURRENCY_LIST,
+} from "app/other-modules/currency/currency-common.service";
 import { switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { Location } from "@angular/common";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
+import { ICurrency } from "app/other-modules/currency/interfaces/i-currency";
 
 @Component({
   selector: "app-invoice-sell-buy",
@@ -27,6 +31,9 @@ import { DialogConfirmationsService } from "app/other-modules/dialog-confirmatio
   styleUrls: ["./invoice-buy.component.css"],
 })
 export class InvoiceBuyComponent implements OnInit, OnDestroy, IDetailObj {
+  currencyData = CURRENCY_LIST.find(
+    (currency: ICurrency) => currency.name === "PLN"
+  );
   navDetailInfo: INavDetailInfo = <INavDetailInfo>{
     title: {
       title: "Faktura zakupu",
@@ -152,7 +159,6 @@ export class InvoiceBuyComponent implements OnInit, OnDestroy, IDetailObj {
 
   initForm(): void {
     this.rForm = this.icf.formInvoiceBuyGroup(this.fb, this.isDestroyed$);
-    this.currency.setValue(this.currencyService.findCurrencyByName("pln"));
     this.paymentTermsPaymentDays.setValue(14, { emitEvent: true });
     this.invoicePosAdd();
 

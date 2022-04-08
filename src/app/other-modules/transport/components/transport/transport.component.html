@@ -69,7 +69,9 @@
         </div>
 
         <app-currency-nbp
-          [rForm]="price"
+          [controlContainerParentRef]="['tradeInfo']"
+          controlContainerRef="price"
+          [formData]="currencyNbpData"
           [placeholder]="'Fracht netto'"
         ></app-currency-nbp>
         <app-payment-terms [rForm]="paymentTerms"></app-payment-terms>

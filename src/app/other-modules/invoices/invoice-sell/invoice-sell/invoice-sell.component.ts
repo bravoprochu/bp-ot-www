@@ -1,15 +1,24 @@
 import { InvoiceSellService } from "../services/invoice-sell.service";
 import { IDetailObj } from "../../../../shared/idetail-obj";
 import { INavDetailInfo } from "../../../../shared/interfaces/inav-detail-info";
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+} from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { IBasicActions } from "app/shared/ibasic-actions";
 import { FormControl } from "@angular/forms";
 import { saveAs } from "file-saver";
-import { Subject, empty } from "rxjs";
+import { Subject, empty, EMPTY, noop } from "rxjs";
 import { InvoiceCommonFunctionsService } from "../../common/invoice-common-functions.service";
-import { CurrencyCommonService } from "app/other-modules/currency/currency-common.service";
+import {
+  CurrencyCommonService,
+  CURRENCY_LIST,
+} from "app/other-modules/currency/currency-common.service";
 import { ICurrencyNbp } from "app/other-modules/currency/interfaces/i-currency-nbp";
 
 import {
@@ -24,6 +33,8 @@ import {
   switchMap,
   take,
   finalize,
+  distinctUntilChanged,
+  tap,
 } from "rxjs/operators";
 import { ICurrency } from "app/other-modules/currency/interfaces/i-currency";
 import { IInvoicePos } from "../../interfaces/iinvoice-pos";
@@ -32,14 +43,19 @@ import { Location } from "@angular/common";
 import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
 import { IDialogTakNie } from "app/other-modules/dialog-confirmations/interfaces/i-dialog-tak-nie";
 import { DateTimeCommonServiceService } from "app/other-modules/date-time-common/services/date-time-common-service.service";
-import { TWO_DIGITS_FORMAT } from "app/common-functions/format/two-digits-format";
+import { twoDigitsFormat } from "app/common-functions/format/two-digits-format";
 
 @Component({
   selector: "app-invoice-sell",
   templateUrl: "./invoice-sell.component.html",
   styleUrls: ["./invoice-sell.component.css"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
+  currencyData = CURRENCY_LIST.find(
+    (currency: ICurrency) => currency.name === "PLN"
+  );
+  currencyNbpData = {} as ICurrencyNbp;
   isDestroyed$ = new Subject<boolean>() as Subject<boolean>;
   isFormReady = false;
   isPending = false;
@@ -51,6 +67,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
 
   constructor(
     private actRoute: ActivatedRoute,
+    private changeDetectorRef: ChangeDetectorRef,
     private dateTimeService: DateTimeCommonServiceService,
     private df: InvoiceSellService,
     private currService: CurrencyCommonService,
@@ -103,44 +120,6 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
         this.paymentTerms.get("day0").patchValue(s, { emitEvent: true });
       });
 
-    this.extraInfoIsTaxNbpExchanged.valueChanges
-      .pipe(
-        switchMap((_isChecked: boolean) => {
-          let _currNbp = <ICurrencyNbp>{
-            currency: <ICurrency>this.currency.value,
-            price: this.icf.roundToCurrency(this.totalTax.value),
-            rateDate: this.sellingDate.value,
-          };
-          if (_isChecked && (<ICurrencyNbp>this.currencyNbp.value).rate == 0) {
-            this.currencyNbp.patchValue(_currNbp, { emitEvent: false });
-            return this.currService.getExchangeFromNbpService$(_currNbp);
-          } else {
-            return empty();
-          }
-        }),
-        takeUntil(this.isDestroyed$)
-      )
-      .subscribe((_currNbp: ICurrencyNbp) => {
-        this.currencyNbp.setValue(_currNbp, { emitEvent: false });
-        this.prepExtraInfoTaxExchangedNbp(_currNbp);
-      });
-
-    this.currency.valueChanges
-      .pipe(takeUntil(this.isDestroyed$))
-      .subscribe((_curr: ICurrency) => {
-        if (_curr.name == "PLN") {
-          this.extraInfoIsTaxNbpExchanged.setValue(false, { emitEvent: false });
-          this.extraInfoTaxExchangedInfo.setValue(null, { emitEvent: false });
-          this.currencyNbp.clearValidators();
-          this.currencyNbp.updateValueAndValidity();
-
-          // let currNbpCurrency = this.currencyNbp.get("currency");
-          // currNbpCurrency.setValue(_curr, {
-          //   emitEvent: this.extraInfoIsTaxNbpExchanged.value,
-          // });
-        }
-      });
-
     //total brutto in words - checkbox change
     this.extraInfo
       .get("is_in_words")
@@ -154,6 +133,21 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
       .subscribe((s) => {
         this.extraInfoTtotalBruttoInWords.setValue(this.prepTotalInWord());
       });
+
+    this.extraInfoIsTaxNbpExchanged.valueChanges
+      .pipe(
+        tap((isExtraInfoNbp: boolean) => {
+          if (!isExtraInfoNbp) return;
+
+          this.currencyNbpData = {
+            ...this.currencyNbpData,
+            currency: this.currency.value,
+            price: this.totalTax.value,
+            rateDate: this.sellingDate.value,
+          };
+        })
+      )
+      .subscribe(noop);
   }
 
   initRouteId(): void {
@@ -177,15 +171,18 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
           this.isFormReady = true;
           this.navDetailInfo.basicActions.canDelete = true;
           this.icf.patchInvoiceSell(s, this.rForm, this.fb);
+          this.currencyData = s.currency;
+          this.currencyNbpData = s.extraInfo.currencyNbp;
           this.toastService.toastMake(`Pobrano dane : ${s.invoiceNo}`, "init");
           this.rForm.markAsPristine();
+          this.changeDetectorRef.detectChanges();
         });
     } else {
       this.isFormReady = true;
       this.isPending = false;
-      console.log("init Data, invoiceposADd");
       this.invoicePosAdd();
       this.rForm.markAsPristine();
+      this.changeDetectorRef.detectChanges();
     }
   }
 
@@ -254,6 +251,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   invoicePosAdd(): void {
     this.icf.lineAdd(this.invoiceLines, this.fb);
   }
+
   invoicePosRemove(idx: number): void {
     this.icf.lineRemove(idx, this.rForm, this.invoiceLines, this.isDestroyed$);
   }
@@ -413,12 +411,12 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
   prepExtraInfoTaxExchangedNbp(currNbp: ICurrencyNbp): void {
-    const netto = TWO_DIGITS_FORMAT(this.totalNetto.value);
-    const nettoPLN = TWO_DIGITS_FORMAT(this.totalNetto.value * currNbp.rate);
-    const brutto = TWO_DIGITS_FORMAT(this.totalBrutto.value);
-    const bruttoPLN = TWO_DIGITS_FORMAT(this.totalBrutto.value * currNbp.rate);
-    const tax = TWO_DIGITS_FORMAT(this.totalTax.value);
-    const taxPLN = TWO_DIGITS_FORMAT(this.totalTax.value * currNbp.rate);
+    const netto = twoDigitsFormat(this.totalNetto.value);
+    const nettoPLN = twoDigitsFormat(this.totalNetto.value * currNbp.rate);
+    const brutto = twoDigitsFormat(this.totalBrutto.value);
+    const bruttoPLN = twoDigitsFormat(this.totalBrutto.value * currNbp.rate);
+    const tax = twoDigitsFormat(this.totalTax.value);
+    const taxPLN = twoDigitsFormat(this.totalTax.value * currNbp.rate);
 
     const TAX =
       this.totalTax.value === 0
@@ -467,7 +465,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   }
 
   refreshExtraInfoNbp(): void {
-    this.prepExtraInfoTaxExchangedNbp(this.currencyNbp.value);
+    this.prepExtraInfoTaxExchangedNbp(this.currencyNbpFG.value);
   }
 
   //#endregion
@@ -502,7 +500,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
     return this.rForm.get("currency") as FormControl;
   }
 
-  get currencyNbp(): FormGroup {
+  get currencyNbpFG(): FormGroup {
     return this.rForm.get("extraInfo.currencyNbp") as FormGroup;
   }
 
@@ -561,6 +559,21 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
 
   get isCorrection(): FormControl {
     return this.rForm.get("isCorrection") as FormControl;
+  }
+
+  get isCurrencyNotPln(): boolean {
+    const currency = this.rForm.get("currency") as FormControl;
+
+    return (
+      currency &&
+      currency.value &&
+      currency.value.name &&
+      currency.value.name !== "PLN"
+    );
+  }
+
+  get isCurrencyNbpPanel(): boolean {
+    return this.isCurrencyNotPln && this.extraInfoIsTaxNbpExchanged.value;
   }
 
   get isLoad(): boolean {

@@ -40,7 +40,7 @@
             <strong>
               <span>{{ dateOfSell.value | date: "yyyy-MM-dd" }}</span>
             </strong>
-            <span *ngIf="currency.valid">, {{ currency.value.name }}</span>
+            <span> {{ rForm.get("currency")?.value?.name }}</span>
             <span>, {{ paymentTerms.value.paymentTerm.name }}</span>
           </div>
         </mat-panel-title>
@@ -104,7 +104,13 @@
             <mat-datepicker #dpReceived></mat-datepicker>
           </mat-form-field>
         </div>
-        <app-currency-list [rForm]="currency"></app-currency-list>
+
+        <app-currency-list
+          [controlContainerParentRef]="[]"
+          controlContainerRef="currency"
+          [formData]="currencyData"
+        ></app-currency-list>
+
         <app-payment-terms [rForm]="paymentTerms"></app-payment-terms>
 
         <mat-form-field fxFill>

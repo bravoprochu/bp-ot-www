@@ -13,6 +13,8 @@ import { TransportService } from "../../services/transport.service";
 import { ToastMakeService } from "app/other-modules/toast-make/toast-make.service";
 import { DialogConfirmationsService } from "app/other-modules/dialog-confirmations/services/dialog-confirmations.service";
 import { DateTimeCommonServiceService } from "app/other-modules/date-time-common/services/date-time-common-service.service";
+import { ICurrencyNbp } from "app/other-modules/currency/interfaces/i-currency-nbp";
+import { CURRENCY_LIST } from "app/other-modules/currency/currency-common.service";
 
 @Component({
   selector: "app-transport",
@@ -20,6 +22,9 @@ import { DateTimeCommonServiceService } from "app/other-modules/date-time-common
   styleUrls: ["./transport.component.css"],
 })
 export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
+  currencyNbpData = {
+    currency: CURRENCY_LIST.find((currency) => currency.name === "EUR"),
+  } as ICurrencyNbp;
   isDestroyed$ = new Subject<boolean>();
   isFormReady = false;
   isPending = true;
@@ -84,6 +89,7 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
             "initData"
           );
           this.df.patchTransport(data, this.rForm, this.fb);
+          this.currencyNbpData = data.tradeInfo.price;
           this.rForm.markAsPristine();
         });
     } else {
