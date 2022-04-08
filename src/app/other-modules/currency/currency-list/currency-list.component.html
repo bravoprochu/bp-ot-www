@@ -3,13 +3,13 @@
     matInput
     [matAutocomplete]="currSearch"
     placeholder="znajdź walutę"
-    [formControl]="search$"
+    [formControl]="searchPhrase$"
   />
-  <mat-hint align="end">{{ rForm?.value["description"] }}</mat-hint>
+  <mat-hint align="end">{{ reactiveForm.get("description")?.value }}</mat-hint>
 </mat-form-field>
 
 <mat-autocomplete #currSearch [displayWith]="displayWith" autoActiveFirstOption>
-  <mat-option *ngFor="let curr of currencyList" [value]="curr">
-    {{ curr.name }}
+  <mat-option *ngFor="let currency of currencyList" [value]="currency">
+    {{ currency.name }}
   </mat-option>
 </mat-autocomplete>

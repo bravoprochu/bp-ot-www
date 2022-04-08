@@ -20,9 +20,11 @@ import {
 import { Platform, PlatformModule } from "@angular/cdk/platform";
 import { DateTimeCommonModule } from "../date-time-common/date-time-common.module";
 import { CustomDateAdapterPl } from "app/common-functions/angular-datepicker/custom-date-adapter-pl";
+import { FlexLayoutModule } from "@angular/flex-layout";
 
 const IMPORT_EXPORT_MODULES = [
   DateTimeCommonModule,
+  FlexLayoutModule,
   MatAutocompleteModule,
   MatButtonModule,
   MatDatepickerModule,
