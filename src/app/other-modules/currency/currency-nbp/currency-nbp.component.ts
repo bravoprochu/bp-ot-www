@@ -1,107 +1,241 @@
-import { Component, OnInit, Input, OnDestroy } from "@angular/core";
-import { FormBuilder, FormControl } from "@angular/forms";
-import { combineLatest, empty, Observable, Subject } from "rxjs";
-import { CurrencyCommonService } from "app/other-modules/currency/currency-common.service";
+import {
+  Component,
+  OnInit,
+  Input,
+  OnDestroy,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from "@angular/core";
+import {
+  ControlContainer,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from "@angular/forms";
+import { combineLatest, EMPTY, noop, Observable, of, Subject } from "rxjs";
+import {
+  CurrencyCommonService,
+  CURRENCY_LIST,
+} from "app/other-modules/currency/currency-common.service";
 import {
   debounceTime,
   distinctUntilChanged,
+  finalize,
   map,
   startWith,
   switchMap,
+  take,
+  takeUntil,
   tap,
 } from "rxjs/operators";
-import { ICurrencyNbpResult } from "../interfaces/i-currency-nbp-result";
 import { ICurrencyNbp } from "../interfaces/i-currency-nbp";
 import { ICurrency } from "../interfaces/i-currency";
+import { twoDigitsFormat } from "app/common-functions/format/two-digits-format";
 
 @Component({
   selector: "app-currency-nbp",
   templateUrl: "./currency-nbp.component.html",
   styleUrls: ["./currency-nbp.component.css"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CurrencyNbpComponent implements OnInit, OnDestroy {
-  combinedInfo$?: Observable<string>;
-  isDestroyed$ = new Subject<boolean>() as Subject<boolean>;
-  currentNbpResult = {} as ICurrencyNbpResult;
-  @Input() rForm = this.currencyCommonService.getCurrencyNbpGroup(this.fb);
+  @Input() controlContainerParentRef = [] as string[];
+  @Input() controlContainerRef = "currencyNbp";
+  @Input() set formData(currencyNbp: ICurrencyNbp) {
+    this.isDataChanged.next();
+    this.initForm();
+    this.prepInitIncomingData(currencyNbp);
+    this.prepCurrencyData(currencyNbp);
+    this.initObservables();
+  }
   @Input() placeholder = "Wartość";
+
+  currencyParentRef = [] as string[];
+  currencyData = CURRENCY_LIST.find((currency) => currency.name === "EUR");
+  isLoading = false;
   maxDate = new Date();
-  refreshData$ = new Subject<void>();
+  reactiveForm = new FormGroup({});
+
+  currency$ = of(null);
+
+  rateDate$ = of(null);
+
+  price$ = of(0);
+
+  isExchangeInfoDisabled$ = of(false);
+
+  private isDataChanged = new Subject<void>();
+  private isDestroyed$ = new Subject<void>();
 
   constructor(
+    private changeDetectorRef: ChangeDetectorRef,
+    private controlContainer: ControlContainer,
     private fb: FormBuilder,
     private currencyCommonService: CurrencyCommonService
   ) {}
 
   ngOnDestroy(): void {
-    this.isDestroyed$.next(true);
+    this.isDestroyed$.next();
     this.isDestroyed$.complete();
+
+    this.isDataChanged.next();
+    this.isDataChanged.complete();
   }
 
-  ngOnInit() {
-    this.initObservables();
-  }
+  ngOnInit() {}
 
   initObservables(): void {
-    const PRICE = this.price.valueChanges.pipe(
+    this.currency$ = this.reactiveForm.valueChanges.pipe(
+      map((currencyNbp: ICurrencyNbp) => currencyNbp.currency)
+    );
+
+    this.rateDate$ = this.reactiveForm.valueChanges.pipe(
+      map((currencyNbp: ICurrencyNbp) => currencyNbp.rateDate),
+      startWith(this.rateDate.value),
+      takeUntil(this.isDataChanged)
+    ) as Observable<string>;
+
+    this.price$ = this.reactiveForm.valueChanges.pipe(
+      map((currencyNbp: ICurrencyNbp) => currencyNbp.price),
       startWith(this.price.value),
       debounceTime(750),
-      distinctUntilChanged()
-    );
-    const DATE = this.rateDate.valueChanges.pipe(
-      startWith(this.rateDate.value)
-    );
-    const CURRENCY = this.currency.valueChanges.pipe(
-      startWith(this.currency.value)
-    );
+      distinctUntilChanged(),
+      takeUntil(this.isDataChanged)
+    ) as Observable<number>;
 
-    const NBP_RESPONSE$ = combineLatest([
-      PRICE,
-      DATE,
-      CURRENCY,
-      // this.refreshData$,
-    ]).pipe(
-      tap(() => this.rForm.updateValueAndValidity()),
-      switchMap(() => {
-        if (this.rForm.valid && !this.isCurrencyPLN()) {
-          return this.currencyCommonService.getExchangeFromNbpService$(
-            this.rForm.value
-          );
-        }
-        return empty();
-      })
-    );
+    combineLatest([this.price$, this.rateDate$, this.currency$])
+      .pipe(
+        tap(() => {
+          this.isLoading = true;
+          this.reactiveForm.markAsPending();
+          this.changeDetectorRef.detectChanges();
+        }),
+        debounceTime(750),
+        switchMap(([price, rateDate, currency]) => {
+          const isPln =
+            (currency as ICurrency) && currency.name && currency.name === "PLN";
 
-    this.combinedInfo$ = NBP_RESPONSE$.pipe(
-      map((currNBPRes: ICurrencyNbp) => {
-        this.currencyCommonService.patchCurrencyNbp(currNBPRes, this.rForm);
-        return this.currencyCommonService.prepCombinedInfoNbp(currNBPRes);
-      })
+          if (!price || !currency) {
+            return EMPTY;
+          }
+          if (isPln) {
+            const cleanNbp = {
+              currency,
+              plnValueFormatted: twoDigitsFormat(price),
+              plnValue: price,
+              price,
+              rate: 1,
+              rateDate,
+              no: null,
+              table: null,
+            } as ICurrencyNbp;
+
+            this.reactiveForm.setValue(cleanNbp, { emitEvent: false });
+            return EMPTY;
+          }
+
+          const nbp = {
+            price,
+            rateDate,
+            currency,
+          } as ICurrencyNbp;
+
+          return this.currencyCommonService
+            .getExchangeFromNbpService$(nbp)
+            .pipe(
+              take(1),
+              map((currencyNbp: ICurrencyNbp) => {
+                this.reactiveForm.patchValue(currencyNbp, { emitEvent: false });
+                this.changeDetectorRef.detectChanges();
+
+                return currencyNbp;
+              }),
+              finalize(() => (this.isLoading = false))
+            );
+        })
+      )
+      .subscribe(noop);
+  }
+
+  private initForm(): void {
+    let parent: FormGroup;
+    if (this.controlContainerParentRef.length === 0) {
+      parent = this.controlContainer.control as FormGroup;
+    } else {
+      parent = this.controlContainer.control.get(
+        this.controlContainerParentRef
+      ) as FormGroup;
+    }
+
+    const reactiveForm = this.fb.group({
+      price: [
+        null,
+        Validators.compose([Validators.required, Validators.min(0)]),
+      ],
+      plnValue: [0],
+      plnValueFormatted: [],
+      rate: [0],
+      rateDate: [new Date()],
+      table: [null],
+      no: [null],
+    });
+
+    parent.setControl(this.controlContainerRef, reactiveForm);
+
+    this.reactiveForm = this.controlContainer.control.get([
+      ...this.controlContainerParentRef,
+      this.controlContainerRef,
+    ]) as FormGroup;
+  }
+
+  private prepInitIncomingData(currencyNbp: ICurrencyNbp): void {
+    this.reactiveForm.patchValue(currencyNbp);
+  }
+
+  private prepCurrencyData(currencyNbp: ICurrencyNbp): void {
+    this.currencyParentRef = [
+      ...this.controlContainerParentRef,
+      this.controlContainerRef,
+    ];
+
+    this.currencyData = currencyNbp.currency;
+  }
+
+  //#region reactiveForm getters
+
+  get isExchangeInfo(): boolean {
+    if (this.reactiveForm.status === "PENDING") return false;
+
+    const currencyFC = this.reactiveForm.get("currency");
+    if (!currencyFC) return false;
+    const currencyValue = currencyFC.value as ICurrency;
+
+    const codeTable = this.reactiveForm.get("table");
+    if (!codeTable.value) return false;
+
+    return currencyValue && currencyValue.name && currencyValue.name !== "PLN";
+  }
+
+  get combinedInfo(): string {
+    return this.currencyCommonService.prepCombinedInfoNbp(
+      this.reactiveForm.value
     );
   }
 
-  private isCurrencyPLN(): boolean {
-    return (this.currency.value as ICurrency).name === "PLN";
-  }
-
-  //#region rForm getters
-
-  get currency(): FormControl {
-    return <FormControl>this.rForm?.get("currency");
-  }
   get plnValue(): FormControl {
-    return <FormControl>this.rForm?.get("plnValueFormated");
+    return this.reactiveForm.get("plnValueFormatted") as FormControl;
   }
 
   get price(): FormControl {
-    return <FormControl>this.rForm?.get("price");
+    return this.reactiveForm.get("price") as FormControl;
   }
   get rate(): FormControl {
-    return <FormControl>this.rForm?.get("rate");
+    return this.reactiveForm.get("rate") as FormControl;
   }
 
   get rateDate(): FormControl {
-    return <FormControl>this.rForm?.get("rateDate");
+    return this.reactiveForm.get("rateDate") as FormControl;
   }
   //#endregion
 }

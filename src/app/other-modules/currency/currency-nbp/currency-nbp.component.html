@@ -1,4 +1,4 @@
-<ng-container>
+<div class="currency-container" fxLayout="row wrap" fxLayoutAlign="start">
   <mat-form-field>
     <input
       matInput
@@ -21,21 +21,34 @@
     <mat-datepicker #dp="matDatepicker"></mat-datepicker>
   </mat-form-field>
 
-  <app-currency-list [rForm]="currency!"></app-currency-list>
+  <app-currency-list
+    [controlContainerParentRef]="currencyParentRef"
+    controlContainerRef="currency"
+    [formData]="currencyData"
+  ></app-currency-list>
 
-  <mat-form-field *ngIf="rate?.value > 0">
-    <input matInput disabled placeholder="kurs" value="{{ rate?.value }}" />
-  </mat-form-field>
+  <ng-container *ngIf="isExchangeInfo">
+    <mat-form-field *ngIf="rate?.value > 0">
+      <input matInput disabled placeholder="kurs" value="{{ rate?.value }}" />
+    </mat-form-field>
 
-  <mat-form-field *ngIf="rate?.value > 0">
-    <input
-      matInput
-      disabled
-      placeholder="wartość PLN"
-      [value]="plnValue?.value"
-    />
-  </mat-form-field>
-  <p class="mat-caption">
-    <em>{{ combinedInfo$ | async }}</em>
-  </p>
-</ng-container>
+    <mat-form-field *ngIf="rate?.value > 0">
+      <input
+        matInput
+        disabled
+        placeholder="wartość PLN"
+        [value]="plnValue?.value"
+      />
+    </mat-form-field>
+
+    <div fxFlex="100">
+      <p class="mat-caption">
+        <em>{{ combinedInfo }}</em>
+      </p>
+    </div>
+  </ng-container>
+
+  <div *ngIf="reactiveForm.pending">
+    <img class="loader" src="assets/loader-07.svg" alt="nbp-loader" />
+  </div>
+</div>

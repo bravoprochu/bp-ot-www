@@ -4,7 +4,7 @@ export interface ICurrencyNbp {
   price: number;
   currency: ICurrency;
   plnValue: number;
-  plnValueFormated: string;
+  plnValueFormatted: string;
   rate: number;
   rateDate: string;
   table?: string;

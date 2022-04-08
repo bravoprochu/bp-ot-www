@@ -1,0 +1,11 @@
+.currency-container {
+  min-height: 7.5em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+.loader {
+  width: 2em;
+  margin-top: 0.75em;
+  margin-left: 0.5em;
+}
