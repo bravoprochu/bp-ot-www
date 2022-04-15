@@ -117,6 +117,7 @@ export class CurrencyNbpComponent implements OnInit, OnDestroy {
             (currency as ICurrency) && currency.name && currency.name === "PLN";
 
           if (!price || !currency) {
+            this.changeDetectorRef.detectChanges();
             return EMPTY;
           }
           if (isPln) {
@@ -132,6 +133,7 @@ export class CurrencyNbpComponent implements OnInit, OnDestroy {
             } as ICurrencyNbp;
 
             this.reactiveForm.setValue(cleanNbp, { emitEvent: false });
+            this.changeDetectorRef.detectChanges();
             return EMPTY;
           }
 
@@ -151,7 +153,10 @@ export class CurrencyNbpComponent implements OnInit, OnDestroy {
 
                 return currencyNbp;
               }),
-              finalize(() => (this.isLoading = false))
+              finalize(() => {
+                this.isLoading = false;
+                this.changeDetectorRef.detectChanges();
+              })
             );
         })
       )
