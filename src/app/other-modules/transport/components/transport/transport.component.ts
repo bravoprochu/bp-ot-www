@@ -1,6 +1,11 @@
 import { ITransportOffer } from "../../interfaces/itransport-offer";
 import { FormBuilder, FormControl } from "@angular/forms";
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+} from "@angular/core";
 import { IDetailObj } from "app/shared/idetail-obj";
 import { INavDetailInfo } from "app/shared/interfaces/inav-detail-info";
 import { FormGroup } from "@angular/forms";
@@ -20,6 +25,7 @@ import { CURRENCY_LIST } from "app/other-modules/currency/currency-common.servic
   selector: "app-transport",
   templateUrl: "./transport.component.html",
   styleUrls: ["./transport.component.css"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
   currencyNbpData = {
