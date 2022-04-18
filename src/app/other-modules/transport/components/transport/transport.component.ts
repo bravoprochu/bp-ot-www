@@ -2,6 +2,7 @@ import { ITransportOffer } from "../../interfaces/itransport-offer";
 import { FormBuilder, FormControl } from "@angular/forms";
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   OnDestroy,
   OnInit,
@@ -47,6 +48,7 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
 
   constructor(
     private actRoute: ActivatedRoute,
+    private changeDetectorRef: ChangeDetectorRef,
     private dateTimeService: DateTimeCommonServiceService,
     private df: TransportService,
     private dialogConfirmationService: DialogConfirmationsService,
@@ -86,7 +88,7 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
           takeUntil(this.isDestroyed$),
           finalize(() => {
             this.isPending = false;
-            this.isFormReady = true;
+            this.changeDetectorRef.detectChanges();
           })
         )
         .subscribe((data: ITransportOffer) => {
@@ -97,6 +99,8 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
           this.df.patchTransport(data, this.rForm, this.fb);
           this.currencyNbpData = data.tradeInfo.price;
           this.rForm.markAsPristine();
+          this.isFormReady = true;
+          this.changeDetectorRef.detectChanges();
         });
     } else {
       const NOW_ISO = new Date().toISOString();
@@ -104,6 +108,7 @@ export class TransportComponent implements OnInit, OnDestroy, IDetailObj {
       this.unloadDate.patchValue(this.addHoursAndFormat(NOW_ISO, 2));
       this.isPending = false;
       this.isFormReady = true;
+      this.changeDetectorRef.detectChanges();
     }
   }
 
