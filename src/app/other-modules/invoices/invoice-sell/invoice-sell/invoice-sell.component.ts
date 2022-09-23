@@ -400,7 +400,8 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
     let rest: string = "00";
     if (commaIdx > 0) {
       if (inStr.length - commaIdx == 2) {
-        rest = `${inStr.slice(commaIdx + 1, inStr.length)}0`;
+        rest = `${inStr.slice(commaIdx
+        + 1, inStr.length)}0`;
       } else {
         rest = inStr.slice(commaIdx + 1, inStr.length);
       }
@@ -561,19 +562,9 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
     return this.rForm.get("isCorrection") as FormControl;
   }
 
-  get isCurrencyNotPln(): boolean {
-    const currency = this.rForm.get("currency") as FormControl;
-
-    return (
-      currency &&
-      currency.value &&
-      currency.value.name &&
-      currency.value.name !== "PLN"
-    );
-  }
 
   get isCurrencyNbpPanel(): boolean {
-    return this.isCurrencyNotPln && this.extraInfoIsTaxNbpExchanged.value;
+    return this.extraInfoIsTaxNbpExchanged.value;
   }
 
   get isLoad(): boolean {
