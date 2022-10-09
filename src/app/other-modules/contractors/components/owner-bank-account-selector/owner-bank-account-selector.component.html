@@ -1,0 +1,18 @@
+<div class="mat-subheading-2">
+  Wybierz konta bankowe sprzedawcy na fakturze:
+</div>
+<ng-container *ngIf="ownerInfo$ | async as ownerInfo; else loading">
+  <div fxLayout="column" fxLayoutGap="15px">
+    <ng-container *ngFor="let account of bankAccounts">
+      <mat-checkbox
+        [disabled]="isDisabled"
+        [(ngModel)]="account.isSelected"
+        (change)="selectedChanged($event)"
+        >{{ account.type }}
+        <small>({{ account.account_no }})</small></mat-checkbox
+      >
+    </ng-container>
+  </div>
+</ng-container>
+
+<ng-template #loading> Trwa wczytywanie danych.... </ng-template>

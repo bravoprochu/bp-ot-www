@@ -1,11 +1,16 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { DataExportsService } from "app/other-modules/data-exports/services/data-exports.service";
 import { DataFactoryService } from "app/services/data-factory.service";
 import { TokenService } from "app/services/token.service";
 import { environment } from "environments/environment";
-import { catchError, distinctUntilChanged } from "rxjs/operators";
+import { Observable } from "rxjs";
+import {
+  catchError,
+  distinctUntilChanged,
+  map,
+  shareReplay,
+} from "rxjs/operators";
 import { ICompany } from "../interfaces/icompany";
 
 @Injectable()
@@ -14,13 +19,15 @@ export class ContractorService extends DataFactoryService {
     super(environment.apiUrlCompany, http, tokenService);
   }
 
-  getByKey(key: string) {
+  getByKey$(key: string): Observable<ICompany> {
     return this.http
-      .get(environment.apiUrlCompany + "/GetByKey/" + key, {
+      .get<ICompany>(environment.apiUrlCompany + "/GetByKey/" + key, {
         headers: this.bearerHeader(),
       })
       .pipe(catchError(this.errorHandler));
   }
+
+  getOwnerInfo$ = this.getById(1).pipe(shareReplay()) as Observable<ICompany>;
 
   getTransEuEmployeeList(employeeUrl: string) {
     let reqBody = {

@@ -113,7 +113,7 @@ export class CompanyCardComponent implements OnInit, OnDestroy, AfterViewInit {
         if (sw == null || sw == "" || typeof sw == "object") {
           return empty();
         } else {
-          return this.companyService.getByKey(sw).pipe(take(1));
+          return this.companyService.getByKey$(sw).pipe(take(1));
         }
       }),
       takeUntil(this.isDestroyed$)

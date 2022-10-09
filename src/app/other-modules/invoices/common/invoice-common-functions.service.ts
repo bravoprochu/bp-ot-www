@@ -134,6 +134,7 @@ export class InvoiceCommonFunctionsService {
         current: this.formInvoiceTotal(fb),
         corrections: this.formInvoiceTotal(fb),
       }),
+      ownerBankAccountsSelected: [],
       paymentIsDone: [false],
       paymentDate: [null],
       paymentTerms: this.pTermsService.getPaymentTermsGroup$(),

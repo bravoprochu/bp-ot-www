@@ -365,7 +365,7 @@
         <mat-expansion-panel-header>
           <mat-panel-title> Wydruk </mat-panel-title>
         </mat-expansion-panel-header>
-        <div fxLayout="row wrap">
+        <div fxLayout="column wrap" fxLayoutGap="15px">
           <section
             [formGroup]="extraInfo"
             fxFill
@@ -380,8 +380,7 @@
                 >Numer zlecenia
               </mat-checkbox>
 
-              <mat-checkbox
-                formControlName="is_tax_nbp_exchanged"
+              <mat-checkbox formControlName="is_tax_nbp_exchanged"
                 >Przelicznik podatku (średni kurs NBP)</mat-checkbox
               >
 
@@ -437,6 +436,11 @@
               formControlName="info"
             ></textarea>
           </mat-form-field>
+
+          <app-owner-bank-account-selector
+            formControlName="ownerBankAccountsSelected"
+          ></app-owner-bank-account-selector>
+
           <button
             mat-mini-fab
             (click)="printInvoice()"

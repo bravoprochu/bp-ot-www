@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FlexLayoutModule } from "@angular/flex-layout";
-import { ReactiveFormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MatButtonModule } from "@angular/material/button";
 import { MatDialogModule } from "@angular/material/dialog";
@@ -26,14 +26,18 @@ import { DragDropOptionsModule } from "../drag-drop-options/drag-drop-options.mo
 import { DialogConfirmationsModule } from "../dialog-confirmations/dialog-confirmations.module";
 import { NavListModule } from "../nav-list/nav-list.module";
 import { DataExportsModule } from "../data-exports/data-exports.module";
+import { OwnerBankAccountSelectorComponent } from "./components/owner-bank-account-selector/owner-bank-account-selector.component";
+import { MatCheckboxModule } from "@angular/material/checkbox";
 
 const IMPORT_EXPORT_MODULES = [
   DialogConfirmationsModule,
   DataExportsModule,
   DragDropOptionsModule,
   FlexLayoutModule,
+  FormsModule,
   MatAutocompleteModule,
   MatButtonModule,
+  MatCheckboxModule,
   MatDialogModule,
   MatExpansionModule,
   MatFormFieldModule,
@@ -56,15 +60,17 @@ const IMPORT_EXPORT_MODULES = [
     CompanyListComponent,
     CompanyComponent,
     CompanyCardComponent,
+    OwnerBankAccountSelectorComponent,
   ],
   entryComponents: [CompanyComponent, CompanyCardComponent],
   exports: [
-    IMPORT_EXPORT_MODULES,
+    ...IMPORT_EXPORT_MODULES,
     CompanyListComponent,
     CompanyCardComponent,
     CompanyComponent,
+    OwnerBankAccountSelectorComponent,
   ],
-  imports: [CommonModule, ContractorsRoutingModule, IMPORT_EXPORT_MODULES],
+  imports: [CommonModule, ContractorsRoutingModule, ...IMPORT_EXPORT_MODULES],
   providers: [ContractorService],
 })
 export class ContractorsModule {}
