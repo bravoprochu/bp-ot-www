@@ -7,7 +7,7 @@
       <mat-checkbox
         [disabled]="isDisabled"
         [(ngModel)]="account.isSelected"
-        (change)="selectedChanged($event)"
+        (change)="selectedChanged()"
         >{{ account.type }}
         <small>({{ account.account_no }})</small></mat-checkbox
       >

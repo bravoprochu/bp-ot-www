@@ -33,6 +33,7 @@ export class OwnerBankAccountSelectorComponent implements ControlValueAccessor {
             isSelected: true,
           } as ContractorBankAccountSelected)
       );
+      this.selectedChanged();
     })
   );
 
@@ -51,7 +52,7 @@ export class OwnerBankAccountSelectorComponent implements ControlValueAccessor {
     this.isDisabled = isDisabled;
   }
 
-  selectedChanged(event: MatCheckboxChange) {
+  selectedChanged() {
     const filteredValues = this.bankAccounts.filter(
       (account) => account.isSelected
     );
