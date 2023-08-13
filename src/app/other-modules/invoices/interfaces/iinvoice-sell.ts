@@ -5,6 +5,7 @@ import { IInvoiceRate } from "./iinvoice-rate";
 import { ICurrencyNbp } from "app/other-modules/currency/interfaces/i-currency-nbp";
 
 export interface IInvoiceSell extends IInvoiceCommon {
+  duplicateCreationDate?: string;
   invoiceSellId: number;
   isToRepeat: boolean;
   extraInfo: IInvoiceExtraInfo;

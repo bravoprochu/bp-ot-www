@@ -78,7 +78,7 @@
           <mat-panel-title fxLayout fxLayoutAlign="space-between">
             Data sprzedaży, data wystawienia, waluta
             <strong>
-              <span>{{ sellingDate.value | date: "yyyy-MM-dd" }}</span>
+              <span>{{ sellingDate.value | date : "yyyy-MM-dd" }}</span>
               <span> {{ rForm.get("currency")?.value?.name }}</span>
             </strong>
           </mat-panel-title>
@@ -190,15 +190,15 @@
               netto|vat|brutto
               <strong>
                 <span>{{
-                  invoiceTotalCurrent.value.total_netto | number: "1.2"
+                  invoiceTotalCurrent.value.total_netto | number : "1.2"
                 }}</span>
                 |
                 <span>{{
-                  invoiceTotalCurrent.value.total_tax | number: "1.2"
+                  invoiceTotalCurrent.value.total_tax | number : "1.2"
                 }}</span>
                 |
                 <span>{{
-                  invoiceTotalCurrent.value.total_brutto | number: "1.2"
+                  invoiceTotalCurrent.value.total_brutto | number : "1.2"
                 }}</span>
               </strong>
             </div>
@@ -253,14 +253,14 @@
                 </div>
                 <div fxFlex>
                   <div fxLayout>
-                    <div>{{ r.current.netto_value | number: "1.2-2" }}</div>
+                    <div>{{ r.current.netto_value | number : "1.2-2" }}</div>
                     <div *ngIf="isCorrection.value" fxLayout>
                       <div [style.color]="'blue'">
-                        /{{ r.original.netto_value | number: "1.2-2" }}
+                        /{{ r.original.netto_value | number : "1.2-2" }}
                       </div>
                       /
                       <div [style.color]="'red'">
-                        {{ r.corrections.netto_value | number: "1.2-2" }}
+                        {{ r.corrections.netto_value | number : "1.2-2" }}
                       </div>
                     </div>
                   </div>
@@ -268,14 +268,14 @@
 
                 <div fxFlex>
                   <div fxLayout>
-                    <div>{{ r.current.vat_value | number: "1.2-2" }}</div>
+                    <div>{{ r.current.vat_value | number : "1.2-2" }}</div>
                     <div *ngIf="isCorrection.value" fxLayout>
                       <div [style.color]="'blue'">
-                        /{{ r.original.vat_value | number: "1.2-2" }}
+                        /{{ r.original.vat_value | number : "1.2-2" }}
                       </div>
                       /
                       <div [style.color]="'red'">
-                        {{ r.corrections.vat_value | number: "1.2-2" }}
+                        {{ r.corrections.vat_value | number : "1.2-2" }}
                       </div>
                     </div>
                   </div>
@@ -283,14 +283,14 @@
 
                 <div fxFlex>
                   <div fxLayout>
-                    <div>{{ r.current.brutto_value | number: "1.2-2" }}</div>
+                    <div>{{ r.current.brutto_value | number : "1.2-2" }}</div>
                     <div *ngIf="isCorrection.value" fxLayout>
                       <div [style.color]="'blue'">
-                        /{{ r.original.brutto_value | number: "1.2-2" }}
+                        /{{ r.original.brutto_value | number : "1.2-2" }}
                       </div>
                       /
                       <div [style.color]="'red'">
-                        {{ r.corrections.brutto_value | number: "1.2-2" }}
+                        {{ r.corrections.brutto_value | number : "1.2-2" }}
                       </div>
                     </div>
                   </div>
@@ -469,6 +469,14 @@
           <button
             (click)="createCorrection()"
             [disabled]="correctionId.value"
+            mat-raised-button
+            matTooltip="Utwórz korektę"
+          >
+            Utwórz korektę
+          </button>
+          <button
+            (click)="printDuplicate()"
+            [disabled]="rForm.invalid"
             mat-raised-button
             matTooltip="Utwórz korektę"
           >

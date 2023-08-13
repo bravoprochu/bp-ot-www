@@ -335,8 +335,8 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
     this.dialogConfirmationService
       .getTakNieDialog(data)
       .pipe(
-        switchMap((takNie: boolean) => {
-          if (takNie === true) {
+        switchMap((isConfirmed: boolean) => {
+          if (isConfirmed === true) {
             if (
               this.isTransportOffer &&
               this.extraInfoCheckedCmr.value &&
@@ -363,18 +363,27 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
                 type: "application/pdf",
               });
             }),
-            takeUntil(this.isDestroyed$),
-            finalize(() => (this.isPending = false))
+            take(1),
+            tap({
+              next: (pdf) => {
+                saveAs(pdf, `Faktura.pdf`);
+                const info = `Wygenerowano fakturę ${
+                  (this.rForm.value as IInvoiceSell).invoiceNo
+                }`;
+                this.toastService.toastMake(info, "Faktura sprzedaży");
+              },
+              error: (error) => {
+                this.toastService.toastMake(
+                  "Błąd przy generowaniu faktury",
+                  "Błąd!"
+                );
+              },
+              complete: () => (this.isPending = false),
+            })
           );
         })
       )
-      .subscribe((s) => {
-        saveAs(s, `Faktura.pdf`);
-        this.toastService.toastMake(
-          "Faktura została wygenerowana",
-          "printInvoice"
-        );
-      });
+      .subscribe(noop);
   }
 
   getCurrencyNbpExchange(): ICurrencyNbp {
@@ -400,8 +409,7 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
     let rest: string = "00";
     if (commaIdx > 0) {
       if (inStr.length - commaIdx == 2) {
-        rest = `${inStr.slice(commaIdx
-        + 1, inStr.length)}0`;
+        rest = `${inStr.slice(commaIdx + 1, inStr.length)}0`;
       } else {
         rest = inStr.slice(commaIdx + 1, inStr.length);
       }
@@ -463,6 +471,53 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
       emitEvent: false,
     });
     this.isCorrection.setValue(true);
+  }
+
+  printDuplicate() {
+    this.dialogConfirmationService
+      .getDateConfirmationDialog({
+        isInfo: false,
+        subtitle: "Data wygenerowania duplikatu",
+        title: "Wydrukuj duplikat",
+      })
+      .pipe(
+        take(1),
+        tap(() => (this.isPending = true)),
+        switchMap((datePayload) => {
+          if (!datePayload) return EMPTY;
+
+          const updatedInvoice = {
+            ...this.rForm.value,
+            duplicateCreationDate: datePayload.paymentDate,
+          } as IInvoiceSell;
+
+          return this.df.printInvoice(updatedInvoice).pipe(
+            map((res) => {
+              return new Blob([res, "application/pdf"], {
+                type: "application/pdf",
+              });
+            }),
+            take(1),
+            tap({
+              next: (value) => {
+                saveAs(value, `Faktura.pdf`);
+                const info = `Wygenerowano duplikat faktury ${
+                  (this.rForm.value as IInvoiceSell).invoiceNo
+                }`;
+                this.toastService.toastMake(info, "Faktura sprzedaży");
+              },
+              error: (error) => {
+                this.toastService.toastMake(
+                  "Błąd przy generowaniu duplikatu",
+                  "Błąd!"
+                );
+              },
+              complete: () => (this.isPending = false),
+            })
+          );
+        })
+      )
+      .subscribe(noop);
   }
 
   refreshExtraInfoNbp(): void {
@@ -561,7 +616,6 @@ export class InvoiceSellComponent implements OnInit, OnDestroy, IDetailObj {
   get isCorrection(): FormControl {
     return this.rForm.get("isCorrection") as FormControl;
   }
-
 
   get isCurrencyNbpPanel(): boolean {
     return this.extraInfoIsTaxNbpExchanged.value;
